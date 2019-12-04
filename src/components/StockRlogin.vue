@@ -94,10 +94,6 @@ export default {
           .catch(err => console.error(err));
       }
     },
-
-    changeLanguage() {
-      //i18n.locale = 'en';
-    },
   }
 }
 </script>
