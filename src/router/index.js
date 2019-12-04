@@ -10,6 +10,7 @@ const routes = [
     path: '/',
     redirect: `/${i18n.locale}`
   },
+  { path: '/api' },
   {
     path: '/:lang',
     component: {
