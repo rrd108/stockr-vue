@@ -81,7 +81,7 @@ export default {
         const qs = require('qs');
         axios({
             method: 'post',
-            url: 'http://localhost/~rrd/stockrvue/api/user-get-token.json',
+            url: process.env.VUE_APP_GETTOKEN_URL,
             //withCredentials : true,
             data: qs.stringify({
               email: this.email,
