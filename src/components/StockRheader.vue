@@ -47,6 +47,7 @@ export default {
   methods: {
     logout() {
       this.$store.commit('removeUser');
+      localStorage.removeItem('user');
     }
   }
 }

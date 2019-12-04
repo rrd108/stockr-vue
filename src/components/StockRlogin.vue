@@ -21,9 +21,8 @@
         </div>
 
         <div class="input checkbox">
-          <!-- TODO -->
           <label for="remember-me">
-            <input type="checkbox" name="remember_me" value="1" checked="checked" id="remember-me">{{$t("login.rememberme")}}
+            <input type="checkbox" name="remember_me" value="1" :checked="rememberme" id="remember-me">{{$t("login.rememberme")}}
           </label>
         </div>
     </fieldset>
@@ -58,7 +57,7 @@ export default {
     return {
       email : '',
       password: '',
-      user : {},
+      rememberme: true,
     }
   },
 
@@ -70,6 +69,13 @@ export default {
   computed : {
     hasError() {
       return this.email && this.password && !this.$store.state.user;
+    }
+  },
+
+  created() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      this.$store.commit('saveUser', user);
     }
   },
 
@@ -89,7 +95,10 @@ export default {
             })
           })
           .then(resp => {
-              this.$store.commit('saveUser',resp.data);
+              this.$store.commit('saveUser', resp.data);
+              if (this.rememberme) {
+                localStorage.setItem('user', JSON.stringify(resp.data));
+              }
           })
           .catch(err => console.error(err));
       }
