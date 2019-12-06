@@ -6,32 +6,28 @@
 
 <script>
 import axios from 'axios';
+axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
 
 export default {
   methods: {
     check() {
       console.log('check');
-      axios.get('http://localhost/~rrd/stockrvue/api/products/stock.json', {
-          headers: {
-            //Accept: 'application/json',
-            'ApiKey': this.$store.state.user.api_token
-          },
-          withCredentials: true
-        })
-        .then(resp => {
-            console.log(resp);
-        })
-        .catch(err => console.error(err));
-      /* fetch('http://localhost/~rrd/stockrvue/api/products/stock.json', {
-        method: 'get',
-        mode: 'no-cors',
+      /*axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=1', {
         headers: {
-            'Content-Type': 'application/json',
-            'ApiKey': this.$store.state.user.api_token
-          },
-      }).then(response => response.json())
-      .then(stock => console.log(stock))
-      .catch(err => console.error(err)); */
+          'ApiKey': this.$store.state.user.api_token
+        },
+      })
+      .then(resp => {
+          console.log(resp);
+      })
+      .catch(err => console.error(err));*/
+
+      //we use query string ApiKey as axios not sending out the ApiKey header
+      axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=1&ApiKey=' + this.$store.state.user.api_token)
+      .then(resp => {
+          console.log(resp);
+      })
+      .catch(err => console.error(err));
     }
   }
 }
