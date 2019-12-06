@@ -5,5 +5,7 @@
     "password" : "Password",
     "enter": "Enter",
     "error": "Email or password mismatch"
-  }
+  },
+  "company" : "Company",
+  "save" : "Save"
 }

@@ -30,7 +30,9 @@
 
                 <div class="top-bar-right">
                     <ul class="menu">
-                      <li><router-link to="/todo"><i class="fi-torso"> TODO COMPANY</i></router-link></li>
+                      <li v-if="appCompany"><a href="#" @click.prevent="$store.commit('unsetCompany')">
+                        <i class="fi-torso"> {{appCompany}}</i></a>
+                      </li>
                       <li><a href="/" @click.prevent="logout" title="logout">{{this.$store.state.user.email}} <i class="fi-power"></i></a></li>
                     </ul>
                 </div>
@@ -43,6 +45,12 @@
 <script>
 export default {
   name: 'StockrHeader',
+
+  computed: {
+    appCompany() {
+      return this.$store.state.company.name;
+    }
+  },
 
   methods: {
     logout() {

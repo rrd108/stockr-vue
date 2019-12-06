@@ -5,5 +5,7 @@
     "password": "Jelszó",
     "enter": "Belép",
     "error": "Hibás email vagy jelszó"
-  }
+  },
+  "company": "Cég",
+  "save": "Ment"
 }

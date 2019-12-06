@@ -5,14 +5,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {}
+    user: {},
+    company: {},
   },
   mutations: {
     saveUser(state, user) {
-      state.user = user;
+      state.user = user
     },
     removeUser(state) {
-      state.user = {};
+      state.user = {}
+    },
+    setCompany(state, company) {
+      state.company = company
+    },
+    unsetCompany(state) {
+      state.company = {}
     },
   },
   actions: {

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <stockRheader v-if="isLoggedIn" />
+    <stockRcompany v-if="isLoggedIn && !this.$store.state.company.id" />
     <router-view/>
   </div>
 </template>
@@ -8,12 +9,14 @@
 <script>
 
 import StockRheader from '@/components/StockRheader.vue'
+import StockRcompany from '@/components/StockRcompany'
 
 export default {
   name: 'app',
 
   components: {
-    StockRheader
+    StockRheader,
+    StockRcompany
   },
 
   computed : {
