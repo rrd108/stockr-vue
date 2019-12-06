@@ -18,7 +18,12 @@ export default {
 
   computed : {
       isLoggedIn() {
-        return this.$store.state.user.email ? true : false;
+        let now = (new Date).getTime()
+        let expired = 7 * 24 * 60 * 60 * 1000
+        if ((now - this.$store.state.user.lastLogin) > expired) {
+          return false
+        }
+        return this.$store.state.user.email ? true : false
       }
   },
 }

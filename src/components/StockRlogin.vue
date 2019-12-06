@@ -97,6 +97,7 @@ export default {
           .then(resp => {
               this.$store.commit('saveUser', resp.data);
               if (this.rememberme) {
+                resp.data.lastLogin = Date.now()
                 localStorage.setItem('user', JSON.stringify(resp.data));
               }
           })
