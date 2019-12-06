@@ -87,7 +87,7 @@ export default {
         const qs = require('qs');
         axios({
             method: 'post',
-            url: process.env.VUE_APP_GETTOKEN_URL,
+            url: process.env.VUE_APP_API_URL + 'user-get-token.json',
             //withCredentials : true,
             data: qs.stringify({
               email: this.email,
