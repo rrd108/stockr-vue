@@ -9,5 +9,10 @@
   "stock" : "Készlet",
   "products": "Termékek",
   "company": "Cég",
-  "save": "Ment"
+  "save": "Ment",
+  "product" : {
+    "name": "Név",
+    "code": "Kód",
+    "size": "Méret"
+  }
 }

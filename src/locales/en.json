@@ -9,5 +9,10 @@
   "stock": "Stock",
   "products": "Products",
   "company" : "Company",
-  "save" : "Save"
+  "save" : "Save",
+  "product": {
+    "name": "Name",
+    "code": "Code",
+    "size": "Size"
+  }
 }

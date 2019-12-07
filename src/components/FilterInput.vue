@@ -1,17 +1,10 @@
 <template>
-    <input type="text" v-model="filterRow" :search="search" autocomplete="off" placeholder="Search">
+    <input type="text" v-model="filterRow" autocomplete="off" placeholder="Search">
 </template>
 
 <script>
 export default {
     name: 'FilterInput',
-
-    props: {
-        search: {
-            type: String,
-            required: true,
-        }
-    },
 
     data() {
         return {
@@ -21,7 +14,7 @@ export default {
 
     watch: {
         filterRow(val) {
-            this.$emit('row-filter', { field: this.search, val: val });
+            this.$emit('row-filter', val);
         }
     }
 }

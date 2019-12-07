@@ -4,9 +4,9 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col">{{$t("name")}} {{searchResultsCount}} {{$t("products")}}</th>
-                <th scope="col">{{$t("code")}}</th>
-                <th scope="col">{{$t("size")}}</th>
+                <th scope="col">{{$t("product.name")}} {{searchResultsCount}} {{$t("products")}}</th>
+                <th scope="col">{{$t("product.code")}}</th>
+                <th scope="col">{{$t("product.size")}}</th>
                 <th scope="col">{{$t("stock")}}</th>
                 <th scope="col" rowspan="2">Avarage purchase price</th>
                 <th scope="col" rowspan="2">Last purchase price</th>
@@ -14,9 +14,9 @@
                 <th scope="col">Value</th>
             </tr>
             <tr>
-                <td><filter-input search="products.name" @row-filter="filterRow($event)" /></td>
-                <td><filter-input search="products.code" /></td>
-                <td><filter-input search="products.size" /></td>
+                <td><filter-input search="products.name" @row-filter="filterRow($event, 'products.name')" /></td>
+                <td><filter-input search="products.code" @row-filter="filterRow($event, 'products.code')" /></td>
+                <td><filter-input search="products.size" @row-filter="filterRow($event, 'products.size')" /></td>
                 <td class="text-right">
                     {{products.reduce((sum, product) =>
                         sum + (product.hidden ? 0 : parseInt(product.stock))
@@ -69,8 +69,12 @@ export default {
     },
 
     methods : {
-        filterRow(search) {
-            this.search = search
+        filterRow(search, field) {
+            console.log(search)
+            this.search = {
+                val: search,
+                field: field
+            }
         }
     }
 }
