@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <stockRheader v-if="isLoggedIn" />
-    <stockRcompany v-if="isLoggedIn && !this.$store.state.company.id" />
+    <stockRcompany v-if="isLoggedIn && !hasCompany" />
     <router-view/>
   </div>
 </template>
@@ -9,7 +9,7 @@
 <script>
 
 import StockRheader from '@/components/StockRheader.vue'
-import StockRcompany from '@/components/StockRcompany'
+import StockRcompany from '@/components/StockRcompany.vue'
 
 export default {
   name: 'app',
@@ -27,6 +27,12 @@ export default {
           return false
         }
         return this.$store.state.user.email ? true : false
+      },
+      hasCompany() {
+        if (this.$store.state.company.id) {
+          return true
+        }
+        return false
       }
   },
 }
