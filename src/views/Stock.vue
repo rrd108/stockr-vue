@@ -14,9 +14,9 @@
                 <th scope="col">Value</th>
             </tr>
             <tr>
-                <td><filter-input search="products.name" @row-filter="filterRow($event, 'products.name')" /></td>
-                <td><filter-input search="products.code" @row-filter="filterRow($event, 'products.code')" /></td>
-                <td><filter-input search="products.size" @row-filter="filterRow($event, 'products.size')" /></td>
+                <td><filter-input search="products.name" @row-filter="rowFilter($event, 'products.name')" /></td>
+                <td><filter-input search="products.code" @row-filter="rowFilter($event, 'products.code')" /></td>
+                <td><filter-input search="products.size" @row-filter="rowFilter($event, 'products.size')" /></td>
                 <td class="text-right">
                     {{products.reduce((sum, product) =>
                         sum + (product.hidden ? 0 : parseInt(product.stock))
@@ -56,20 +56,21 @@ export default {
 
     created() {
         //we use query string ApiKey as axios not sending out the ApiKey header
+        // TODO get only once and save into the store
         axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
         .then(resp => {
             let products = resp.data
             products.forEach((product) => {
-                product.hidden = false;
+                product.hidden = false
             })
             this.products = products
             this.searchResultsCount = products.length
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
     },
 
     methods : {
-        filterRow(search, field) {
+        rowFilter(search, field) {
             this.search = {
                 val: search,
                 field: field
@@ -77,7 +78,6 @@ export default {
         },
 
         setCount(count) {
-            console.log(123)
             this.searchResultsCount = count
         },
     }

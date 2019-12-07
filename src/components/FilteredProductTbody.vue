@@ -26,15 +26,22 @@ export default {
         search: {type: Object},
     },
 
+    data(){
+        return {
+            keepFiltered : false
+        }
+    },
+
     computed: {
         filteredProducts() {
-            let filteredProducts = this.products
+            // TODO if we are on the same filterinput than we start with products, if not we start with filtered products
+            let filteredProducts = this.keepFiltered ? this.products.filter(item => item.hidden !== true) : this.products
 
             if (this.search.val) {
                 let field = this.search.field.split('.')[1]
 
                 filteredProducts.forEach((item) => {
-                    if (!item[field]) {
+                    if (!item[field]) { // we do not have code for all products, so toLowerCase would fail without this
                         item.hidden = true
                         return
                     }
@@ -49,6 +56,14 @@ export default {
             return filteredProducts
         }
     },
+
+    watch: {
+        search(newSearch, oldSearch) {
+            if (oldSearch.field) {
+                this.keepFiltered = (newSearch.field != oldSearch.field) ? true : false
+            }
+        }
+    }
 
 }
 </script>
