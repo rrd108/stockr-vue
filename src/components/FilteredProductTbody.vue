@@ -1,6 +1,6 @@
 <template>
     <tbody>
-        <tr v-for="product in products" :key="product.id" v-show="!product.hidden">
+        <tr v-for="product in filteredProducts" :key="product.id" v-show="!product.hidden">
             <td><a :href="'view/' + product.id">{{product.name}}</a></td>
             <td>{{product.code}}</td>
             <td>{{product.size}}</td>
@@ -26,36 +26,27 @@ export default {
         search: {type: Object},
     },
 
-    data() {
-        return {
-            searchResultsCount: 0,
-        }
-    },
+    computed: {
+        filteredProducts() {
+            let filteredProducts = this.products
 
-    // we can not use mixins here RowFilter.js
-    watch: {
-        search() {
-        if (this.search.val) {
-            let items, field;
-            items = this.search.field.split('.');
-            field = items[1];
-            items = items[0];
+            if (this.search.val) {
+                let field = this.search.field.split('.')[1]
 
-            if (this.search) {
-                this[items].forEach((item) => {
+                filteredProducts.forEach((item) => {
                     if (!item[field]) {
-                        item.hidden = true;
-                        return;
+                        item.hidden = true
+                        return
                     }
                     item.hidden = (item[field].toLowerCase().indexOf(this.search.val.toLowerCase()) == -1) ? true : false
                 })
             } else {
-                this[items].forEach((item) => {
-                    item.hidden = false;
+                filteredProducts.forEach((item) => {
+                    item.hidden = false
                 })
             }
-            this.$parent.searchResultsCount = this[items].filter(item => item.hidden !== true).length;
-        }
+            this.$emit('setCount', filteredProducts.filter(item => item.hidden !== true).length)
+            return filteredProducts
         }
     },
 

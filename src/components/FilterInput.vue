@@ -14,7 +14,7 @@ export default {
 
     watch: {
         filterRow(val) {
-            this.$emit('row-filter', val);
+            this.$emit('row-filter', val)
         }
     }
 }

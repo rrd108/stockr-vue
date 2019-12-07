@@ -4,7 +4,7 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col">{{$t("product.name")}} {{searchResultsCount}} {{$t("products")}}</th>
+                <th scope="col">{{$t("products")}} {{searchResultsCount}}</th>
                 <th scope="col">{{$t("product.code")}}</th>
                 <th scope="col">{{$t("product.size")}}</th>
                 <th scope="col">{{$t("stock")}}</th>
@@ -28,7 +28,7 @@
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
             </tr>
         </thead>
-        <tbody is="filtered-tbody" :products="products" :search="search"></tbody>
+        <tbody is="filtered-tbody" :products="products" :search="search" @setCount="setCount($event)"></tbody>
     </table>
   </div>
 </template>
@@ -70,12 +70,16 @@ export default {
 
     methods : {
         filterRow(search, field) {
-            console.log(search)
             this.search = {
                 val: search,
                 field: field
             }
-        }
+        },
+
+        setCount(count) {
+            console.log(123)
+            this.searchResultsCount = count
+        },
     }
 }
 </script>
