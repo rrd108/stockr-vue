@@ -22,7 +22,8 @@ export default {
         products: {
             type: Array,
             required: true
-        }
+        },
+        search: {type: Object},
     },
 
     data() {
@@ -32,21 +33,21 @@ export default {
     },
 
     // we can not use mixins here RowFilter.js
-    created() {
-        //TODO
-        /* eventBus.$on('row-filter', (search) => {
+    watch: {
+        search() {
+        if (this.search.val) {
             let items, field;
-            items = search.field.split('.');
+            items = this.search.field.split('.');
             field = items[1];
             items = items[0];
 
-            if (search) {
+            if (this.search) {
                 this[items].forEach((item) => {
                     if (!item[field]) {
                         item.hidden = true;
                         return;
                     }
-                    item.hidden = (item[field].toLowerCase().indexOf(search.val.toLowerCase()) == -1) ? true : false
+                    item.hidden = (item[field].toLowerCase().indexOf(this.search.val.toLowerCase()) == -1) ? true : false
                 })
             } else {
                 this[items].forEach((item) => {
@@ -54,8 +55,8 @@ export default {
                 })
             }
             this.$parent.searchResultsCount = this[items].filter(item => item.hidden !== true).length;
-            return;
-        }); */
+        }
+        }
     },
 
 }

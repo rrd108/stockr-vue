@@ -14,7 +14,7 @@
                 <th scope="col">Value</th>
             </tr>
             <tr>
-                <td><filter-input search="products.name" /></td>
+                <td><filter-input search="products.name" @row-filter="filterRow($event)" /></td>
                 <td><filter-input search="products.code" /></td>
                 <td><filter-input search="products.size" /></td>
                 <td class="text-right">
@@ -28,7 +28,7 @@
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
             </tr>
         </thead>
-        <tbody is="filtered-tbody" :products="products" @row-filter="filterRow($event)"></tbody>
+        <tbody is="filtered-tbody" :products="products" :search="search"></tbody>
     </table>
   </div>
 </template>
@@ -50,6 +50,7 @@ export default {
         return {
             products: [],
             searchResultsCount: 0,
+            search: {},
         }
     },
 
@@ -63,8 +64,14 @@ export default {
             })
             this.products = products
             this.searchResultsCount = products.length
-    })
+        })
         .catch(err => console.error(err));
-  },
+    },
+
+    methods : {
+        filterRow(search) {
+            this.search = search
+        }
+    }
 }
 </script>
