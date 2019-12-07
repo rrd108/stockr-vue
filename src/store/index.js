@@ -20,6 +20,7 @@ export default new Vuex.Store({
     },
     unsetCompany(state) {
       state.company = {}
+      localStorage.removeItem('company')
     },
   },
   actions: {

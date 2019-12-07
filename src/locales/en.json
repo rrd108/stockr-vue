@@ -6,6 +6,8 @@
     "enter": "Enter",
     "error": "Email or password mismatch"
   },
+  "stock": "Stock",
+  "products": "Products",
   "company" : "Company",
   "save" : "Save"
 }

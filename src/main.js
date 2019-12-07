@@ -19,6 +19,19 @@ router.beforeEach((to, from, next) => {
   next();
 })
 
+Vue.filter('toCurrency', function (value) {
+  // TODO set it from session
+  return new Intl.NumberFormat('hu-HU', {
+    style: 'currency',
+    currency: 'HUF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
+});
+
+Vue.filter('toNum', function (value, precision) {
+  return precision ? value : parseInt(value);
+});
 
 new Vue({
   router,

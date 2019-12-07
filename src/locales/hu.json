@@ -6,6 +6,8 @@
     "enter": "Belép",
     "error": "Hibás email vagy jelszó"
   },
+  "stock" : "Készlet",
+  "products": "Termékek",
   "company": "Cég",
   "save": "Ment"
 }

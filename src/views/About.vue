@@ -1,12 +1,11 @@
 <template>
-  <div class="about">
+  <div>
     <h1 @click=check>This is an about page</h1>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-axios.defaults.headers.common = {'X-Requested-With': 'XMLHttpRequest'}
 
 export default {
   methods: {

@@ -16,7 +16,7 @@
                         <li><img alt="StokR logo" src="../assets/img/logo.png"></li>
                         <li><router-link :to="`/${$i18n.locale}/`"><i class="fi-home"> Főoldal</i></router-link></li>
                         <li><router-link to="/todo"><i class="fi-book"> Bizonylatok</i></router-link></li>
-                        <li><router-link to="/todo"><i class="fi-list-thumbnails"> Készlet</i></router-link></li>
+                        <li><router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> {{$t("stock")}}</i></router-link></li>
                         <li><router-link to="/todo"><i class="fi-upload"> Import</i></router-link></li>
                         <li>
                           <router-link to="/todo"><i class="fi-widget"> Törzsadat</i></router-link>

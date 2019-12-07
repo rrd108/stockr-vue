@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import i18n from '../i18n'
+
+import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
         component: Home
       },
       {
+        path: 'stock',
+        name: 'stock',
+        component: () => import('../views/Stock.vue')
+      },
+      {// TODO remove this
         path: 'about',
         name: 'about',
         // route level code-splitting
