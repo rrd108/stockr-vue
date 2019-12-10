@@ -1,10 +1,10 @@
 <template>
     <tbody>
-        <tr v-for="invoice in invoices" :key="invoice.id" :class="invoice.sale ? 'out' : 'in'" v-show="!invoice.hidden">
+        <tr v-for="invoice in invoices" :key="invoice.id" v-show="!invoice.hidden">
             <td>
                 <a :href="'invoices/view/' + invoice.id">
-                    <i v-if= "invoice.sale" class="fi-arrow-left" ></i>
-                    <i v-if="!invoice.sale" class="fi-arrow-right"></i>
+                    <i v-if= "invoice.sale" class="fi-arrow-left in"></i>
+                    <i v-if="!invoice.sale" class="fi-arrow-right out"></i>
                 </a>
             </td>
             <td v-html="$options.filters.invoiceNumber(invoice.number)"></td>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'FilteredTbody',
 
@@ -28,39 +29,36 @@ export default {
         invoices: {
             type: Array,
             required: true
-        }
+        },
     },
 
-    data() {
-        return {
-            searchResultsCount: 0,
-        }
-    },
+    computed: {
+        search() {
+            return this.$store.state.search
+        },
+        filteredInvoices() {
+            let filteredInvoices = this.invoices
 
-    // we can not use mixins here RowFilter.js
-    created() {
-        eventBus.$on('row-filter', (search) => {
-            let items, field;
-            items = search.field.split('.');
-            field = items[1];
-            items = items[0];
-
-            if (search) {
-                this[items].forEach((item) => {
-                    if (!item[field]) {
-                        item.hidden = true;
-                        return;
+            filteredInvoices.forEach(item => {
+                item.hidden = false
+                for (let [field, value] of Object.entries(this.search)) {
+                    if (value) {
+                        field = field.substr(field.indexOf('.') + 1)
+                        if (!item[field]) {
+                            item.hidden = true
+                            return
+                        }
+                        if (item[field].toLowerCase().indexOf(value.toLowerCase()) == -1) {
+                            item.hidden = true;
+                            return
+                        }
                     }
-                    item.hidden = (item[field].toLowerCase().indexOf(search.val.toLowerCase()) == -1) ? true : false
-                })
-            } else {
-                this[items].forEach((item) => {
-                    item.hidden = false;
-                })
-            }
-            this.$parent.searchResultsCount = this[items].filter(item => item.hidden !== true).length;
-            return;
-        });
+                }
+            })
+
+            this.$emit('setCount', filteredInvoices.filter(item => item.hidden !== true).length)
+            return filteredInvoices
+        }
     },
 
     filters : {
@@ -74,8 +72,20 @@ export default {
             return value;
         }
     }
+
 }
 </script>
 
 <style scoped>
+.in, .out {
+  background: none;
+  font-size: 2rem;
+}
+.in::before {
+  color: #bc50b1;
+}
+
+.out::before {
+  color: #50bc5b;
+}
 </style>

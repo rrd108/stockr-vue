@@ -14,9 +14,9 @@
                       <li><img alt="StokR logo" src="../assets/img/logo.png"></li>
                       <li><router-link :to="`/${$i18n.locale}/`"><i class="fi-home"> Főoldal</i></router-link></li>
                       <li @mouseenter="inInvoices = true" @mouseleave="inInvoices = false" class="is-dropdown-submenu-parent">
-                        <router-link to="/todo"><i class="fi-book"> Bizonylatok</i></router-link>
+                        <router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"> {{$t("invoices")}}</i></router-link>
                         <ul class="nested vertical menu" v-show="inInvoices">
-                          <li><router-link to="/todo"><i class="fi-book"> Bizonylatok</i></router-link></li>
+                          <li><router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"> {{$t("invoices")}}</i></router-link></li>
                           <li><router-link to="/todo"><i class="fi-plus"> {{$t("new invoice")}}</i></router-link></li>
                         </ul>
                       </li>
