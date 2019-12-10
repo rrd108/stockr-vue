@@ -97,7 +97,7 @@ header a.router-link-exact-active {
 }
 
 ul.dropdown li {
-    margin: 0 .2em;
+    margin: .2em .2em .2em 0;
 }
 
 .top-bar a:hover {
@@ -109,6 +109,7 @@ ul.dropdown li {
 .nested {
   position: absolute;
   border-left: .3em solid #2c83b6;
+  z-index: 10;
 }
 .nested li {
   white-space: nowrap;
