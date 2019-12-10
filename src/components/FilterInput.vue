@@ -6,15 +6,22 @@
 export default {
     name: 'FilterInput',
 
+    props : {
+        search: {
+            type: String,
+            required: true
+        }
+    },
+
     data() {
         return {
-            rowFilter: '',
+            rowFilter: this.$store.state.search[this.search],
         }
     },
 
     watch: {
         rowFilter(val) {
-            this.$emit('row-filter', val)
+            this.$store.commit('setSearch', {field: this.search, val: val});
         }
     }
 }

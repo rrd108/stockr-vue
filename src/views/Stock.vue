@@ -14,9 +14,9 @@
                 <th scope="col">Value</th>
             </tr>
             <tr>
-                <td><filter-input search="products.name" @row-filter="rowFilter($event, 'products.name')" /></td>
-                <td><filter-input search="products.code" @row-filter="rowFilter($event, 'products.code')" /></td>
-                <td><filter-input search="products.size" @row-filter="rowFilter($event, 'products.size')" /></td>
+                <td><filter-input :search="'products.name'" /></td>
+                <td><filter-input :search="'products.code'" /></td>
+                <td><filter-input :search="'products.size'" /></td>
                 <td class="text-right">
                     {{products.reduce((sum, product) =>
                         sum + (product.hidden ? 0 : parseInt(product.stock))
@@ -28,7 +28,7 @@
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
             </tr>
         </thead>
-        <tbody is="filtered-tbody" :products="products" :search="search" @setCount="setCount($event)"></tbody>
+        <tbody is="filtered-tbody" :products="products" @setCount="setCount($event)"></tbody>
     </table>
   </div>
 </template>
@@ -50,7 +50,6 @@ export default {
         return {
             products: [],
             searchResultsCount: 0,
-            search: {},
         }
     },
 
@@ -70,13 +69,6 @@ export default {
     },
 
     methods : {
-        rowFilter(search, field) {
-            this.search = {
-                val: search,
-                field: field
-            }
-        },
-
         setCount(count) {
             this.searchResultsCount = count
         },
