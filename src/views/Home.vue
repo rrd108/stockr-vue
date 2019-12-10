@@ -1,24 +1,31 @@
 <template>
   <div class="home">
     <StockRlogin v-if="!isLoggedIn" />
+    <StockRstats v-if="isLoggedIn" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import StockRlogin from '@/components/StockRlogin.vue'
+import StockRstats from '@/components/StockRstats'
 
 export default {
   name: 'home',
 
   components: {
-    StockRlogin
+    StockRlogin,
+    StockRstats
   },
 
-  computed : {
+  computed: {
       isLoggedIn() {
         return this.$store.state.user.email ? true : false;
       }
   },
+
 }
 </script>
+
+<style scoped>
+</style>

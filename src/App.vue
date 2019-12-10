@@ -47,4 +47,14 @@ export default {
   font-family: 'Quicksand', sans-serif;
   color: #2c3e50;
 }
+
+.in{
+  background: #bc50b1;
+  color: #fff;
+}
+
+.out{
+  background: #50bc5b;
+  color: #fff;
+}
 </style>
