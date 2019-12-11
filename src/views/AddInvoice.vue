@@ -5,20 +5,49 @@
         <div class="row">
             <div class="column small-12 large-6">
                 <label for="storage-id">{{$t("storage")}}</label>
-                <select name="storage_id" id="storage-id">
-                    <option value="">--- válassz ---</option>
-                    <option value="5">Fő u 38</option>
-                    <option value="6">Iroda</option>
+                <select v-model="storage_id" id="storage-id">
+                    <option v-for="storage in storages" :key="storage.id" :value="storage.id">{{ storage.name }}</option>
                 </select>
             </div>
-            <div class="column small-12 large-6">{{$t("invoice type")}}</div>
+            <div class="column small-12 large-6">
+                <label for="invoicetype-id">{{$t("invoice type")}}</label>
+                <select v-model="invoicetype_id" id="invoicetype-id">
+                    <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">{{ invoicetype.name }}</option>
+                </select>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     name: 'AddInvoice',
+
+    data() {
+        return {
+            storages: {},
+            storage_id: 0,
+            invoicetypes: {},
+            invoicetype_id: 0,
+        }
+    },
+
+    created() {
+        // TODO get these from storage
+        axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+            .then(response => {
+                this.storages = response.data
+            })
+            .catch(err => console.error(err))
+
+        axios.get(process.env.VUE_APP_API_URL + 'invoicetypes.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+            .then(response => {
+                this.invoicetypes = response.data
+            })
+            .catch(err => console.error(err))
+    },
 }
 </script>
 
