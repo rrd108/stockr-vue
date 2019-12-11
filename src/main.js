@@ -29,6 +29,11 @@ Vue.filter('toCurrency', function (value) {
   }).format(value);
 });
 
+Vue.filter('toLocaleDateString', function (value) {
+  // TODO get locale string from api (user)
+  return new Date(value).toLocaleDateString('hu-HU');
+});
+
 Vue.filter('toNum', function (value, precision) {
   return precision ? value : parseInt(value);
 });

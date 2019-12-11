@@ -1,6 +1,6 @@
 <template>
     <tbody>
-        <tr v-for="invoice in invoices" :key="invoice.id" v-show="!invoice.hidden">
+        <tr v-for="invoice in filteredInvoices" :key="invoice.id" v-show="!invoice.hidden">
             <td>
                 <a :href="'invoices/view/' + invoice.id">
                     <i v-if= "invoice.sale" class="fi-arrow-left in"></i>
@@ -34,6 +34,7 @@ export default {
 
     computed: {
         search() {
+            console.log('compute')
             return this.$store.state.search
         },
         filteredInvoices() {
@@ -42,13 +43,19 @@ export default {
             filteredInvoices.forEach(item => {
                 item.hidden = false
                 for (let [field, value] of Object.entries(this.search)) {
-                    if (value) {
-                        field = field.substr(field.indexOf('.') + 1)
-                        if (!item[field]) {
+
+                    //remove the first tag in property list as we already on that level
+                    let model = field.substr(0, field.indexOf('.'))
+                    field = field.substr(field.indexOf('.') + 1)
+
+                    if (model == 'invoices' && value) {
+                        let fieldValue = field.split(".").reduce((a,b) => a[b], item);
+
+                        if (!fieldValue) {
                             item.hidden = true
                             return
                         }
-                        if (item[field].toLowerCase().indexOf(value.toLowerCase()) == -1) {
+                        if (fieldValue.toLowerCase().indexOf(value.toLowerCase()) == -1) {
                             item.hidden = true;
                             return
                         }
@@ -72,7 +79,6 @@ export default {
             return value;
         }
     }
-
 }
 </script>
 

@@ -14,7 +14,6 @@
 </template>
 
 <script>
-
 export default {
     name: 'FilteredTbody',
 
@@ -35,13 +34,19 @@ export default {
             filteredProducts.forEach(item => {
                 item.hidden = false
                 for (let [field, value] of Object.entries(this.search)) {
-                    if (value) {
-                        field = field.substr(field.indexOf('.') + 1)
-                        if (!item[field]) {
+
+                    //remove the first tag in property list as we already on that level
+                    let model = field.substr(0, field.indexOf('.'))
+                    field = field.substr(field.indexOf('.') + 1)
+
+                    if (model == 'products' && value) {
+                        let fieldValue = field.split(".").reduce((a,b) => a[b], item);
+
+                        if (!fieldValue) {
                             item.hidden = true
                             return
                         }
-                        if (item[field].toLowerCase().indexOf(value.toLowerCase()) == -1) {
+                        if (fieldValue.toLowerCase().indexOf(value.toLowerCase()) == -1) {
                             item.hidden = true;
                             return
                         }

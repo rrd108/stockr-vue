@@ -13,12 +13,12 @@
                 <th scope="col">{{$t("amount")}}</th>
             </tr>
             <tr>
-                <td></td>
-                <td><filter-input :search="'invoice.number'" /></td>
-                <td><filter-input :search="'invoice.date'" /></td>
-                <td><filter-input :search="'invoice.partner'" /></td>
-                <td><filter-input :search="'invoice.storage'" /></td>
-                <td><filter-input :search="'invoice.type'" /></td>
+                <td>{{searchResultsCount}}</td>
+                <td><filter-input :search="'invoices.number'" /></td>
+                <td><filter-input :search="'invoices.date'" /></td>
+                <td><filter-input :search="'invoices.partner.name'" /></td>
+                <td><filter-input :search="'invoices.storage.name'" /></td>
+                <td><filter-input :search="'invoices.invoicetype.name'" /></td>
                 <td class="text-right"><filter-input :search="'invoice.amount'" /></td>
             </tr>
         </thead>
