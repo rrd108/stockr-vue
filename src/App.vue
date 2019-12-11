@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Quicksand:500');
 @import url('./assets/css/foundation.min.css');
 @import url('./assets/css/foundation-icons.min.css');
 
