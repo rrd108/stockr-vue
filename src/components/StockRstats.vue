@@ -3,42 +3,42 @@
     <div class="small-6 large-4">
     <div class="widget out">
         <h2>{{stats.totals.sells | toCurrency}}</h2>
-        <span>{{$t("sells")}}</span>
+        <i class="fi-arrow-left"> {{$t("sells")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget in">
         <h2>{{stats.totals.purchases | toCurrency}}</h2>
-        <span>{{$t("purchases")}}</span>
+        <i class="fi-arrow-right"> {{$t("purchases")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget w1">
         <h2>{{stats.totals.stock | toNumFormat}} {{$t("pcs")}}</h2>
-        <span>{{$t("stock")}}</span>
+        <i class="fi-list-thumbnails"> {{$t("stock")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget w2">
         <h2>{{stats.partners}}</h2>
-        <span>{{$t("partners")}}</span>
+        <i class="fi-torsos"> {{$t("partners")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget w3">
         <h2>{{stats.invoices}}</h2>
-        <span>{{$t("invoices")}}</span>
+        <i class="fi-book"> {{$t("invoices")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget w4">
         <h2>{{stats.products}}</h2>
-        <span>{{$t("products")}}</span>
+        <i class="fi-foot"> {{$t("products")}}</i>
     </div>
     </div>
 </div>
@@ -88,7 +88,7 @@ export default {
   padding: 1rem;
   color: #fff;
 }
-span {
+i {
   font-size: 1.5rem;
 }
 .w1 {
