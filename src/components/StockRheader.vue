@@ -17,7 +17,7 @@
                         <router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"> {{$t("invoices")}}</i></router-link>
                         <ul class="nested vertical menu" v-show="inInvoices">
                           <li><router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"> {{$t("invoices")}}</i></router-link></li>
-                          <li><router-link to="/todo"><i class="fi-plus"> {{$t("new invoice")}}</i></router-link></li>
+                          <li><router-link :to="`/${$i18n.locale}/add-invoice`"><i class="fi-plus"> {{$t("new invoice")}}</i></router-link></li>
                         </ul>
                       </li>
                       <li><router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> {{$t("stock")}}</i></router-link></li>
