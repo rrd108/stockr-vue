@@ -30,6 +30,17 @@
                 <input type="date" v-model="date">
             </div>
         </div>
+
+        <div class="row">
+            <div class="column small-12 large-6">
+                <label for="number">{{$t("number")}}</label>
+                <input type="text" v-model="number" id="number" name="number">
+            </div>
+            <div class="column small-12 large-6">
+                <label for="currency">{{$t("currency")}}</label>
+                <input type="text" v-model="currency">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -46,8 +57,10 @@ export default {
             invoicetypes: {},
             invoicetype_id: 0,
             partners: {},
-            partner_id: '',
+            partner_id: '',     // TODO change the name into an id - remove data-id property
             date: (new Date()).toISOString().split('T')[0],
+            number: Math.random().toString().substr(2),
+            currency: 'HUF'
         }
     },
 
