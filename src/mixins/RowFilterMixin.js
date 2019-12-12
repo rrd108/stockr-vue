@@ -3,10 +3,10 @@ export default {
         search() {
             return this.$store.state.search
         },
-        filteredInvoices() {
-            let filteredInvoices = this.invoices
+        filteredItems() {
+            let filteredItems = this[this.model]
 
-            filteredInvoices.forEach(item => {
+            filteredItems.forEach(item => {
                 item.hidden = false
                 for (let [field, value] of Object.entries(this.search)) {
 
@@ -29,8 +29,8 @@ export default {
                 }
             })
 
-            this.$emit('setCount', filteredInvoices.filter(item => item.hidden !== true).length)
-            return filteredInvoices
+            this.$emit('setCount', filteredItems.filter(item => item.hidden !== true).length)
+            return filteredItems
         }
     },
 }

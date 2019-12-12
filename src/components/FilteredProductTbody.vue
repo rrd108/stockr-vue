@@ -1,6 +1,6 @@
 <template>
     <tbody>
-        <tr v-for="product in filteredProducts" :key="product.id" v-show="!product.hidden">
+        <tr v-for="product in filteredItems" :key="product.id" v-show="!product.hidden">
             <td><a :href="'view/' + product.id">{{product.name}}</a></td>
             <td>{{product.code}}</td>
             <td>{{product.size}}</td>

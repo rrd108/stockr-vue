@@ -1,6 +1,6 @@
 <template>
     <tbody>
-        <tr v-for="invoice in filteredInvoices" :key="invoice.id" v-show="!invoice.hidden">
+        <tr v-for="invoice in filteredItems" :key="invoice.id" v-show="!invoice.hidden">
             <td>
                 <a :href="'invoices/view/' + invoice.id">
                     <i v-if= "invoice.sale" class="fi-arrow-left in"></i>
