@@ -57,15 +57,15 @@ export default {
         //we use query string ApiKey as axios not sending out the ApiKey header
         // TODO get only once and save into the store
         axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-        .then(resp => {
-            let products = resp.data
-            products.forEach((product) => {
-                product.hidden = false
+            .then(resp => {
+                let products = resp.data
+                products.forEach((product) => {
+                    product.hidden = false
+                })
+                this.products = products
+                this.searchResultsCount = products.length
             })
-            this.products = products
-            this.searchResultsCount = products.length
-        })
-        .catch(err => console.error(err))
+            .catch(err => console.error(err))
     },
 
     methods : {
