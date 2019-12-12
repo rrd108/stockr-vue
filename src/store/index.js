@@ -10,16 +10,10 @@ export default new Vuex.Store({
     search: {},
   },
   mutations: {
-    saveUser(state, user) {
-      state.user = user
-    },
-    removeUser(state) {
-      state.user = {}
-    },
-    setCompany(state, company) {
-      state.company = company
-    },
-    unsetCompany(state) {
+    saveUser: (state, user) => state.user = user,
+    removeUser: (state) => state.user = {},
+    setCompany: (state, company) => state.company = company,
+    unsetCompany: (state) => {
       state.company = {}
       localStorage.removeItem('company')
     },
