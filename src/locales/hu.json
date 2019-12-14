@@ -7,6 +7,7 @@
     "error": "Hibás email vagy jelszó"
   },
   "amount": "Összeg",
+  "currency": "Valuta",
   "date": "Dátum",
   "groups": "Csoport",
   "invoices": "Bizonylat",
@@ -20,6 +21,7 @@
   "storage": "Raktár",
   "storages": "Raktár",
   "products": "Termék",
+  "purchase": "Beszerzés",
   "purchases": "Beszerzés",
   "pcs": "db",
   "partner": "Partner",
