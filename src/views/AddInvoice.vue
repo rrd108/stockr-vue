@@ -69,9 +69,9 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" id="__items-0-product-id" name="__items[0][product_id]" list="datalist-items-0-product-id" autocomplete="off">
-                        <datalist id="datalist-items-0-product-id" type="datalistJs">
-                            <option value="0">TODO</option>
+                        <input type="text" v-model.lazy="product" list="products" autocomplete="off">
+                        <datalist id="products">
+                            <option v-for="product in products" :key="product.id">{{ product.name }}</option>
                         </datalist>
                     </td>
                     <td class="text-right">0</td>
@@ -152,6 +152,8 @@ export default {
             partners: {},
             partner: '',
             partner_id: 0,
+            product: '',
+            product_id: 0,
             date: (new Date()).toISOString().split('T')[0],
             number: Math.random().toString().substr(2),
             currency: 'HUF',
@@ -163,6 +165,9 @@ export default {
     computed: {
         isHeaderReady() {
             return (this.storage_id && this.invoicetype_id && this.partner_id && this.date && this.number && this.currency);
+        },
+        products() {
+            return this.$store.state.products
         }
     },
 
@@ -185,6 +190,10 @@ export default {
                 this.partners = response.data
             })
             .catch(err => console.error(err))
+
+        if(Object.keys(this.$store.state.products).length === 0) {
+            this.$store.dispatch('getProducts')
+        }
     },
 
     methods: {
