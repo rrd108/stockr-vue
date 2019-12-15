@@ -125,7 +125,7 @@
             <tfoot>
                 <tr>
                     <td>
-                        <button class="button" id="addNewRow" type="button">
+                        <button @click="addItem" class="button" id="addNewRow" type="button">
                             <i class="fi-plus"> New Row</i>
                         </button>&nbsp;
                         <button class="button" id="saveInvoice" type="submit">
@@ -159,23 +159,23 @@ export default {
 
     data() {
         return {
-            isSale: true,
-            storages: {},
-            storage_id: 0,
+            currency: 'HUF',
+            date: (new Date()).toISOString().split('T')[0],
             invoicetypes: {},
             invoicetype_id: 0,
-            partners: {},
+            invoiceItems: [],
+            isSale: true,
+            number: Math.random().toString().substr(2),
             partner: '',
+            partners: {},
             price: 0,
             product: '',
             product_id: 0,
-            quantity: 0,
             selectedPartner: {},
             selectedProduct: {},
-            date: (new Date()).toISOString().split('T')[0],
-            number: Math.random().toString().substr(2),
-            currency: 'HUF',
-            invoiceItems: [],
+            storages: {},
+            storage_id: 0,
+            quantity: 0,
         }
     },
 
@@ -232,6 +232,21 @@ export default {
             this.product = this.selectedProduct.name
             this.price = this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.percentage / 100))
         },
+        addItem() {
+            this.invoiceItems.push({
+                uuid: Math.random().toString().substr(2),
+                name: this.selectedProduct.name,
+                stock: this.selectedProduct.stock,
+                quantity: this.quantity,
+                cost: this.cost,
+                sellingPrice: this.sellingPrice,
+                price: this.price,
+                amount: this.amount,
+                vat: this.vat,
+                vatAmount: this.vatAmount,
+                grossAmount: this.grossAmount
+            })
+        }
     }
 }
 </script>
