@@ -5,7 +5,7 @@
         <div class="row">
             <div class="column small-12 large-6">
                 <label for="storage-id">{{$t("storage")}}</label>
-                <select v-model="storage_id" id="storage-id">
+                <select v-model="storage_id" id="storage-id" ref="storage">
                     <option v-for="storage in storages" :key="storage.id" :value="storage.id">{{ storage.name }}</option>
                 </select>
             </div>
@@ -53,7 +53,7 @@
                 <tr :class="isSale ? 'out' : 'in'">
                     <th class="text-center" scope="col">{{$t("Product")}}</th>
                     <th class="text-center" scope="col">{{$t("Stock")}}</th>
-                    <th class="text-center" scope="col">{{$t("Quantity")}}/th>
+                    <th class="text-center" scope="col">{{$t("Quantity")}}</th>
                     <th class="text-center" scope="col">{{$t("Cost")}}</th>
                     <th class="text-center" scope="col">{{$t("Selling Price")}}</th>
                     <th class="text-center" scope="col">{{$t("Price")}}</th>
@@ -69,24 +69,27 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" v-model.lazy="product" list="products" autocomplete="off">
+                        <input type="text" v-model.lazy="product" @change="setSelectedProduct" list="products" autocomplete="off">
                         <datalist id="products">
-                            <option v-for="product in products" :key="product.id">{{ product.name }}</option>
+                            <option v-for="product in products" :key="product.id" :value="product.id">{{ product.name }}</option>
                         </datalist>
                     </td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{selectedProduct.stock | toNum}}</td>
                     <td class="text-right">
-                        <input type="number" name="items[0][quantity]" class="quantity" required="required" step="1" id="items-0-quantity">
+                        <input v-model="quantity" type="number" name="items[0][quantity]" class="quantity" required="required" step="1" id="items-0-quantity">
                     </td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">
+                        {{selectedProduct.avaragePurchasePrice | toCurrency}}
+                        {{selectedProduct.lastPurchasePrice | toCurrency}}
+                    </td>
+                    <td class="text-right">{{selectedProduct.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
                     <td>
-                        <input type="number" name="items[0][price]" class="net price text-right" required="required" step="1" id="items-0-price">
+                        <input v-model="price" type="number" name="items[0][price]" class="net price text-right" required="required" step="1" id="items-0-price">
                     </td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{price * quantity | toCurrency}}</td>
+                    <td class="text-right">{{selectedProduct.vat}} %</td>
+                    <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
+                    <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
                     <td class="text-right group" style="display: none;">
                         <input type="hidden" name="items[0][selling_price][0][group_id]" id="items-0-selling-price-0-group-id" value="1">
                         <div class="input text required">
@@ -105,6 +108,18 @@
                             <input type="text" name="items[0][selling_price][2][price]" class="price" data-percentage="100" required="required" maxlength="8" id="items-0-selling-price-2-price">
                         </div>
                     </td>
+                </tr>
+                <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
+                    <td>{{invoiceItem.name}}</td>
+                    <td>{{invoiceItem.stock}}</td>
+                    <td>{{invoiceItem.quantity}}</td>
+                    <td>{{invoiceItem.cost}}</td>
+                    <td>{{invoiceItem.sellingPrice}}</td>
+                    <td>{{invoiceItem.price}}</td>
+                    <td>{{invoiceItem.amount}}</td>
+                    <td>{{invoiceItem.vat}}</td>
+                    <td>{{invoiceItem.vat}}</td>
+                    <td>{{invoiceItem.grossAmount}}</td>
                 </tr>
             </tbody>
             <tfoot>
@@ -151,12 +166,16 @@ export default {
             invoicetype_id: 0,
             partners: {},
             partner: '',
-            partner_id: 0,
+            price: 0,
             product: '',
             product_id: 0,
+            quantity: 0,
+            selectedPartner: {},
+            selectedProduct: {},
             date: (new Date()).toISOString().split('T')[0],
             number: Math.random().toString().substr(2),
             currency: 'HUF',
+            invoiceItems: [],
         }
     },
 
@@ -164,7 +183,7 @@ export default {
 
     computed: {
         isHeaderReady() {
-            return (this.storage_id && this.invoicetype_id && this.partner_id && this.date && this.number && this.currency);
+            return (this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency);
         },
         products() {
             return this.$store.state.products
@@ -196,12 +215,23 @@ export default {
         }
     },
 
+    mounted() {
+        //console.log(this.$refs.storage)
+        this.$refs.storage.focus()
+    },
+
     methods: {
         setByPartner() {
-            let partner = this.partners.find(partner => partner.name == this.partner)
-            this.partner_id = partner.id
-            this.isSale = partner.group.percentage ? true : false
-        }
+            this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
+            this.selectedPartner.percentage = this.selectedPartner.group.percentage
+            this.isSale = this.selectedPartner.group.percentage ? true : false
+        },
+        setSelectedProduct() {
+            let productId = this.product
+            this.selectedProduct = this.products.find(product => product.id == productId)
+            this.product = this.selectedProduct.name
+            this.price = this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.percentage / 100))
+        },
     }
 }
 </script>
