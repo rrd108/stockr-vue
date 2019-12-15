@@ -51,16 +51,16 @@
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr :class="isSale ? 'out' : 'in'">
-                    <th class="text-center" scope="col">{{$t("Product")}}</th>
-                    <th class="text-center" scope="col">{{$t("Stock")}}</th>
-                    <th class="text-center" scope="col">{{$t("Quantity")}}</th>
-                    <th class="text-center" scope="col">{{$t("Cost")}}</th>
-                    <th class="text-center" scope="col">{{$t("Selling Price")}}</th>
-                    <th class="text-center" scope="col">{{$t("Price")}}</th>
-                    <th class="text-center" scope="col">{{$t("Amount")}}</th>
-                    <th class="text-center" scope="col">{{$t("VAT")}}</th>
-                    <th class="text-center" scope="col">{{$t("VAT")}}</th>
-                    <th class="text-center" scope="col">{{$t("Gross Amount")}}</th>
+                    <th class="text-center" scope="col">{{$t("product")}}</th>
+                    <th class="text-center" scope="col">{{$t("stock")}}</th>
+                    <th class="text-center" scope="col">{{$t("quantity")}}</th>
+                    <th class="text-center" scope="col">{{$t("cost")}}</th>
+                    <th class="text-center" scope="col">{{$t("selling price")}}</th>
+                    <th class="text-center" scope="col">{{$t("price")}}</th>
+                    <th class="text-center" scope="col">{{$t("amount")}}</th>
+                    <th class="text-center" scope="col">{{$t("vat")}}</th>
+                    <th class="text-center" scope="col">{{$t("vat")}}</th>
+                    <th class="text-center" scope="col">{{$t("gross amount")}}</th>
                     <th class="text-center group" scope="col" style="display: none;">Törzsvásárló</th>
                     <th class="text-center group" scope="col" style="display: none;">Viszonteladó</th>
                     <th class="text-center group" scope="col" style="display: none;">Kisker</th>
