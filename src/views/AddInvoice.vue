@@ -51,16 +51,16 @@
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr :class="isSale ? 'out' : 'in'">
-                    <th class="text-center" scope="col">Termék</th>
-                    <th class="text-center" scope="col">Készlet</th>
-                    <th class="text-center" scope="col">Mennyiség</th>
-                    <th class="text-center" scope="col">Beszerzési ár</th>
-                    <th class="text-center" scope="col">Eladási ár</th>
-                    <th class="text-center" scope="col">Ár</th>
-                    <th class="text-center" scope="col">Összeg</th>
-                    <th class="text-center" scope="col">ÁFA</th>
-                    <th class="text-center" scope="col">ÁFA</th>
-                    <th class="text-center" scope="col">Bruttó összeg</th>
+                    <th class="text-center" scope="col">{{$t("Product")}}</th>
+                    <th class="text-center" scope="col">{{$t("Stock")}}</th>
+                    <th class="text-center" scope="col">{{$t("Quantity")}}/th>
+                    <th class="text-center" scope="col">{{$t("Cost")}}</th>
+                    <th class="text-center" scope="col">{{$t("Selling Price")}}</th>
+                    <th class="text-center" scope="col">{{$t("Price")}}</th>
+                    <th class="text-center" scope="col">{{$t("Amount")}}</th>
+                    <th class="text-center" scope="col">{{$t("VAT")}}</th>
+                    <th class="text-center" scope="col">{{$t("VAT")}}</th>
+                    <th class="text-center" scope="col">{{$t("Gross Amount")}}</th>
                     <th class="text-center group" scope="col" style="display: none;">Törzsvásárló</th>
                     <th class="text-center group" scope="col" style="display: none;">Viszonteladó</th>
                     <th class="text-center group" scope="col" style="display: none;">Kisker</th>
