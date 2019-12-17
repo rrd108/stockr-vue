@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 import i18n from '@/i18n'
 
 import Home from '@/views/Home.vue'
@@ -52,6 +53,19 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to)
+  if (to.name !== 'home') {
+    if (!store.state.user.email) {
+      next('/')
+    } else {
+      next() // go to wherever I'm going
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
