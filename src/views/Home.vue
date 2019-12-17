@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <StockRlogin v-if="!isLoggedIn" />
-    <StockRstats v-if="isLoggedIn" />
+    <StockRstats v-if="isLoggedIn && this.$store.state.company.id" />
   </div>
 </template>
 
