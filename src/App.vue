@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <stockRheader v-if="isLoggedIn" />
-    <stockRcompany v-if="isLoggedIn && !hasCompany" />
+    <stockRcompany v-if="isLoggedIn && !this.$store.state.company.id" />
     <router-view/>
   </div>
 </template>
@@ -28,12 +28,6 @@ export default {
         }
         return this.$store.state.user.email ? true : false
       },
-      hasCompany() {
-        if (this.$store.state.company.id) {
-          return true
-        }
-        return false
-      }
   },
 }
 </script>
