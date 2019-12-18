@@ -81,7 +81,6 @@ export default {
 
   methods: {
     async login() {
-      console.log('login');
       this.$v.$touch();
       if (!this.$v.$invalid) {
         const qs = require('qs');

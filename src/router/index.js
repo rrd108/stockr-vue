@@ -56,7 +56,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to)
+  let language = to.params.lang;
+  if (!language) {
+    language = 'hu';
+  }
+  i18n.locale = language;
+  
   if (to.name !== 'home') {
     if (!store.state.user.email) {
       next('/')

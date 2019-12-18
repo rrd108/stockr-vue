@@ -159,7 +159,7 @@ export default {
 
     data() {
         return {
-            currency: 'HUF',
+            currency: 'HUF',        // TODO
             date: (new Date()).toISOString().split('T')[0],
             invoicetypes: {},
             invoicetype_id: 0,
