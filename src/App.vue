@@ -51,4 +51,12 @@ export default {
   background: #50bc5b;
   color: #fff;
 }
+input.quantity {
+  width: 6rem;
+  display: inline-block;
+}
+input.price {
+  width: 8rem;
+  display: inline-block;
+}
 </style>
