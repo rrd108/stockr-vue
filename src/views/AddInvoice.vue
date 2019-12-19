@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <form @submit.prevent="saveInvoice">
         <h3 :class="isSale ? 'out' : 'in'"><i class="fi-plus"></i> {{$t("new invoice")}}</h3>
 
         <div class="row">
@@ -34,7 +34,7 @@
         <div class="row">
             <div class="column small-12 large-6">
                 <label for="number"><i class="fi-ticket"> {{$t("number")}}</i></label>
-                <input type="text" v-model="number" id="number" name="number">
+                <input type="text" v-model="number" id="number">
             </div>
             <div class="column small-12 large-3">
                 <label for="currency"><i class="fi-euro"> {{$t("currency")}}</i></label>
@@ -62,9 +62,9 @@
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("gross amount")}}</th>
                     <th></th>
-                    <th class="text-center group" scope="col" style="display: none;">Törzsvásárló</th>
+                    <!--th class="text-center group" scope="col" style="display: none;">Törzsvásárló</!--th>
                     <th class="text-center group" scope="col" style="display: none;">Viszonteladó</th>
-                    <th class="text-center group" scope="col" style="display: none;">Kisker</th>
+                    <th-- class="text-center group" scope="col" style="display: none;">Kisker</th-->
                 </tr>
             </thead>
             <tbody>
@@ -77,7 +77,7 @@
                     </td>
                     <td class="text-right">{{selectedProduct.stock | toNum}}</td>
                     <td class="text-right">
-                        <input v-model="quantity" type="number" name="items[0][quantity]" class="quantity" required="required" step="1" id="items-0-quantity">
+                        <input v-model="quantity" type="number" class="quantity" required="required" step="0.01">
                     </td>
                     <td class="text-right">
                         <i v-show="selectedProduct.avaragePurchasePrice"
@@ -93,31 +93,33 @@
                     </td>
                     <td class="text-right">{{selectedProduct.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
                     <td class="text-right">
-                        <input v-model="price" type="number" name="items[0][price]" class="price text-right" required="required" step="1" id="items-0-price">
+                        <input v-model="price" type="number" class="price text-right" required="required" step="0.01">
                     </td>
                     <td class="text-right">{{price * quantity | toCurrency}}</td>
                     <td class="text-right">{{selectedProduct.vat}} %</td>
                     <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
-                    <td><button @click="addItem" class="fi-arrow-down"></button></td>
-                    <td class="text-right group" style="display: none;">
+                    <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
+
+
+                    <!--td class="text-right group" style="display: none;">
                         <input type="hidden" name="items[0][selling_price][0][group_id]" id="items-0-selling-price-0-group-id" value="1">
                         <div class="input text required">
                             <input type="text" name="items[0][selling_price][0][price]" class="price" data-percentage="35" required="required" maxlength="8" id="items-0-selling-price-0-price">
                         </div>
-                    </td>
+                    </!--td>
                     <td class="text-right group" style="display: none;">
                         <input type="hidden" name="items[0][selling_price][1][group_id]" id="items-0-selling-price-1-group-id" value="2">
                         <div class="input text required">
                             <input type="text" name="items[0][selling_price][1][price]" class="price" data-percentage="50" required="required" maxlength="8" id="items-0-selling-price-1-price">
                         </div>
                     </td>
-                    <td class="text-right group" style="display: none;">
+                    <td-- class="text-right group" style="display: none;">
                         <input type="hidden" name="items[0][selling_price][2][group_id]" id="items-0-selling-price-2-group-id" value="3">
                         <div class="input text required">
                             <input type="text" name="items[0][selling_price][2][price]" class="price" data-percentage="100" required="required" maxlength="8" id="items-0-selling-price-2-price">
                         </div>
-                    </td>
+                    </td-->
                 </tr>
                 <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
                     <td>{{invoiceItem.name}}</td>
@@ -145,7 +147,7 @@
                 <tr>
                     <td>
                         <button class="button" id="saveInvoice" type="submit">
-                            <i class="fi-check"> Save Invoice</i>
+                            <i class="fi-check"> {{$t("save")}}</i>
                         </button>
                     </td>
                     <td></td>
@@ -165,7 +167,7 @@
             </tfoot>
         </table>
     </fieldset>
-    </div>
+    </form>
 </template>
 
 <script>
@@ -196,7 +198,7 @@ export default {
         }
     },
 
-    // TODO hide and swo table cols based on isSale
+    // TODO hide and show table cols based on isSale
 
     computed: {
         isHeaderReady() {
@@ -251,6 +253,7 @@ export default {
         addItem() {
             this.invoiceItems.unshift({
                 uuid: Math.random().toString().substr(2),
+                product_id: this.selectedProduct.id,
                 name: this.selectedProduct.name,
                 stock: this.selectedProduct.stock,
                 quantity: this.quantity,
@@ -264,7 +267,36 @@ export default {
             this.product = ''
             this.quantity = this.price = 0
             this.$refs.product.focus()
-        }
+        },
+        saveInvoice() {
+            const qs = require('qs');
+            let data = {
+                storage_id: this.storage_id,
+                invoicetype_id: this.invoicetype_id,
+                partner_id: this.selectedPartner.id,
+                date: this.date,
+                number: this.number,
+                currency: this.currency,
+                sale: this.isSale ? 1 : 0,
+                // TODO items array is different for purchases
+                items: this.invoiceItems.map((item) => ({
+                    product_id: item.product_id,
+                    quantity: item.quantity,
+                    price: item.price
+                }))
+            }
+            data = qs.stringify(data)
+
+            axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
+                .then(function (response) {
+                    if (response.data.invoice.id) {
+                        console.log('SUCCESS')
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        },
     }
 }
 </script>
