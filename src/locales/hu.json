@@ -7,6 +7,7 @@
     "error": "Hibás email vagy jelszó"
   },
   "amount": "Összeg",
+  "avarage purchase price": "Átlagos beszerzési ár",
   "code": "Kód",
   "company": "Cég",
   "cost": "Költség",
@@ -17,6 +18,7 @@
   "invoices": "Bizonylat",
   "invoice type": "Bizonylat típus",
   "invoice types": "Bizonylat típus",
+  "last purchase price": "Utolsó beszerzési ár",
   "name": "Név",
   "new invoice": "Új bizonylat",
   "number": "szám",
