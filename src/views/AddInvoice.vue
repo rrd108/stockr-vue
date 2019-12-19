@@ -4,13 +4,13 @@
 
         <div class="row">
             <div class="column small-12 large-6">
-                <label for="storage-id">{{$t("storage")}}</label>
+                <label for="storage-id"><i class="fi-contrast"> {{$t("storage")}}</i></label>
                 <select v-model="storage_id" id="storage-id" ref="storage">
                     <option v-for="storage in storages" :key="storage.id" :value="storage.id">{{ storage.name }}</option>
                 </select>
             </div>
             <div class="column small-12 large-6">
-                <label for="invoicetype-id">{{$t("invoice type")}}</label>
+                <label for="invoicetype-id"><i class="fi-shield"> {{$t("invoice type")}}</i></label>
                 <select v-model="invoicetype_id" id="invoicetype-id">
                     <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">{{ invoicetype.name }}</option>
                 </select>
@@ -19,25 +19,25 @@
 
         <div class="row">
             <div class="column small-12 large-6">
-                <label for="partner-id">{{$t("partner")}}</label>
+                <label for="partner-id"><i class="fi-torsos"> {{$t("partner")}}</i></label>
                 <input type="text" @blur="setByPartner" v-model.lazy="partner" list="partners" id="partner-id" autocomplete="off">
                 <datalist id="partners">
                     <option v-for="partner in partners" :key="partner.id">{{ partner.name }}</option>
                 </datalist>
             </div>
             <div class="column small-12 large-6">
-                <label for="date">{{$t("date")}}</label>
+                <label for="date"><i class="fi-calendar"> {{$t("date")}}</i></label>
                 <input type="date" v-model="date">
             </div>
         </div>
 
         <div class="row">
             <div class="column small-12 large-6">
-                <label for="number">{{$t("number")}}</label>
+                <label for="number"><i class="fi-ticket"> {{$t("number")}}</i></label>
                 <input type="text" v-model="number" id="number" name="number">
             </div>
             <div class="column small-12 large-3">
-                <label for="currency">{{$t("currency")}}</label>
+                <label for="currency"><i class="fi-euro"> {{$t("currency")}}</i></label>
                 <input type="text" v-model="currency">
             </div>
             <div class="column small-12 large-3">
@@ -61,6 +61,7 @@
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("gross amount")}}</th>
+                    <th></th>
                     <th class="text-center group" scope="col" style="display: none;">Törzsvásárló</th>
                     <th class="text-center group" scope="col" style="display: none;">Viszonteladó</th>
                     <th class="text-center group" scope="col" style="display: none;">Kisker</th>
@@ -69,9 +70,9 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" v-model.lazy="product" @change="setSelectedProduct" list="products" autocomplete="off">
+                        <input type="text" v-model.lazy="product" @change="setSelectedProduct" ref="product" list="products" autocomplete="off">
                         <datalist id="products">
-                            <option v-for="product in products" :key="product.id" :value="product.id">{{ product.name }}</option>
+                            <option v-for="product in products" :key="product.id">{{ product.name }}</option>
                         </datalist>
                     </td>
                     <td class="text-right">{{selectedProduct.stock | toNum}}</td>
@@ -79,17 +80,26 @@
                         <input v-model="quantity" type="number" name="items[0][quantity]" class="quantity" required="required" step="1" id="items-0-quantity">
                     </td>
                     <td class="text-right">
-                        {{selectedProduct.avaragePurchasePrice | toCurrency}}
-                        {{selectedProduct.lastPurchasePrice | toCurrency}}
+                        <i v-show="selectedProduct.avaragePurchasePrice"
+                            class="fi-price-tag avg" :title="$t('avarage purchase price')">
+                            {{selectedProduct.avaragePurchasePrice | toCurrency}}
+                        </i>
+                        <br>
+                        <i v-show="selectedProduct.lastPurchasePrice"
+                            :title="$t('last purchase price')"
+                            class="fi-price-tag last">
+                            {{selectedProduct.lastPurchasePrice | toCurrency}}
+                        </i>
                     </td>
                     <td class="text-right">{{selectedProduct.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
-                    <td>
-                        <input v-model="price" type="number" name="items[0][price]" class="net price text-right" required="required" step="1" id="items-0-price">
+                    <td class="text-right">
+                        <input v-model="price" type="number" name="items[0][price]" class="price text-right" required="required" step="1" id="items-0-price">
                     </td>
                     <td class="text-right">{{price * quantity | toCurrency}}</td>
                     <td class="text-right">{{selectedProduct.vat}} %</td>
                     <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
+                    <td><button @click="addItem" class="fi-arrow-down"></button></td>
                     <td class="text-right group" style="display: none;">
                         <input type="hidden" name="items[0][selling_price][0][group_id]" id="items-0-selling-price-0-group-id" value="1">
                         <div class="input text required">
@@ -111,39 +121,46 @@
                 </tr>
                 <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
                     <td>{{invoiceItem.name}}</td>
-                    <td>{{invoiceItem.stock}}</td>
-                    <td>{{invoiceItem.quantity}}</td>
-                    <td>{{invoiceItem.cost}}</td>
-                    <td>{{invoiceItem.sellingPrice}}</td>
-                    <td>{{invoiceItem.price}}</td>
-                    <td>{{invoiceItem.amount}}</td>
-                    <td>{{invoiceItem.vat}}</td>
-                    <td>{{invoiceItem.vat}}</td>
-                    <td>{{invoiceItem.grossAmount}}</td>
+                    <td class="text-right">{{invoiceItem.stock | toNum}}</td>
+                    <td class="text-right">{{invoiceItem.quantity}}</td>
+                    <td class="text-right">
+                        <i class="fi-price-tag avg">
+                            {{invoiceItem.avaragePurchasePrice | toCurrency}}
+                        </i>
+                        <br>
+                        <i class="fi-price-tag last">
+                            {{invoiceItem.lastPurchasePrice | toCurrency}}
+                        </i>
+                    </td>
+                    <td class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.price | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.vat}} %</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
+                    <td></td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td>
-                        <button @click="addItem" class="button" id="addNewRow" type="button">
-                            <i class="fi-plus"> New Row</i>
-                        </button>&nbsp;
                         <button class="button" id="saveInvoice" type="submit">
                             <i class="fi-check"> Save Invoice</i>
                         </button>
                     </td>
                     <td></td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + parseInt(item.quantity), 0)}}</td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td class="text-right">0</td>
-                    <td></td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0) | toCurrency}}</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency}}</td>
                     <td class="group" style="display: none;"></td>
                     <td class="group" style="display: none;"></td>
                     <td class="group" style="display: none;"></td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
@@ -216,7 +233,6 @@ export default {
     },
 
     mounted() {
-        //console.log(this.$refs.storage)
         this.$refs.storage.focus()
     },
 
@@ -227,25 +243,27 @@ export default {
             this.isSale = this.selectedPartner.group.percentage ? true : false
         },
         setSelectedProduct() {
-            let productId = this.product
-            this.selectedProduct = this.products.find(product => product.id == productId)
+            let productName = this.product
+            this.selectedProduct = this.products.find(product => product.name == productName)
             this.product = this.selectedProduct.name
-            this.price = this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.percentage / 100))
+            this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.percentage / 100))).toFixed(2)
         },
         addItem() {
-            this.invoiceItems.push({
+            this.invoiceItems.unshift({
                 uuid: Math.random().toString().substr(2),
                 name: this.selectedProduct.name,
                 stock: this.selectedProduct.stock,
                 quantity: this.quantity,
-                cost: this.cost,
-                sellingPrice: this.sellingPrice,
+                avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
+                lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
+                percentage: this.selectedProduct.percentage,
                 price: this.price,
-                amount: this.amount,
-                vat: this.vat,
-                vatAmount: this.vatAmount,
-                grossAmount: this.grossAmount
+                vat: this.selectedProduct.vat,
             })
+            this.selectedProduct = {}
+            this.product = ''
+            this.quantity = this.price = 0
+            this.$refs.product.focus()
         }
     }
 }
@@ -280,5 +298,17 @@ div.sale.in label:before {
 div.sale input {
     width: 0;
     height: 0;
+}
+i.avg, i.last {
+    font-size: .8rem;
+    margin: .2rem;
+    padding: .25rem .5rem;
+    border-radius: .5rem;
+}
+i.avg {
+    background: #d0eff4;
+}
+i.last {
+    background: #cdffc1;
 }
 </style>
