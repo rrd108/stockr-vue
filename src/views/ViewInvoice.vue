@@ -13,81 +13,58 @@
                 <th scope="row">{{$t("invoice type")}}</th>
                 <td><router-link :to="'invoicetypes/' + this.invoice.invoicetype.id">{{invoice.invoicetype.name}}</router-link></td>
                 <th scope="row">{{$t("date")}}</th>
-                <td>{{invoice.date}}</td>
+                <td>{{invoice.date | toLocaleDateString}}</td>
             </tr>
         <tr>
             <th scope="row">{{$t("number")}}</th>
-            <td>{{invoice.number}}
-                <!--?php if (strpos($invoice->number, '|')) : ?>
-                    <?php $num = explode('|', $invoice->number); ?>
-                    <?= $num[1] . ' ' . $this->Html->link('<i class="fi-page-pdf"></i>', $num[2], ['escape' => false]) ?>
-                <?php else : ?>
-                    <?= h($invoice->number) ?>
-                        <?php if ($invoice->partner->group->id != 4) : ?>
-                            <?= $this->Html->link('<i class="fi-page-export-pdf"> ' . __('Billingo') . '</i>', ['controller' => 'Invoices', 'action' => 'billingo', $invoice->id], ['escape' => false]) ?>
-                        <?php endif; ?>
-                <?php endif; ?-->
-            </td>
+            <td>{{invoice.number}}</td>
             <th scope="row">{{$t("type")}}</th>
             <td>{{invoice.sale ?  $t("sale") : $t("purchase")}}</td>
         </tr>
-        </tbody>
-</table>
-    <!--
         <tr>
-            <th scope="row"><?= __('Currency') ?></th>
-            <td><?= h($invoice->currency) ?></td>
+            <th scope="row">{{$t("currency")}}</th>
+            <td>{{invoice.currency}}</td>
             <th scope="row">PDF</th>
-            <td><?= $this->Html->link('<i class="fi-page-export-pdf"> PDF</i>', ['controller' => 'Invoices', 'action' => 'view', $invoice->id, '_ext' => 'pdf'], ['escape' => false]) ?></td>
+            <td><i class="fi-page-export-pdf"> PDF</i></td>
         </tr>
+        </tbody>
     </table>
-    <div class="related">
-        <?php if (!empty($invoice->items)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <thead>
-                <tr class="<?= $invoice->sale ? 'out' : 'in' ?>">
-                    <th class="text-center" scope="col"><?= __('Product') ?></th>
-                    <th class="text-center" scope="col"><?= __('Quantity') ?></th>
-                    <th class="text-center" scope="col"><?= __('Price') ?></th>
-                    <th class="text-center" scope="col"><?= __('Amount') ?></th>
-                    <th class="text-center" scope="col"><?= __('VAT') ?></th>
-                    <th class="text-center" scope="col"><?= __('VAT') ?></th>
-                    <th class="text-center" scope="col"><?= __('Gross Amount') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($invoice->items as $item): ?>
-                <tr>
-                    <td><?= h($item->product->name) ?></td>
-                    <td class="text-right"><?= h($item->quantity) ?></td>
-                    <td class="text-right"><?= $this->Number->format($item->price) ?></td>
-                    <td class="text-right"><?= $this->Number->format($item->price * $item->quantity, ['precision' => 2]) ?></td>
-                    <td class="text-right"><?= h($item->product->vat) ?>%</td>
-                    <td class="text-right"><?= $this->Number->format($item->product->vat * $item->price * $item->quantity / 100, ['precision' => 2]) ?></td>
-                    <td class="text-right"><?= $this->Number->format($item->price * $item->quantity * (1 + $item->product->vat / 100), ['precision' => 2]) ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td><?= __('Total') ?></td>
-                    <td class="text-right"><?= collection($invoice->items)->sumOf('quantity') ?></td>
-                    <td></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
-    return $item->price * $item->quantity;
-}), ['precision' => 2]) ?></td>
-                    <td></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
-    return $item->price * $item->quantity * $item->product->vat / 100;
-}), ['precision' => 2]) ?></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
-    return $item->price * $item->quantity * (1 + $item->product->vat / 100);
-}), ['precision' => 2]) ?></td>
-                </tr>
-            </tfoot>
-        </table>
-        <?php endif; ?>
-    </div> -->
+
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr :class="invoice.sale ? 'out' : 'in'">
+                <th class="text-center" scope="col">{{$t("product")}}</th>
+                <th class="text-center" scope="col">{{$t("quantity")}}</th>
+                <th class="text-center" scope="col">{{$t("price")}}</th>
+                <th class="text-center" scope="col">{{$t("amount")}}</th>
+                <th class="text-center" scope="col">{{$t("vat")}}</th>
+                <th class="text-center" scope="col">{{$t("vat")}}</th>
+                <th class="text-center" scope="col">{{$t("gross amount")}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in invoice.items" :key="item.id">
+                <td>{{item.product.name}}</td>
+                <td class="text-right">{{item.quantity}}</td>
+                <td class="text-right">{{item.price | toCurrency}}</td>
+                <td class="text-right">{{item.price * item.quantity | toCurrency}}</td>
+                <td class="text-right">{{item.product.vat}} %</td>
+                <td class="text-right">{{item.product.vat * item.price * item.quantity / 100 | toCurrency}}</td>
+                <td class="text-right">{{item.price * item.quantity * (1 + item.product.vat / 100) | toCurrency}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>{{$t("total")}}</td>
+                <td class="text-right">{{invoice.items.reduce((total, item) => total + parseInt(item.quantity), 0) | toNum}}</td>
+                <td></td>
+                <td class="text-right">{{invoice.items.reduce((total, item) => total + item.price * item.quantity, 0) | toCurrency}}</td>
+                <td></td>
+                <td class="text-right">{{invoice.items.reduce((total, item) => total + item.price * item.quantity * item.product.vat / 100, 0) | toCurrency}}</td>
+                <td class="text-right">{{invoice.items.reduce((total, item) => total + item.price * item.quantity * (1 + item.product.vat / 100), 0) | toCurrency}}</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 </template>
 
