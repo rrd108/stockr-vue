@@ -21,17 +21,18 @@
                         </ul>
                       </li>
                       <li><router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> {{$t("stock")}}</i></router-link></li>
-                      <li><router-link to="/todo"><i class="fi-upload"> Import</i></router-link></li>
+                      <!--li-><router-link to="/todo"><i class="fi-upload"> Import</i></router-link></!--li->-->
                       <li @mouseenter="inMasterData = true" @mouseleave="inMasterData = false" class="is-dropdown-submenu-parent">
-                        <router-link to="/todo"><i class="fi-widget"> Törzsadat</i></router-link>
+                        <a href="#"><i class="fi-widget"> {{$t("master data")}}</i></a>
                         <transition name="reveal-fade">
                           <ul class="nested vertical menu" v-show="inMasterData">
-                            <li><router-link to="/todo"><i class="fi-torso-business"> Cégek</i></router-link></li>
+                            <!--li><router-link to="/todo"><i class="fi-torso-business"> {{$t("companies")}}</i></router-link></!--li>
                             <li><router-link to="/todo"><i class="fi-contrast"> {{$t("storages")}}</i></router-link></li>
                             <li><router-link to="/todo"><i class="fi-torsos"> {{$t("partners")}}</i></router-link></li>
+                            -->
                             <li><router-link to="/todo"><i class="fi-foot"> {{$t("products")}}</i></router-link></li>
-                            <li><router-link to="/todo"><i class="fi-puzzle"> {{$t("groups")}}</i></router-link></li>
-                            <li><router-link to="/todo"><i class="fi-shield"> {{$t("invoice types")}}</i></router-link></li>
+                            <!--li><router-link to="/todo"><i class="fi-puzzle"> {{$t("groups")}}</i></router-link></!--li>
+                            <li><router-link to="/todo"><i class="fi-shield"> {{$t("invoice types")}}</i></router-link></li>-->
                           </ul>
                         </transition>
                       </li>
