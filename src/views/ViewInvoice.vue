@@ -25,7 +25,7 @@
             <th scope="row">{{$t("currency")}}</th>
             <td>{{invoice.currency}}</td>
             <th scope="row">PDF</th>
-            <td><i class="fi-page-export-pdf"> PDF</i></td>
+            <td><a :href="api + 'invoices/' + invoice.id + '.pdf'"><i class="fi-page-export-pdf"> PDF</i></a></td>
         </tr>
         </tbody>
     </table>
@@ -77,10 +77,13 @@ export default {
     data() {
         return {
             invoice: {},
+            api: ''
         }
     },
 
     created() {
+        this.api = process.env.VUE_APP_API_URL
+
         axios.get(process.env.VUE_APP_API_URL + 'invoices/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
         .then(response => {
             this.invoice = response.data.invoice
