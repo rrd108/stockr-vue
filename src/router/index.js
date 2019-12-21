@@ -24,6 +24,12 @@ const routes = [
         component: Home
       },
       {
+        path: 'invoices/:id',
+        name: 'view-invoice',
+        component: () => import('../views/ViewInvoice.vue'),
+        props: true
+      },
+      {
         path: 'invoices',
         name: 'invoices',
         component: () => import('../views/Invoices.vue')
@@ -61,7 +67,7 @@ router.beforeEach((to, from, next) => {
     language = 'hu';
   }
   i18n.locale = language;
-  
+
   if (to.name !== 'home') {
     if (!store.state.user.email) {
       next('/')

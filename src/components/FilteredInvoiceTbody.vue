@@ -2,10 +2,10 @@
     <tbody>
         <tr v-for="invoice in filteredItems" :key="invoice.id" v-show="!invoice.hidden">
             <td>
-                <a :href="'invoices/view/' + invoice.id">
+                <router-link :to="'invoices/' + invoice.id">
                     <i v-if= "invoice.sale" class="fi-arrow-left in"></i>
                     <i v-if="!invoice.sale" class="fi-arrow-right out"></i>
-                </a>
+                </router-link>
             </td>
             <td v-html="$options.filters.invoiceNumber(invoice.number)"></td>
             <td>{{invoice.date | toLocaleDateString}}</td>
