@@ -40,6 +40,10 @@ const routes = [
         component: () => import('../views/AddInvoice.vue')
       },
       {
+        path: 'add-product',
+        component: () => import('../views/AddProduct.vue')
+      },
+      {
         path: 'stock',
         name: 'stock',
         component: () => import('../views/Stock.vue')

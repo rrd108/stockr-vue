@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 import { required } from 'vuelidate/lib/validators'
 
 export default {

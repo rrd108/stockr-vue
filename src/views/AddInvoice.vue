@@ -290,6 +290,7 @@ export default {
             axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
                 .then(function (response) {
                     if (response.data.invoice.id) {
+                        // TODO
                         console.log('SUCCESS')
                     }
                 })
