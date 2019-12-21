@@ -35,7 +35,6 @@
                           </ul>
                         </transition>
                       </li>
-                      <li><router-link :to="`/${$i18n.locale}/about`">About</router-link></li>
                   </ul>
               </div>
 
