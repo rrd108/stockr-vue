@@ -40,7 +40,8 @@ export default {
       setAppCompany(){
         let appCompany = this.companies.filter(company => {
             return company.id === this.selectedCompany
-            })
+          })
+        // TODO remove all stored data what belongs to other company
         this.$store.commit('setCompany', appCompany[0])
         localStorage.setItem('company', JSON.stringify(appCompany[0]))
       },
