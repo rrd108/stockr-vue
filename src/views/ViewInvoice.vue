@@ -5,13 +5,13 @@
         <tbody>
             <tr>
                 <th scope="row">{{$t("partner")}}</th>
-                <td><router-link :to="'partners/' + this.invoice.partner.id">{{invoice.partner.name}}</router-link></td>
+                <td>{{invoice.partner.name}}</td>
                 <th scope="row">{{$t("storage")}}</th>
-                <td><router-link :to="'storages/' + this.invoice.storage.id">{{invoice.storage.name}}</router-link></td>
+                <td>{{invoice.storage.name}}</td>
             </tr>
             <tr>
                 <th scope="row">{{$t("invoice type")}}</th>
-                <td><router-link :to="'invoicetypes/' + this.invoice.invoicetype.id">{{invoice.invoicetype.name}}</router-link></td>
+                <td>{{invoice.invoicetype.name}}</td>
                 <th scope="row">{{$t("date")}}</th>
                 <td>{{invoice.date | toLocaleDateString}}</td>
             </tr>
