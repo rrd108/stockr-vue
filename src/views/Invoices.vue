@@ -1,6 +1,12 @@
 <template>
   <div class="small-12 columns content">
     <h3>{{$t("invoices")}}</h3>
+
+    <div class="callout success" v-show="$route.params.newInvoice">
+        <h5>{{$route.params.newInvoice}} {{$t("saved")}}</h5>
+    </div>
+
+
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>

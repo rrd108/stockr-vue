@@ -91,7 +91,7 @@
                             {{selectedProduct.lastPurchasePrice | toCurrency}}
                         </i>
                     </td>
-                    <td class="text-right">{{selectedProduct.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
+                    <td class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency}}</td>
                     <td class="text-right">
                         <input v-model="price" type="number" class="price text-right" required="required" step="0.01">
                     </td>
@@ -134,7 +134,7 @@
                             {{invoiceItem.lastPurchasePrice | toCurrency}}
                         </i>
                     </td>
-                    <td class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.percentage / 100)) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.vat}} %</td>
@@ -159,9 +159,9 @@
                     <td class="text-right">-</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency}}</td>
+                    <!--td class="group" style="display: none;"></!--td>
                     <td class="group" style="display: none;"></td>
-                    <td class="group" style="display: none;"></td>
-                    <td class="group" style="display: none;"></td>
+                    <td class="group" style="display: none;"></td>-->
                     <td></td>
                 </tr>
             </tfoot>
@@ -241,14 +241,12 @@ export default {
     methods: {
         setByPartner() {
             this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
-            this.selectedPartner.percentage = this.selectedPartner.group.percentage
             this.isSale = this.selectedPartner.group.percentage ? true : false
         },
         setSelectedProduct() {
-            let productName = this.product
-            this.selectedProduct = this.products.find(product => product.name == productName)
+            this.selectedProduct = this.products.find(product => product.name == this.product)
             this.product = this.selectedProduct.name
-            this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.percentage / 100))).toFixed(2)
+            this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
         },
         addItem() {
             this.invoiceItems.unshift({
@@ -269,6 +267,7 @@ export default {
             this.$refs.product.focus()
         },
         saveInvoice() {
+            // TODO do not save when data is in the inputs
             const qs = require('qs');
             let data = {
                 storage_id: this.storage_id,
@@ -288,15 +287,12 @@ export default {
             data = qs.stringify(data)
 
             axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
-                .then(function (response) {
+                .then(response => {
                     if (response.data.invoice.id) {
-                        // TODO
-                        console.log('SUCCESS')
+                        this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
                     }
                 })
-                .catch(function (error) {
-                    console.log(error);
-                })
+                .catch(error => console.log(error))
         },
     }
 }
