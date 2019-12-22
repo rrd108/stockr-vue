@@ -184,7 +184,7 @@ export default {
             invoicetype_id: 0,
             invoiceItems: [],
             isSale: true,
-            number: Math.random().toString().substr(2),
+            number: 0,
             partner: '',
             partners: {},
             price: 0,
@@ -210,6 +210,8 @@ export default {
     },
 
     created() {
+        this.number = 27
+
         // TODO get these from storage
         axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
             .then(response => {
@@ -289,6 +291,7 @@ export default {
             axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
                 .then(response => {
                     if (response.data.invoice.id) {
+                        // TODO add the new invoice to the store
                         this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
                     }
                 })

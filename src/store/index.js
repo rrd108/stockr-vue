@@ -8,6 +8,7 @@ import axios from 'axios'
 export default new Vuex.Store({
   state: {
     company: {},
+    invoices: [],
     products: {},
     search: {},
     user: {},
@@ -18,6 +19,7 @@ export default new Vuex.Store({
       state.company = {}
       localStorage.removeItem('company')
     },
+    setInvoices: (state, invoices) => state.invoices = invoices,
     setProducts: (state, products) => state.products = products,
     setSearch: (state, search) => {
       // this will not work as we would add new property to the object, so we would loose reactivity
@@ -41,6 +43,11 @@ export default new Vuex.Store({
           return products
         })
         .then(products => commit('setProducts', products))
+        .catch(err => console.error(err))
+    },
+    getInvoices: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'invoices.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setInvoices', response.data.invoices))
         .catch(err => console.error(err))
     }
   },

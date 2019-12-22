@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import FilterInput from '@/components/FilterInput.vue'
 import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
 
@@ -48,24 +47,20 @@ export default {
 
     data(){
         return {
-            invoices: [],
             searchResultsCount: 0,
         }
     },
 
+    computed: {
+        invoices() {
+            return this.$store.state.invoices
+        },
+    },
+
     created() {
-        //we use query string ApiKey as axios not sending out the ApiKey header
-        // TODO get only once and save into the store
-        axios.get(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-        .then(resp => {
-            let invoices = resp.data
-            invoices.forEach((invoices) => {
-                invoices.hidden = false
-            })
-            this.invoices = invoices
-            this.searchResultsCount = invoices.length
-        })
-        .catch(err => console.error(err))
+        if(Object.keys(this.$store.state.invoices).length === 0) {
+            this.$store.dispatch('getInvoices')
+        }
     },
 
     methods : {
