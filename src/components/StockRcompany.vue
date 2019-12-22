@@ -26,6 +26,7 @@ export default {
     const company = JSON.parse(localStorage.getItem('company'));
     if (company) {
       this.$store.commit('setCompany', company);
+      this.$store.dispatch('getInvoices')
       return;
     }
     // TODO fake company to pass login
@@ -42,6 +43,8 @@ export default {
         // TODO remove all stored data what belongs to other company
         this.$store.commit('setCompany', appCompany[0])
         localStorage.setItem('company', JSON.stringify(appCompany[0]))
+
+        this.$store.dispatch('getInvoices')
       },
   }
 }

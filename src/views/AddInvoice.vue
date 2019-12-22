@@ -210,7 +210,8 @@ export default {
     },
 
     created() {
-        this.number = 27
+        this.number = parseInt(this.$store.state.invoices[0].number.substr(this.$store.state.invoices[0].number.indexOf('/') + 1)) + 1
+        this.number = new Date().getFullYear() + '/' + this.number
 
         // TODO get these from storage
         axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)

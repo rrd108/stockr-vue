@@ -57,12 +57,6 @@ export default {
         },
     },
 
-    created() {
-        if(Object.keys(this.$store.state.invoices).length === 0) {
-            this.$store.dispatch('getInvoices')
-        }
-    },
-
     methods : {
         setCount(count) {
             this.searchResultsCount = count
