@@ -30,9 +30,7 @@ export default {
     }
     // TODO fake company to pass login
     axios.get(process.env.VUE_APP_API_URL + 'companies/accessible.json?company=999&ApiKey=' + this.$store.state.user.api_token)
-      .then(response => {
-          this.companies = response.data
-      })
+      .then(response => this.companies = response.data)
       .catch(err => console.error(err))
   },
 
