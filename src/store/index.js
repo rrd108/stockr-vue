@@ -14,11 +14,9 @@ export default new Vuex.Store({
     user: {},
   },
   mutations: {
+    addInvoice: (state, invoice) => state.invoices.unshift(invoice),
+    saveUser: (state, user) => state.user = user,
     setCompany: (state, company) => state.company = company,
-    unsetCompany: (state) => {
-      state.company = {}
-      localStorage.removeItem('company')
-    },
     setInvoices: (state, invoices) => state.invoices = invoices,
     setProducts: (state, products) => state.products = products,
     setSearch: (state, search) => {
@@ -28,8 +26,11 @@ export default new Vuex.Store({
       tmp[search.field] = search.val
       state.search = { ...state.search, ...tmp }
     },
-    saveUser: (state, user) => state.user = user,
     removeUser: (state) => state.user = {},
+    unsetCompany: (state) => {
+      state.company = {}
+      localStorage.removeItem('company')
+    },
   },
   actions: {
     getProducts: ({ commit, state }) => {

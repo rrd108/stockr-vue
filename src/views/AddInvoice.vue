@@ -287,12 +287,11 @@ export default {
                     price: item.price
                 }))
             }
-            data = qs.stringify(data)
 
-            axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
+            axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
                 .then(response => {
                     if (response.data.invoice.id) {
-                        // TODO add the new invoice to the store
+                        this.$store.commit('addInvoice', response.data.invoice)
                         this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
                     }
                 })
