@@ -42,5 +42,7 @@
   "purchase": "Beszerzés",
   "purchases": "Beszerzés",
   "quantity": "Mennyiség",
+  "type": "Típus",
+  "total": "Összsesen",
   "vat": "ÁFA"
 }
