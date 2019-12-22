@@ -31,11 +31,10 @@ export default new Vuex.Store({
   },
   actions: {
     getProducts: ({ commit, state }) => {
-      console.log('getProducts')
       let products = {}
-      axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+      axios.get(process.env.VUE_APP_API_URL + 'products.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
         .then(resp => {
-          products = resp.data
+          products = resp.data.products
           products.forEach((product) => {
             product.hidden = false
           })
