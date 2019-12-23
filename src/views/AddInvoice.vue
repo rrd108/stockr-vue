@@ -101,7 +101,7 @@
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale">
-                        <input type="number" class="price text-right" :value="price * (1 + group.percentage / 100)" step="0.01">
+                        <input v-model="selling_price[group.id]" type="number" class="price text-right" step="0.01">
                     </td>
 
                     <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
@@ -180,6 +180,7 @@ export default {
             product_id: 0,
             selectedPartner: {},
             selectedProduct: {},
+            selling_price: [],
             storages: {},
             storage_id: 0,
             quantity: 0,
@@ -203,6 +204,9 @@ export default {
     created() {
         this.number = parseInt(this.$store.state.invoices[0].number.substr(this.$store.state.invoices[0].number.indexOf('/') + 1)) + 1
         this.number = new Date().getFullYear() + '/' + this.number
+
+console.log(123)
+        this.buyerGroups.forEach(group => {console.log(group);this.selling_price[group.id] = group.percentage;})
 
         // TODO get these from storage
         axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
