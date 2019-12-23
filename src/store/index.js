@@ -8,6 +8,7 @@ import axios from 'axios'
 export default new Vuex.Store({
   state: {
     company: {},
+    groups: [],
     invoices: [],
     products: {},
     search: {},
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     addInvoice: (state, invoice) => state.invoices.unshift(invoice),
     saveUser: (state, user) => state.user = user,
     setCompany: (state, company) => state.company = company,
+    setGroups: (state, groups) => state.groups = groups,
     setInvoices: (state, invoices) => state.invoices = invoices,
     setProducts: (state, products) => state.products = products,
     setSearch: (state, search) => {
@@ -33,6 +35,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    getGroups: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'groups.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setGroups', response.data.groups))
+        .catch(err => console.error(err))
+    },
+    getInvoices: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'invoices.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setInvoices', response.data.invoices))
+        .catch(err => console.error(err))
+    },
     getProducts: ({ commit, state }) => {
       let products = {}
       axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
@@ -46,11 +58,6 @@ export default new Vuex.Store({
         .then(products => commit('setProducts', products))
         .catch(err => console.error(err))
     },
-    getInvoices: ({ commit, state }) => {
-      axios.get(process.env.VUE_APP_API_URL + 'invoices.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
-        .then(response => commit('setInvoices', response.data.invoices))
-        .catch(err => console.error(err))
-    }
   },
   modules: {
   }

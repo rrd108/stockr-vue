@@ -62,9 +62,7 @@
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("gross amount")}}</th>
 
-                    <th v-show="!isSale" class="text-center" scope="col">Törzsvásárló</th>
-                    <th v-show="!isSale" class="text-center" scope="col">Viszonteladó</th>
-                    <th v-show="!isSale" class="text-center" scope="col">Kisker</th>
+                    <th v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center" scope="col">{{group.name}}</th>
 
                     <th></th>
                 </tr>
@@ -102,14 +100,8 @@
                     <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
 
-                    <td v-show="!isSale" class="text-right">
-                        <input type="text" class="price">
-                    </td>
-                    <td v-show="!isSale" class="text-right">
-                        <input type="text" class="price">
-                    </td>
-                    <td v-show="!isSale" class="text-right">
-                        <input type="text" class="price">
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale">
+                        <input type="number" class="price text-right" :value="price * (1 + group.percentage / 100)" step="0.01">
                     </td>
 
                     <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
@@ -133,9 +125,9 @@
                     <td class="text-right">{{invoiceItem.vat}} %</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
-                    <td v-show="!isSale" >törzs</td>
-                    <td v-show="!isSale" >viszont</td>
-                    <td v-show="!isSale" >kisker</td>
+
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" >{{invoiceItem.group}}</td>
+
                     <td></td>
                 </tr>
             </tbody>
@@ -155,9 +147,9 @@
                     <td class="text-right">-</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency}}</td>
-                    <td v-show="!isSale" class="text-center">-</td>
-                    <td v-show="!isSale" class="text-center">-</td>
-                    <td v-show="!isSale" class="text-center">-</td>
+
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center">-</td>
+
                     <td></td>
                 </tr>
             </tfoot>
@@ -202,6 +194,9 @@ export default {
         },
         products() {
             return this.$store.state.products
+        },
+        buyerGroups() {
+            return this.$store.state.groups.filter(group => group.percentage > 0)
         }
     },
 
@@ -230,6 +225,9 @@ export default {
 
         if(Object.keys(this.$store.state.products).length === 0) {
             this.$store.dispatch('getProducts')
+        }
+        if(Object.keys(this.$store.state.groups).length === 0) {
+            this.$store.dispatch('getGroups')
         }
     },
 
