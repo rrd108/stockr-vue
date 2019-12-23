@@ -54,17 +54,19 @@
                     <th class="text-center" scope="col">{{$t("product")}}</th>
                     <th class="text-center" scope="col">{{$t("stock")}}</th>
                     <th class="text-center" scope="col">{{$t("quantity")}}</th>
-                    <th class="text-center" scope="col">{{$t("cost")}}</th>
-                    <th class="text-center" scope="col">{{$t("selling price")}}</th>
+                    <th v-show="isSale" class="text-center" scope="col">{{$t("cost")}}</th>
+                    <th v-show="isSale" class="text-center" scope="col">{{$t("selling price")}}</th>
                     <th class="text-center" scope="col">{{$t("price")}}</th>
                     <th class="text-center" scope="col">{{$t("amount")}}</th>
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("gross amount")}}</th>
+
+                    <th v-show="!isSale" class="text-center" scope="col">Törzsvásárló</th>
+                    <th v-show="!isSale" class="text-center" scope="col">Viszonteladó</th>
+                    <th v-show="!isSale" class="text-center" scope="col">Kisker</th>
+
                     <th></th>
-                    <!--th class="text-center group" scope="col" style="display: none;">Törzsvásárló</!--th>
-                    <th class="text-center group" scope="col" style="display: none;">Viszonteladó</th>
-                    <th-- class="text-center group" scope="col" style="display: none;">Kisker</th-->
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +81,7 @@
                     <td class="text-right">
                         <input v-model="quantity" type="number" class="quantity" required="required" step="0.01">
                     </td>
-                    <td class="text-right">
+                    <td v-show="isSale" class="text-right">
                         <i v-show="selectedProduct.avaragePurchasePrice"
                             class="fi-price-tag avg" :title="$t('avarage purchase price')">
                             {{selectedProduct.avaragePurchasePrice | toCurrency}}
@@ -91,7 +93,7 @@
                             {{selectedProduct.lastPurchasePrice | toCurrency}}
                         </i>
                     </td>
-                    <td class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency}}</td>
+                    <td v-show="isSale" class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency}}</td>
                     <td class="text-right">
                         <input v-model="price" type="number" class="price text-right" required="required" step="0.01">
                     </td>
@@ -99,33 +101,24 @@
                     <td class="text-right">{{selectedProduct.vat}} %</td>
                     <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
-                    <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
 
-
-                    <!--td class="text-right group" style="display: none;">
-                        <input type="hidden" name="items[0][selling_price][0][group_id]" id="items-0-selling-price-0-group-id" value="1">
-                        <div class="input text required">
-                            <input type="text" name="items[0][selling_price][0][price]" class="price" data-percentage="35" required="required" maxlength="8" id="items-0-selling-price-0-price">
-                        </div>
-                    </!--td>
-                    <td class="text-right group" style="display: none;">
-                        <input type="hidden" name="items[0][selling_price][1][group_id]" id="items-0-selling-price-1-group-id" value="2">
-                        <div class="input text required">
-                            <input type="text" name="items[0][selling_price][1][price]" class="price" data-percentage="50" required="required" maxlength="8" id="items-0-selling-price-1-price">
-                        </div>
+                    <td v-show="!isSale" class="text-right">
+                        <input type="text" class="price">
                     </td>
-                    <td-- class="text-right group" style="display: none;">
-                        <input type="hidden" name="items[0][selling_price][2][group_id]" id="items-0-selling-price-2-group-id" value="3">
-                        <div class="input text required">
-                            <input type="text" name="items[0][selling_price][2][price]" class="price" data-percentage="100" required="required" maxlength="8" id="items-0-selling-price-2-price">
-                        </div>
-                    </td-->
+                    <td v-show="!isSale" class="text-right">
+                        <input type="text" class="price">
+                    </td>
+                    <td v-show="!isSale" class="text-right">
+                        <input type="text" class="price">
+                    </td>
+
+                    <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
                 </tr>
                 <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
                     <td>{{invoiceItem.name}}</td>
                     <td class="text-right">{{invoiceItem.stock | toNum}}</td>
                     <td class="text-right">{{invoiceItem.quantity}}</td>
-                    <td class="text-right">
+                    <td v-show="isSale" class="text-right">
                         <i class="fi-price-tag avg">
                             {{invoiceItem.avaragePurchasePrice | toCurrency}}
                         </i>
@@ -134,12 +127,15 @@
                             {{invoiceItem.lastPurchasePrice | toCurrency}}
                         </i>
                     </td>
-                    <td class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) | toCurrency}}</td>
+                    <td v-show="isSale" class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.vat}} %</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
+                    <td v-show="!isSale" >törzs</td>
+                    <td v-show="!isSale" >viszont</td>
+                    <td v-show="!isSale" >kisker</td>
                     <td></td>
                 </tr>
             </tbody>
@@ -152,16 +148,16 @@
                     </td>
                     <td></td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + parseInt(item.quantity), 0)}}</td>
-                    <td></td>
-                    <td></td>
+                    <td v-show="isSale"></td>
+                    <td v-show="isSale"></td>
                     <td></td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0) | toCurrency}}</td>
                     <td class="text-right">-</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency}}</td>
-                    <!--td class="group" style="display: none;"></!--td>
-                    <td class="group" style="display: none;"></td>
-                    <td class="group" style="display: none;"></td>-->
+                    <td v-show="!isSale" class="text-center">-</td>
+                    <td v-show="!isSale" class="text-center">-</td>
+                    <td v-show="!isSale" class="text-center">-</td>
                     <td></td>
                 </tr>
             </tfoot>
@@ -281,6 +277,7 @@ export default {
                 currency: this.currency,
                 sale: this.isSale ? 1 : 0,
                 // TODO items array is different for purchases
+                // selling price group
                 items: this.invoiceItems.map((item) => ({
                     product_id: item.product_id,
                     quantity: item.quantity,
