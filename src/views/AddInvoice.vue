@@ -174,19 +174,15 @@ export default {
             isSale: true,
             number: 0,
             partner: '',
-            partners: {},
             price: 0,
             product: '',
             product_id: 0,
             selectedPartner: {},
             selectedProduct: {},
-            storages: {},
             storage_id: 0,
             quantity: 0,
         }
     },
-
-    // TODO hide and show table cols based on isSale
 
     computed: {
         buyerGroups() {
@@ -195,8 +191,14 @@ export default {
         isHeaderReady() {
             return (this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency);
         },
+        partners() {
+            return this.$store.state.partners
+        },
         products() {
             return this.$store.state.products
+        },
+        storages() {
+            return this.$store.state.storages
         },
         sellingPrices() {
             let sellingPrices = []
@@ -206,34 +208,25 @@ export default {
     },
 
     created() {
+        // https://github.com/rrd108/stockr-vue/issues/30
         this.number = parseInt(this.$store.state.invoices[0].number.substr(this.$store.state.invoices[0].number.indexOf('/') + 1)) + 1
         this.number = new Date().getFullYear() + '/' + this.number
 
 
-        // TODO get these from storage
-        axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-            .then(response => {
-                this.storages = response.data
-            })
-            .catch(err => console.error(err))
-
-        axios.get(process.env.VUE_APP_API_URL + 'invoicetypes.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-            .then(response => {
-                this.invoicetypes = response.data
-            })
-            .catch(err => console.error(err))
-
-        axios.get(process.env.VUE_APP_API_URL + 'partners.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-            .then(response => {
-                this.partners = response.data
-            })
-            .catch(err => console.error(err))
-
+        if(Object.keys(this.$store.state.invoicetypes).length === 0) {
+            this.$store.dispatch('getInvoicetypes')
+        }
+        if(Object.keys(this.$store.state.partners).length === 0) {
+            this.$store.dispatch('getPartners')
+        }
         if(Object.keys(this.$store.state.products).length === 0) {
             this.$store.dispatch('getProducts')
         }
         if(Object.keys(this.$store.state.groups).length === 0) {
             this.$store.dispatch('getGroups')
+        }
+        if(Object.keys(this.$store.state.storages).length === 0) {
+            this.$store.dispatch('getStorages')
         }
     },
 

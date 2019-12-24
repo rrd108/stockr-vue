@@ -67,18 +67,24 @@ export default {
                 size: this.size,
                 vat: this.vat,
             }
-            data = qs.stringify(data)
+            let data4vue = {
+                avaragePurchasePrice: 0,
+                lastPurchasePrice: 0,
+                stock: 0,
+                hidden: false,
+            }
 
-            axios.post(process.env.VUE_APP_API_URL + 'products.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, data)
+            axios.post(process.env.VUE_APP_API_URL + 'products.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
                 .then(response => {
                     if (response.data.product.id) {
                         this.isSaved = true
+                        this.$store.commit('addProduct', {...response.data.product, ...data4vue})
                     }
                 })
                 .catch(error => console.log(error))
         },
         initializeForm() {
-            // TODO 
+            // TODO
             this.name = ''
             this.code = ''
             this.size = ''

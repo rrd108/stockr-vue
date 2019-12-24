@@ -10,17 +10,24 @@ export default new Vuex.Store({
     company: {},
     groups: [],
     invoices: [],
-    products: {},
+    invoicetypes: [],
+    partners: [],
+    products: [],
+    storages: [],
     search: {},
     user: {},
   },
   mutations: {
     addInvoice: (state, invoice) => state.invoices.unshift(invoice),
+    addProduct: (state, product) => state.products.unshift(product),
     saveUser: (state, user) => state.user = user,
     setCompany: (state, company) => state.company = company,
     setGroups: (state, groups) => state.groups = groups,
     setInvoices: (state, invoices) => state.invoices = invoices,
+    setInvoicetypes: (state, invoicetypes) => state.invoicetypes = invoicetypes,
+    setPartners: (state, partners) => state.partners = partners,
     setProducts: (state, products) => state.products = products,
+    setStorages: (state, storages) => state.storages = storages,
     setSearch: (state, search) => {
       // this will not work as we would add new property to the object, so we would loose reactivity
       // state.search[search.field] = search.val
@@ -45,6 +52,16 @@ export default new Vuex.Store({
         .then(response => commit('setInvoices', response.data.invoices))
         .catch(err => console.error(err))
     },
+    getInvoicetypes: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'invoicetypes.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setInvoicetypes', response.data.invoicetypes))
+        .catch(err => console.error(err))
+    },
+    getPartners: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'partners.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setPartners', response.data.partners))
+        .catch(err => console.error(err))
+    },
     getProducts: ({ commit, state }) => {
       let products = {}
       axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
@@ -58,6 +75,12 @@ export default new Vuex.Store({
         .then(products => commit('setProducts', products))
         .catch(err => console.error(err))
     },
+    getStorages: ({ commit, state }) => {
+      axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+        .then(response => commit('setStorages', response.data.storages))
+        .catch(err => console.error(err))
+    },
+
   },
   modules: {
   }
