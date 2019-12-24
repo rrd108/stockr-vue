@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <fieldset id="items" :disabled="!isHeaderReady || !buyerGroups.length">
+        <fieldset id="items" :disabled="!isHeaderReady || !isMasterDataLoaded">
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr :class="isSale ? 'out' : 'in'">
@@ -185,11 +185,14 @@ export default {
         buyerGroups() {
             return this.$store.state.groups.filter(group => group.percentage > 0)
         },
+        invoicetypes() {
+            return this.$store.state.invoicetypes
+        },
         isHeaderReady() {
             return (this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency);
         },
-        invoicetypes() {
-            return this.$store.state.invoicetypes
+        isMasterDataLoaded() {
+            return this.buyerGroups.length && this.invoicetypes.length && this.partners.length && this.products.length && this.storages.length
         },
         number() {
             let year = new Date().getFullYear()
