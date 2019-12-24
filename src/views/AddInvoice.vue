@@ -281,8 +281,6 @@ export default {
                 number: this.number,
                 currency: this.currency,
                 sale: this.isSale ? 1 : 0,
-                // TODO items array is different for purchases
-                // selling price group
                 items: this.invoiceItems.map((item) => ({
                     product_id: item.product_id,
                     quantity: item.quantity,
@@ -291,10 +289,16 @@ export default {
                 }))
             }
 
+            let data4vue = {
+                storage: this.storages.find(storage => storage.id == this.storage_id),
+                invoicetype: this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
+                partner: this.selectedPartner,
+            }
+
             axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
                 .then(response => {
                     if (response.data.invoice.id) {
-                        this.$store.commit('addInvoice', response.data.invoice)
+                        this.$store.commit('addInvoice', {...response.data.invoice, ...data4vue})
                         this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
                     }
                 })
