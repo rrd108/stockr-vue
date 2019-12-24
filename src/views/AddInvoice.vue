@@ -171,7 +171,6 @@ export default {
             invoicetype_id: 0,
             invoiceItems: [],
             isSale: true,
-            number: 0,
             partner: '',
             price: 0,
             product: '',
@@ -193,6 +192,16 @@ export default {
         invoicetypes() {
             return this.$store.state.invoicetypes
         },
+        number() {
+            let year = new Date().getFullYear()
+            let lastSellInvoice = this.$store.state.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
+            let number = year + '/' + 1
+            if (lastSellInvoice) {
+                number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
+                number = year + '/' + number
+            }
+            return number
+        },
         partners() {
             return this.$store.state.partners
         },
@@ -210,11 +219,6 @@ export default {
     },
 
     created() {
-        // https://github.com/rrd108/stockr-vue/issues/30
-        this.number = parseInt(this.$store.state.invoices[0].number.substr(this.$store.state.invoices[0].number.indexOf('/') + 1)) + 1
-        this.number = new Date().getFullYear() + '/' + this.number
-
-
         if(Object.keys(this.$store.state.invoicetypes).length === 0) {
             this.$store.dispatch('getInvoicetypes')
         }
