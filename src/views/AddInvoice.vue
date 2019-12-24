@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <fieldset id="items" :disabled="!isHeaderReady">
+        <fieldset id="items" :disabled="!isHeaderReady || !buyerGroups.length">
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr :class="isSale ? 'out' : 'in'">
