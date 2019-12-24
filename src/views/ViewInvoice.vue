@@ -1,5 +1,5 @@
 <template>
-  <div class="small-12 columns content">
+  <div v-if="isLoaded" class="small-12 columns content">
     <h3>{{invoice.storage.company.name}}</h3>
     <table class="vertical-table">
         <tbody>
@@ -76,6 +76,7 @@ export default {
 
     data() {
         return {
+            isLoaded: false,
             invoice: {},
             api: ''
         }
@@ -87,6 +88,7 @@ export default {
         axios.get(process.env.VUE_APP_API_URL + 'invoices/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
             .then(response => {
                 this.invoice = response.data.invoice
+                this.isLoaded = true
             })
             .catch(err => console.error(err))
     },
