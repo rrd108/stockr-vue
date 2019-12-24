@@ -126,7 +126,7 @@
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
 
-                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.selling_prices[group.id] | toCurrency}}</td>
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.sellingPrices[group.id] | toCurrency}}</td>
 
                     <td></td>
                 </tr>
@@ -263,7 +263,7 @@ export default {
                 percentage: this.selectedProduct.percentage,
                 price: this.price,
                 vat: this.selectedProduct.vat,
-                selling_prices: this.sellingPrices
+                sellingPrices: this.sellingPrices
             })
             this.selectedProduct = {}
             this.product = ''
@@ -286,7 +286,8 @@ export default {
                 items: this.invoiceItems.map((item) => ({
                     product_id: item.product_id,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price,
+                    selling_prices: item.sellingPrices
                 }))
             }
 
