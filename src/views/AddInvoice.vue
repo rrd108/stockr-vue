@@ -174,7 +174,6 @@ export default {
             partner: '',
             price: 0,
             product: '',
-            product_id: 0,
             selectedPartner: {},
             selectedProduct: {},
             storage_id: 0,
@@ -250,58 +249,64 @@ export default {
             this.product = this.selectedProduct.name
             this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
         },
-        addItem() {
-            this.invoiceItems.unshift({
-                uuid: Math.random().toString().substr(2),
-                product_id: this.selectedProduct.id,
-                name: this.selectedProduct.name,
-                stock: this.selectedProduct.stock,
-                quantity: this.quantity,
-                avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
-                lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
-                percentage: this.selectedProduct.percentage,
-                price: this.price,
-                vat: this.selectedProduct.vat,
-                sellingPrices: this.sellingPrices
-            })
-            this.selectedProduct = {}
-            this.product = ''
-            this.quantity = this.price = 0
-            this.$refs.product.focus()
+        addItem(putFocus = true) {
+            if (this.product && this.quantity && this.price) {
+                this.invoiceItems.unshift({
+                    uuid: Math.random().toString().substr(2),
+                    product_id: this.selectedProduct.id,
+                    name: this.selectedProduct.name,
+                    stock: this.selectedProduct.stock,
+                    quantity: this.quantity,
+                    avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
+                    lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
+                    percentage: this.selectedProduct.percentage,
+                    price: this.price,
+                    vat: this.selectedProduct.vat,
+                    sellingPrices: this.sellingPrices
+                })
+                this.selectedProduct = {}
+                this.product = ''
+                this.quantity = this.price = 0
+                if (putFocus) {
+                    this.$refs.product.focus()
+                }
+            }
         },
         saveInvoice() {
-            // TODO do not save when data is in the inputs
-            const qs = require('qs');
-            let data = {
-                storage_id: this.storage_id,
-                invoicetype_id: this.invoicetype_id,
-                partner_id: this.selectedPartner.id,
-                date: this.date,
-                number: this.number,
-                currency: this.currency,
-                sale: this.isSale ? 1 : 0,
-                items: this.invoiceItems.map((item) => ({
-                    product_id: item.product_id,
-                    quantity: item.quantity,
-                    price: item.price,
-                    selling_prices: item.sellingPrices
-                }))
-            }
+            this.addItem(false)
+            if (this.invoiceItems.length) {
+                const qs = require('qs');
+                let data = {
+                    storage_id: this.storage_id,
+                    invoicetype_id: this.invoicetype_id,
+                    partner_id: this.selectedPartner.id,
+                    date: this.date,
+                    number: this.number,
+                    currency: this.currency,
+                    sale: this.isSale ? 1 : 0,
+                    items: this.invoiceItems.map((item) => ({
+                        product_id: item.product_id,
+                        quantity: item.quantity,
+                        price: item.price,
+                        selling_prices: item.sellingPrices
+                    }))
+                }
 
-            let data4vue = {
-                storage: this.storages.find(storage => storage.id == this.storage_id),
-                invoicetype: this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
-                partner: this.selectedPartner,
-            }
+                let data4vue = {
+                    storage: this.storages.find(storage => storage.id == this.storage_id),
+                    invoicetype: this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
+                    partner: this.selectedPartner,
+                }
 
-            axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
-                .then(response => {
-                    if (response.data.invoice.id) {
-                        this.$store.commit('addInvoice', {...response.data.invoice, ...data4vue})
-                        this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
-                    }
-                })
-                .catch(error => console.log(error))
+                axios.post(process.env.VUE_APP_API_URL + 'invoices.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
+                    .then(response => {
+                        if (response.data.invoice.id) {
+                            this.$store.commit('addInvoice', {...response.data.invoice, ...data4vue})
+                            this.$router.push({ name: 'invoices', params: { newInvoice: response.data.invoice.number } })
+                        }
+                    })
+                    .catch(error => console.log(error))
+            }
         },
     }
 }
