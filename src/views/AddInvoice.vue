@@ -62,7 +62,7 @@
                     <th class="text-center" scope="col">{{$t("vat")}}</th>
                     <th class="text-center" scope="col">{{$t("gross amount")}}</th>
 
-                    <th v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center" scope="col">{{group.name}}</th>
+                    <th v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center" scope="col">{{group.name}} <span class="small">{{group.percentage}}%</span></th>
 
                     <th></th>
                 </tr>
@@ -101,7 +101,7 @@
                     <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale">
-                        <input v-model="selling_price[group.id]" type="number" class="price text-right" step="0.01">
+                        <input v-model="sellingPrices[group.id]" type="number" class="price text-right" step="0.01">
                     </td>
 
                     <td><button @click.prevent="addItem" class="fi-arrow-down"></button></td>
@@ -126,7 +126,7 @@
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
                     <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
 
-                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" >{{invoiceItem.group}}</td>
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.selling_prices[group.id] | toCurrency}}</td>
 
                     <td></td>
                 </tr>
@@ -180,7 +180,6 @@ export default {
             product_id: 0,
             selectedPartner: {},
             selectedProduct: {},
-            selling_price: [],
             storages: {},
             storage_id: 0,
             quantity: 0,
@@ -190,23 +189,26 @@ export default {
     // TODO hide and show table cols based on isSale
 
     computed: {
+        buyerGroups() {
+            return this.$store.state.groups.filter(group => group.percentage > 0)
+        },
         isHeaderReady() {
             return (this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency);
         },
         products() {
             return this.$store.state.products
         },
-        buyerGroups() {
-            return this.$store.state.groups.filter(group => group.percentage > 0)
-        }
+        sellingPrices() {
+            let sellingPrices = []
+            this.buyerGroups.forEach(group => sellingPrices[group.id] = this.price * (1 + group.percentage / 100))
+            return sellingPrices
+        },
     },
 
     created() {
         this.number = parseInt(this.$store.state.invoices[0].number.substr(this.$store.state.invoices[0].number.indexOf('/') + 1)) + 1
         this.number = new Date().getFullYear() + '/' + this.number
 
-console.log(123)
-        this.buyerGroups.forEach(group => {console.log(group);this.selling_price[group.id] = group.percentage;})
 
         // TODO get these from storage
         axios.get(process.env.VUE_APP_API_URL + 'storages.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
@@ -261,6 +263,7 @@ console.log(123)
                 percentage: this.selectedProduct.percentage,
                 price: this.price,
                 vat: this.selectedProduct.vat,
+                selling_prices: this.sellingPrices
             })
             this.selectedProduct = {}
             this.product = ''

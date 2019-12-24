@@ -59,4 +59,7 @@ input.price {
   width: 8rem;
   display: inline-block;
 }
+.small {
+  font-size: .75rem;
+}
 </style>
