@@ -168,7 +168,6 @@ export default {
         return {
             currency: 'HUF',        // TODO
             date: (new Date()).toISOString().split('T')[0],
-            invoicetypes: {},
             invoicetype_id: 0,
             invoiceItems: [],
             isSale: true,
@@ -190,6 +189,9 @@ export default {
         },
         isHeaderReady() {
             return (this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency);
+        },
+        invoicetypes() {
+            return this.$store.state.invoicetypes
         },
         partners() {
             return this.$store.state.partners
