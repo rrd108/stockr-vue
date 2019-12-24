@@ -3,8 +3,8 @@
         <tr v-for="invoice in filteredItems" :key="invoice.id" v-show="!invoice.hidden">
             <td>
                 <router-link :to="'invoices/' + invoice.id">
-                    <i v-if= "invoice.sale" class="fi-arrow-left in"></i>
-                    <i v-if="!invoice.sale" class="fi-arrow-right out"></i>
+                    <i v-if= "invoice.sale" class="fi-arrow-left out"></i>
+                    <i v-if="!invoice.sale" class="fi-arrow-right in"></i>
                 </router-link>
             </td>
             <td v-html="$options.filters.invoiceNumber(invoice.number)"></td>
