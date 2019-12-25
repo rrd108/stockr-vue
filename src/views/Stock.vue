@@ -5,8 +5,8 @@
         <thead>
             <tr>
                 <th scope="col">{{$t("products")}} {{searchResultsCount}}</th>
-                <th scope="col">{{$t("product.code")}}</th>
-                <th scope="col">{{$t("product.size")}}</th>
+                <th scope="col">{{$t("code")}}</th>
+                <th scope="col">{{$t("size")}}</th>
                 <th scope="col">{{$t("stock")}}</th>
                 <th scope="col" rowspan="2">Avarage purchase price</th>
                 <th scope="col" rowspan="2">Last purchase price</th>
