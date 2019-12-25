@@ -21,8 +21,9 @@ export default {
                             item.hidden = true
                             return
                         }
+                        fieldValue = fieldValue.toString()
                         if (fieldValue.toLowerCase().indexOf(value.toLowerCase()) == -1) {
-                            item.hidden = true;
+                            item.hidden = true
                             return
                         }
                     }

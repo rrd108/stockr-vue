@@ -16,7 +16,10 @@
                 <th scope="col">{{$t("partner")}}</th>
                 <th scope="col">{{$t("storage")}}</th>
                 <th scope="col">{{$t("invoice type")}}</th>
-                <th scope="col">{{$t("amount")}}</th>
+                <th scope="col" class="row">
+                    <span class="small-6">{{$t("amount")}}</span>
+                    <span class="small-6 text-right">{{invoices.reduce((sum, invoice) => sum + (invoice.hidden ? 0 : parseInt(invoice.amount)) , 0)  | toCurrency}}</span>
+                </th>
             </tr>
             <tr>
                 <td>{{searchResultsCount}}</td>
@@ -25,7 +28,7 @@
                 <td><filter-input :search="'invoices.partner.name'" /></td>
                 <td><filter-input :search="'invoices.storage.name'" /></td>
                 <td><filter-input :search="'invoices.invoicetype.name'" /></td>
-                <td class="text-right"><filter-input :search="'invoice.amount'" /></td>
+                <td class="text-right"><filter-input :search="'invoices.amount'" /></td>
             </tr>
         </thead>
         <tbody is="filtered-tbody" :invoices="invoices" @setCount="setCount($event)"></tbody>
@@ -53,7 +56,7 @@ export default {
 
     computed: {
         invoices() {
-            return this.$store.state.invoices
+            return this.$store.state.invoices.map(invoice => ({...invoice, amount : invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)}))
         },
     },
 
