@@ -11,7 +11,12 @@
             </tr>
             <tr>
                 <th scope="row">{{$t("invoice type")}}</th>
-                <td>{{invoice.invoicetype.name}}</td>
+                <td class="changeAble">
+                    <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype"> {{invoice.invoicetype.name}}</i>
+                    <select v-model="invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
+                        <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">{{ invoicetype.name }}</option>
+                    </select>
+                </td>
                 <th scope="row">{{$t("date")}}</th>
                 <td>{{invoice.date | toLocaleDateString}}</td>
             </tr>
@@ -76,13 +81,26 @@ export default {
 
     data() {
         return {
-            isLoaded: false,
+            api: '',
+            onEdit: false,
             invoice: {},
-            api: ''
+            invoicetype_id: 0,
+            isLoaded: false,
         }
     },
 
+    computed: {
+        invoicetypes() {
+            return this.$store.state.invoicetypes
+        },
+
+    },
+
     created() {
+        if(Object.keys(this.$store.state.invoicetypes).length === 0) {
+            this.$store.dispatch('getInvoicetypes')
+        }
+
         this.api = process.env.VUE_APP_API_URL
 
         axios.get(process.env.VUE_APP_API_URL + 'invoices/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
@@ -92,9 +110,23 @@ export default {
             })
             .catch(err => console.error(err))
     },
+
+    methods: {
+        changeInvoicetype() {
+            this.onEdit = !this.onEdit
+            if (this.invoicetype_id) {
+                this.invoice.invoicetype = this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id)
+                // TODO axios.put()
+            } else {
+                this.invoicetype_id = this.invoice.invoicetype.id
+            }
+        }
+    },
 }
 </script>
 
-<style>
-
-</style>
+<style scoped>
+.changeAble {
+    cursor: pointer;
+}
+</style>>
