@@ -62,4 +62,7 @@ input.price {
 .small {
   font-size: .75rem;
 }
+.changeAble {
+    cursor: pointer;
+}
 </style>

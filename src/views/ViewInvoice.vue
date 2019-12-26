@@ -139,7 +139,5 @@ export default {
 </script>
 
 <style scoped>
-.changeAble {
-    cursor: pointer;
-}
+
 </style>>

@@ -128,7 +128,7 @@
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.sellingPrices[group.id] | toCurrency}}</td>
 
-                    <td></td>
+                    <td class="changeAble"><i class="fi-pencil" @click="changeItem(invoiceItem.uuid)"></i></td>
                 </tr>
             </tbody>
             <tfoot>
@@ -243,15 +243,6 @@ export default {
     },
 
     methods: {
-        setByPartner() {
-            this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
-            this.isSale = this.selectedPartner.group.percentage ? true : false
-        },
-        setSelectedProduct() {
-            this.selectedProduct = this.products.find(product => product.name == this.product)
-            this.product = this.selectedProduct.name
-            this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
-        },
         addItem(putFocus = true) {
             if (this.product && this.quantity && this.price) {
                 this.invoiceItems.unshift({
@@ -274,6 +265,14 @@ export default {
                     this.$refs.product.focus()
                 }
             }
+        },
+        changeItem(uuid) {
+            let product = this.invoiceItems.find(invoiceItem => invoiceItem.uuid == uuid)
+            this.product = product.name
+            this.price = product.price
+            this.quantity = product.quantity
+            this.setSelectedProduct()
+            this.invoiceItems = this.invoiceItems.filter(invoiceItem => invoiceItem.uuid != uuid)
         },
         saveInvoice() {
             this.addItem(false)
@@ -310,6 +309,15 @@ export default {
                     })
                     .catch(error => console.log(error))
             }
+        },
+        setByPartner() {
+            this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
+            this.isSale = this.selectedPartner.group.percentage ? true : false
+        },
+        setSelectedProduct() {
+            this.selectedProduct = this.products.find(product => product.name == this.product)
+            this.product = this.selectedProduct.name
+            this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
         },
     }
 }
