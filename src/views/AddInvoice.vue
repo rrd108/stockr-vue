@@ -176,7 +176,6 @@ export default {
             product: '',
             selectedPartner: {},
             selectedProduct: {},
-            storage_id: 0,
             quantity: 0,
         }
     },
@@ -212,6 +211,14 @@ export default {
         },
         storages() {
             return this.$store.state.storages
+        },
+        storage_id: {
+            get() {
+                return this.$store.state.storageId
+            },
+            set(val) {
+                this.$store.commit('setStorageId', val)
+            }
         },
         sellingPrices() {
             let sellingPrices = []

@@ -14,6 +14,7 @@ export default new Vuex.Store({
     partners: [],
     products: [],
     storages: [],
+    storageId: 0,
     search: {},
     user: {},
   },
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     setPartners: (state, partners) => state.partners = partners,
     setProducts: (state, products) => state.products = products,
     setStorages: (state, storages) => state.storages = storages,
+    setStorageId: (state, storageId) => state.storageId = storageId,
     setSearch: (state, search) => {
       // this will not work as we would add new property to the object, so we would loose reactivity
       // state.search[search.field] = search.val
