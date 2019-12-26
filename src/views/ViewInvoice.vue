@@ -116,7 +116,20 @@ export default {
             this.onEdit = !this.onEdit
             if (this.invoicetype_id) {
                 this.invoice.invoicetype = this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id)
-                // TODO axios.put()
+
+                const qs = require('qs');
+                let data = {
+                    id: this.invoice.id,
+                    invoicetype_id: this.invoicetype_id
+                }
+                // TODO axios.put does not work as sends out an OPTION request what gets a 302 response
+                axios.post(process.env.VUE_APP_API_URL + 'invoices/edit/' + this.invoice.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
+                    .then(() => {
+                        this.$store.commit('setInvoices', this.$store.state.invoices.map(invoice => invoice.id == this.invoice.id
+                            ? this.invoice
+                            : invoice))
+                        })
+                    .catch(error => console.log(error))
             } else {
                 this.invoicetype_id = this.invoice.invoicetype.id
             }
