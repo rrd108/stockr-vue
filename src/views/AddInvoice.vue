@@ -38,7 +38,7 @@
             </div>
             <div class="column small-12 large-3">
                 <label for="currency"><i class="fi-euro"> {{$t("currency")}}</i></label>
-                <input type="text" v-model="currency">
+                <input type="text" v-model="currency" disabled="disabled">
             </div>
             <div class="column small-12 large-3">
                 <div :class="isSale ? 'sale out' : 'sale in'">
