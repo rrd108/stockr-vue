@@ -8,10 +8,10 @@
                 <th scope="col">{{$t("code")}}</th>
                 <th scope="col">{{$t("size")}}</th>
                 <th scope="col">{{$t("stock")}}</th>
-                <th scope="col" rowspan="2">Avarage purchase price</th>
-                <th scope="col" rowspan="2">Last purchase price</th>
-                <th scope="col">Value</th>
-                <th scope="col">Value</th>
+                <th scope="col" rowspan="2">{{$t("avarage purchase price")}}</th>
+                <th scope="col" rowspan="2">{{$t("last purchase price")}}</th>
+                <th scope="col">{{$t("amount")}}</th>
+                <th scope="col">{{$t("amount")}}</th>
             </tr>
             <tr>
                 <td><filter-input :search="'products.name'" /></td>
@@ -22,7 +22,7 @@
                         sum + (product.hidden ? 0 : parseInt(product.stock))
                         , 0) | toNum(0)
                     }}
-                    pcs
+                    {{$t("pcs")}}
                 </td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)) , 0)  | toCurrency}}</td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
