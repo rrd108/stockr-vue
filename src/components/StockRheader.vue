@@ -28,9 +28,9 @@
                           <ul class="nested vertical menu" v-show="inMasterData">
                             <!--li><router-link to="/todo"><i class="fi-torso-business"> {{$t("companies")}}</i></router-link></!--li>
                             <li><router-link to="/todo"><i class="fi-contrast"> {{$t("storages")}}</i></router-link></li>
-                            <li><router-link to="/todo"><i class="fi-torsos"> {{$t("partners")}}</i></router-link></li>
                             -->
                             <li><router-link :to="`/${$i18n.locale}/add-product`"><i class="fi-foot"> {{$t("add product")}}</i></router-link></li>
+                            <li><router-link :to="`/${$i18n.locale}/add-partner`"><i class="fi-torsos"> {{$t("add partner")}}</i></router-link></li>
                             <!--li><router-link to="/todo"><i class="fi-puzzle"> {{$t("groups")}}</i></router-link></!--li>
                             <li><router-link to="/todo"><i class="fi-shield"> {{$t("invoice types")}}</i></router-link></li>-->
                           </ul>

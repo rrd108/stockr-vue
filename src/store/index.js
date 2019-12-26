@@ -20,6 +20,7 @@ export default new Vuex.Store({
   },
   mutations: {
     addInvoice: (state, invoice) => state.invoices.unshift(invoice),
+    addPartner: (state, partner) => state.partners.unshift(partner),
     addProduct: (state, product) => state.products.unshift(product),
     saveUser: (state, user) => state.user = user,
     setCompany: (state, company) => state.company = company,

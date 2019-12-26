@@ -40,6 +40,11 @@ const routes = [
         component: () => import('../views/AddInvoice.vue')
       },
       {
+        path: 'add-partner',
+        name: 'add-partner',
+        component: () => import('../views/AddPartner.vue')
+      },
+      {
         path: 'add-product',
         component: () => import('../views/AddProduct.vue')
       },

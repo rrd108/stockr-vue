@@ -6,15 +6,20 @@
     "enter": "Belép",
     "error": "Hibás email vagy jelszó"
   },
+  "add partner": "Új partner",
   "add product": "Új termék",
+  "address": "Cím",
   "amount": "Összeg",
   "avarage purchase price": "Átlagos beszerzési ár",
+  "city": "Város",
   "code": "Kód",
   "company": "Cég",
   "cost": "Költség",
   "currency": "Valuta",
   "date": "Dátum",
+  "email": "Email",
   "gross amount": "Bruttó",
+  "group": "Csoport",
   "groups": "Csoport",
   "invoices": "Bizonylat",
   "invoice type": "Bizonylat típus",
@@ -24,6 +29,7 @@
   "name": "Név",
   "new invoice": "Új bizonylat",
   "number": "Szám",
+  "phone": "Telefon",
   "sale": "Eladás",
   "save": "Ment",
   "saved": "elmentve",
@@ -44,5 +50,6 @@
   "quantity": "Mennyiség",
   "type": "Típus",
   "total": "Összsesen",
-  "vat": "ÁFA"
+  "vat": "ÁFA",
+  "zip": "Irsz"
 }
