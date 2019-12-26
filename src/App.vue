@@ -29,6 +29,23 @@ export default {
         return this.$store.state.user.email ? true : false
       },
   },
+
+  created() {
+    window.addEventListener('keypress', this.shortCuts)
+  },
+  destroyed() {
+    window.removeEventListener('keypress', this.shortCuts)
+  },
+  methods: {
+    shortCuts(e) {
+      if(e.target.nodeName != 'INPUT') {
+        let cmd = String.fromCharCode(e.keyCode).toLowerCase()
+        if (cmd == 'b') {
+          this.$router.push({ name: 'add-invoice'})
+        }
+      }
+    }
+  }
 }
 </script>
 
