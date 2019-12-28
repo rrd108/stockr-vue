@@ -15,7 +15,7 @@
                 </a></td>
             <td><i class="fi-contrast"> {{invoice.storage.name}}</i></td>
             <td><i class="fi-book"> {{invoice.invoicetype.name}}</i></td>
-            <td class="text-right">{{invoice.amount | toCurrency}}</td>
+            <td class="text-right">{{invoice.amount | toCurrency(invoice.currency)}}</td>
         </tr>
         </tbody>
 </template>
