@@ -43,6 +43,9 @@ export default {
         if (cmd == 'b') {
           this.$router.push({ name: 'add-invoice'})
         }
+        if (cmd == 'h') {
+          this.$router.push({ name: 'help'})
+        }
       }
     }
   }

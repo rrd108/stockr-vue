@@ -36,6 +36,7 @@
                           </ul>
                         </transition>
                       </li>
+                      <li><router-link :to="`/${$i18n.locale}/help`"><i class="fi-info"> {{$t("help")}}</i></router-link></li>
                   </ul>
               </div>
 
