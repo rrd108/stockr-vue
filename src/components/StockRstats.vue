@@ -2,14 +2,14 @@
 <div class="cards">
     <div class="small-6 large-4">
     <div class="widget out">
-        <h2>{{stats.totals.sells | toCurrency}}</h2>
+        <h2>{{stats.totals.sells | toCurrency(currency)}}</h2>
         <i class="fi-arrow-left"> {{$t("sells")}}</i>
     </div>
     </div>
 
     <div class="small-6 large-4">
     <div class="widget in">
-        <h2>{{stats.totals.purchases | toCurrency}}</h2>
+        <h2>{{stats.totals.purchases | toCurrency(currency)}}</h2>
         <i class="fi-arrow-right"> {{$t("purchases")}}</i>
     </div>
     </div>
@@ -52,6 +52,7 @@ export default {
 
   data(){
     return {
+      currency: this.$store.state.company.currency,
       stats: {
         totals: {
           sells: 0,
