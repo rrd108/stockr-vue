@@ -9,10 +9,15 @@ Vue.config.productionTip = false
 
 Vue.use(Vuelidate)
 
-Vue.filter('toCurrency', function (value, currency = 'HUF', decimals = 0) {
+Vue.filter('toCurrency', function (value, currency = 'HUF', decimals = 2) {
   if (isNaN(value)) {
     return 0
   }
+
+  if (currency == 'HUF') {
+    decimals = 0
+  }
+
   return new Intl.NumberFormat('hu-HU', {
     style: 'currency',
     currency: currency,

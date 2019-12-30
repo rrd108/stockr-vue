@@ -82,23 +82,23 @@
                     <td v-show="isSale" class="text-right">
                         <i v-show="selectedProduct.avaragePurchasePrice"
                             class="fi-price-tag avg" :title="$t('avarage purchase price')">
-                            {{selectedProduct.avaragePurchasePrice | toCurrency}}
+                            {{selectedProduct.avaragePurchasePrice | toCurrency(currency)}}
                         </i>
                         <br>
                         <i v-show="selectedProduct.lastPurchasePrice"
                             :title="$t('last purchase price')"
                             class="fi-price-tag last">
-                            {{selectedProduct.lastPurchasePrice | toCurrency}}
+                            {{selectedProduct.lastPurchasePrice | toCurrency(currency)}}
                         </i>
                     </td>
-                    <td v-show="isSale" class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency}}</td>
+                    <td v-show="isSale" class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency(currency)}}</td>
                     <td class="text-right">
                         <input v-model="price" type="number" class="price text-right" required="required" step="0.01">
                     </td>
-                    <td class="text-right">{{price * quantity | toCurrency}}</td>
+                    <td class="text-right">{{price * quantity | toCurrency(currency)}}</td>
                     <td class="text-right">{{selectedProduct.vat}} %</td>
-                    <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency}}</td>
-                    <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency}}</td>
+                    <td class="text-right">{{price * quantity * (selectedProduct.vat/100) | toCurrency(currency)}}</td>
+                    <td class="text-right">{{price * quantity * (1 + (selectedProduct.vat/100)) | toCurrency(currency)}}</td>
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale">
                         <input v-model="sellingPrices[group.id]" type="number" class="price text-right" step="0.01">
@@ -112,21 +112,21 @@
                     <td class="text-right">{{invoiceItem.quantity}}</td>
                     <td v-show="isSale" class="text-right">
                         <i class="fi-price-tag avg">
-                            {{invoiceItem.avaragePurchasePrice | toCurrency}}
+                            {{invoiceItem.avaragePurchasePrice | toCurrency(currency)}}
                         </i>
                         <br>
                         <i class="fi-price-tag last">
-                            {{invoiceItem.lastPurchasePrice | toCurrency}}
+                            {{invoiceItem.lastPurchasePrice | toCurrency(currency)}}
                         </i>
                     </td>
-                    <td v-show="isSale" class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) | toCurrency}}</td>
-                    <td class="text-right">{{invoiceItem.price | toCurrency}}</td>
-                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity | toCurrency}}</td>
+                    <td v-show="isSale" class="text-right">{{invoiceItem.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) | toCurrency(currency)}}</td>
+                    <td class="text-right">{{invoiceItem.price | toCurrency(currency)}}</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity | toCurrency(currency)}}</td>
                     <td class="text-right">{{invoiceItem.vat}} %</td>
-                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency}}</td>
-                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat/100) | toCurrency(currency)}}</td>
+                    <td class="text-right">{{invoiceItem.price * invoiceItem.quantity * (1 + (invoiceItem.vat/100)) | toCurrency(currency)}}</td>
 
-                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.sellingPrices[group.id] | toCurrency}}</td>
+                    <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.sellingPrices[group.id] | toCurrency(currency)}}</td>
 
                     <td class="changeAble"><i class="fi-pencil" @click="changeItem(invoiceItem.uuid)"></i></td>
                 </tr>
@@ -143,10 +143,10 @@
                     <td v-show="isSale"></td>
                     <td v-show="isSale"></td>
                     <td></td>
-                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0) | toCurrency(currency)}}</td>
                     <td class="text-right">-</td>
-                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency}}</td>
-                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency}}</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * item.vat / 100, 0) | toCurrency(currency)}}</td>
+                    <td class="text-right">{{invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0) | toCurrency(currency)}}</td>
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center">-</td>
 

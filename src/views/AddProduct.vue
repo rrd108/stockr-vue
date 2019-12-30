@@ -74,7 +74,9 @@ export default {
                 hidden: false,
             }
 
-            axios.post(process.env.VUE_APP_API_URL + 'products.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
+            axios.post(process.env.VUE_APP_API_URL + 'products.json?company=' + this.$store.state.company.id
+                + '&currency=' + this.$store.state.company.currency
+                + '&ApiKey=' + this.$store.state.user.api_token, qs.stringify(data))
                 .then(response => {
                     if (response.data.product.id) {
                         this.isSaved = true

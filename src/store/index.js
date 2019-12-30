@@ -67,7 +67,9 @@ export default new Vuex.Store({
     },
     getProducts: ({ commit, state }) => {
       let products = {}
-      axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
+      axios.get(process.env.VUE_APP_API_URL + 'products/stock.json?company=' + state.company.id
+        + '&currency=' + state.company.currency
+        + '&ApiKey=' + state.user.api_token)
         .then(resp => {
           products = resp.data.products
           products.forEach((product) => {
