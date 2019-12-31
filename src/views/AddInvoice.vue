@@ -128,7 +128,7 @@
 
                     <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">{{invoiceItem.sellingPrices[group.id] | toCurrency(currency)}}</td>
 
-                    <td class="changeAble"><i class="fi-pencil" @click="changeItem(invoiceItem.uuid)"></i></td>
+                    <td class="pointer"><i class="fi-pencil" @click="changeItem(invoiceItem.uuid)"></i></td>
                 </tr>
             </tbody>
             <tfoot>

@@ -11,7 +11,7 @@
             </tr>
             <tr>
                 <th scope="row">{{$t("invoice type")}}</th>
-                <td class="changeAble">
+                <td class="pointer">
                     <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype"> {{invoice.invoicetype.name}}</i>
                     <select v-model="invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
                         <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">{{ invoicetype.name }}</option>
@@ -22,7 +22,10 @@
             </tr>
         <tr>
             <th scope="row">{{$t("number")}}</th>
-            <td>{{invoice.number}}</td>
+            <td>
+                <span v-html="$options.filters.invoiceNumber(invoice.number)"></span>
+                <i v-if="invoice.partner.group.id != 4 && invoice.number.indexOf('|') == -1" @click="generateInvoice" class="fi-page-export-pdf pointer"> Billingo</i>
+            </td>
             <th scope="row">{{$t("type")}}</th>
             <td>{{invoice.sale ?  $t("sale") : $t("purchase")}}</td>
         </tr>
@@ -112,6 +115,19 @@ export default {
             .catch(err => console.error(err))
     },
 
+    filters : {
+        // TODO move out to a mixin as tha same code is used at FilteredInvoiceTbody
+        invoiceNumber(value) {
+            if (value.indexOf('|') != -1) {
+                value = value.split('|');
+                value = value[0] + '<a href="' + value[2] + '">\
+                    <i class="fi-page-pdf"></i> ' + value[1] + '\
+                    </a>';
+            }
+            return value + ' ';
+        }
+    },
+
     methods: {
         changeInvoicetype() {
             this.onEdit = !this.onEdit
@@ -134,7 +150,15 @@ export default {
             } else {
                 this.invoicetype_id = this.invoice.invoicetype.id
             }
-        }
+        },
+
+        generateInvoice() {
+            axios.get(process.env.VUE_APP_API_URL + 'invoices/billingo/' + this.invoice.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+                    .then((response) => {
+                        this.invoice = response.data.invoice
+                        })
+                    .catch(error => console.log(error))
+        },
     },
 }
 </script>
