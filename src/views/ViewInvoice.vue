@@ -33,7 +33,7 @@
             <th scope="row">{{$t("currency")}}</th>
             <td>{{invoice.currency}}</td>
             <th scope="row">PDF</th>
-            <td><a :href="api + 'invoices/' + invoice.id + '.pdf'"><i class="fi-page-export-pdf"> PDF</i></a></td>
+            <td><i @click="getPdf" class="fi-page-export-pdf pointer"> PDF</i></td>
         </tr>
         </tbody>
     </table>
@@ -158,6 +158,23 @@ export default {
                         this.invoice = response.data.invoice
                         })
                     .catch(error => console.log(error))
+        },
+
+        getPdf() {
+            axios({
+                method: 'get',
+                url: process.env.VUE_APP_API_URL + 'invoices/' + this.invoice.id + '.pdf?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token,
+                responseType: 'arraybuffer'
+            })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', this.invoice.id + '.pdf') //or any other extension
+                document.body.appendChild(link)
+                link.click()
+                })
+            .catch(error => console.log(error))
         },
     },
 }

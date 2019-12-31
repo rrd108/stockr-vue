@@ -84,5 +84,6 @@ input.price {
 }
 .pointer {
     cursor: pointer;
+    color:#2ba6cb;
 }
 </style>
