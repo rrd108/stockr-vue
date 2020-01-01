@@ -51,7 +51,13 @@
                     <li v-if="appCompany"><a href="#" @click.prevent="$store.commit('unsetCompany')">
                       <i class="fi-torso"> {{appCompany}}</i></a>
                     </li>
-                    <li><a href="/" @click.prevent="logout" title="logout">{{this.$store.state.user.email}} <i class="fi-power"></i></a></li>
+                    <li @mouseenter="inUserMenu = true" @mouseleave="inUserMenu = false">
+                      <a href="/" @click.prevent="logout" title="logout">{{this.$store.state.user.email}} <i class="fi-power"></i></a>
+                      <ul v-show="inUserMenu" class="nested menu">
+                        <li><a href="/" @click.prevent="logout" title="logout">{{$t("logout")}} <i class="fi-power"></i></a></li>
+                        <!--<li><router-link :to="`/${$i18n.locale}/settings`">{{$t("settings")}} <i class="fi-widget"></i></router-link></li>-->
+                      </ul>
+                    </li>
                   </ul>
               </div>
           </div>
@@ -68,6 +74,7 @@ export default {
       inMasterDataMenu : false,
       inInvoicesMenu: false,
       inStockMenu: false,
+      inUserMenu: false,
     }
   },
 
