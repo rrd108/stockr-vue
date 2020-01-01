@@ -54,6 +54,11 @@ const routes = [
         component: () => import('../views/AddProduct.vue')
       },
       {
+        path: 'stock@date',
+        name: 'stock@date',
+        component: () => import('../views/StockAtDate.vue')
+      },
+      {
         path: 'stock',
         name: 'stock',
         component: () => import('../views/Stock.vue')
