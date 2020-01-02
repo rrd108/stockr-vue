@@ -21,6 +21,7 @@
 </template>
 
 <script>
+//import axios from 'axios'
 import { required, sameAs } from 'vuelidate/lib/validators'
 
 export default {
