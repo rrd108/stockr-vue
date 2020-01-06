@@ -1,5 +1,5 @@
 <template>
-    <input type="text" v-model="rowFilter" autocomplete="off" placeholder="Search">
+    <input type="text" v-model="rowFilter" autocomplete="off" :placeholder="$t(placeholder)">
 </template>
 
 <script>
@@ -10,7 +10,8 @@ export default {
         search: {
             type: String,
             required: true
-        }
+        },
+        placeholder : String,
     },
 
     data() {

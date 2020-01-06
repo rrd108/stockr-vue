@@ -372,4 +372,28 @@ i.avg {
 i.last {
     background: #cdffc1;
 }
+@media screen and (max-width: 40em) {
+    thead {
+      display: none;
+    }
+    td {
+        display: flex;
+    }
+    td::before {
+        width: 40%;
+        text-align: left;
+        font-weight: bold;
+    }
+    td:nth-of-type(1):before { content: "Termék"; }
+    td:nth-of-type(2):before { content: "Készlet"; }
+    td:nth-of-type(3):before { content: "Mennyiség"; }
+    td:nth-of-type(4):before { content: "Költség"; }
+    td:nth-of-type(5):before { content: "Eladási ár"; }
+    td:nth-of-type(6):before { content: "Ár"; }
+    td:nth-of-type(7):before { content: "Összeg"; }
+    td:nth-of-type(8):before { content: "ÁFA"; }
+    td:nth-of-type(9):before { content: "ÁFA"; }
+    td:nth-of-type(10):before { content: "Bruttó"; }
+
+}
 </style>

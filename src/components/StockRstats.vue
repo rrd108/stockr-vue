@@ -90,7 +90,7 @@ export default {
   color: #fff;
 }
 i {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
 }
 .w1 {
   background: #5A3BB3;

@@ -86,4 +86,10 @@ input.price {
     cursor: pointer;
     color:#2ba6cb;
 }
+
+@media screen and (max-width: 40em) {
+    th, td {
+      display: block;
+    }
+}
 </style>

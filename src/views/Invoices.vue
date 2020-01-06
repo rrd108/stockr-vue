@@ -23,12 +23,12 @@
             </tr>
             <tr>
                 <td>{{searchResultsCount}}</td>
-                <td><filter-input :search="'invoices.number'" /></td>
-                <td><filter-input :search="'invoices.date'" /></td>
-                <td><filter-input :search="'invoices.partner.name'" /></td>
-                <td><filter-input :search="'invoices.storage.name'" /></td>
-                <td><filter-input :search="'invoices.invoicetype.name'" /></td>
-                <td class="text-right"><filter-input :search="'invoices.amount'" /></td>
+                <td><filter-input :search="'invoices.number'" placeholder="number" /></td>
+                <td><filter-input :search="'invoices.date'" placeholder="date" /></td>
+                <td><filter-input :search="'invoices.partner.name'" placeholder="partner" /></td>
+                <td><filter-input :search="'invoices.storage.name'" placeholder="storage" /></td>
+                <td><filter-input :search="'invoices.invoicetype.name'" placeholder="invoice type" /></td>
+                <td class="text-right"><filter-input :search="'invoices.amount'" placeholder="amount" /></td>
             </tr>
         </thead>
         <tbody is="filtered-tbody" :invoices="invoices" @setCount="setCount($event)"></tbody>
@@ -67,3 +67,4 @@ export default {
     }
 }
 </script>
+
