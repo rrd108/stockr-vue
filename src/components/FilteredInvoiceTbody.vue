@@ -62,6 +62,24 @@ export default {
   background: none;
   font-size: 2rem;
 }
+
+.in:hover::before, .out:hover::before {
+    animation: grow 2000ms ease-out infinite;
+    transform-origin: 0 50%;
+}
+.out:hover::before {
+    transform-origin: 100% 50%;
+}
+@keyframes grow {
+    10% {
+        transform: scaleX(.75);
+    }
+    100% {
+        transform: scaleX(1.5);
+    }
+}
+
+
 .in::before {
   color: #bc50b1;
 }
