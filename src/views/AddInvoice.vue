@@ -52,6 +52,8 @@
             <thead>
                 <tr :class="isSale ? 'out' : 'in'">
                     <th class="text-center" scope="col">{{$t("product")}}</th>
+                    <th class="text-center" scope="col">{{$t("size")}}</th>
+                    <th class="text-center" scope="col">{{$t("code")}}</th>
                     <th class="text-center" scope="col">{{$t("stock")}}</th>
                     <th class="text-center" scope="col">{{$t("quantity")}}</th>
                     <th v-show="isSale" class="text-center" scope="col">{{$t("cost")}}</th>
@@ -73,10 +75,12 @@
                         <input type="text" v-model.lazy="product" @change="setSelectedProduct" ref="product" list="products" autocomplete="off">
                         <datalist id="products">
                             <option v-for="product in products" :key="product.id">
-                                {{ product.name }} {{ product.size ? '> ' + product.size : ''}} {{ product.code ? '> ' + product.code : ''}}
+                                {{ product.name }} {{ product.size ? '> ' + product.size : ''}} {{ product.code ? '# ' + product.code : ''}}
                             </option>
                         </datalist>
                     </td>
+                    <td class="text-right">{{selectedProduct.size}}</td>
+                    <td class="text-right">{{selectedProduct.code}}</td>
                     <td class="text-right">{{selectedProduct.stock | toNum}}</td>
                     <td class="text-right">
                         <input v-model="quantity" type="number" class="quantity" required="required" step="0.01">
@@ -110,6 +114,8 @@
                 </tr>
                 <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
                     <td>{{invoiceItem.name}}</td>
+                    <td>{{invoiceItem.size}}</td>
+                    <td>{{invoiceItem.code}}</td>
                     <td class="text-right">{{invoiceItem.stock | toNum}}</td>
                     <td class="text-right">{{invoiceItem.quantity}}</td>
                     <td v-show="isSale" class="text-right">
@@ -140,6 +146,8 @@
                             <i class="fi-check"> {{$t("save")}}</i>
                         </button>
                     </td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td class="text-right">{{invoiceItems.reduce((total, item) => total + parseInt(item.quantity), 0)}}</td>
                     <td v-show="isSale"></td>
@@ -258,6 +266,8 @@ export default {
                     uuid: Math.random().toString().substr(2),
                     product_id: this.selectedProduct.id,
                     name: this.selectedProduct.name,
+                    size: this.selectedProduct.size,
+                    code: this.selectedProduct.code,
                     stock: this.selectedProduct.stock,
                     quantity: this.quantity,
                     avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
@@ -324,7 +334,26 @@ export default {
             this.isSale = this.selectedPartner.group.percentage ? true : false
         },
         setSelectedProduct() {
-            this.selectedProduct = this.products.find(product => product.name == this.product.split('>')[0].trim())
+            this.selectedProduct = this.products.find(product => {
+                let chunks = this.product.split('>')
+                let productName = chunks[0]
+                if (chunks.length === 1) {
+                    if (product.name == productName.trim()) {
+                        return product
+                    }
+                }
+                if (chunks.length === 2) {
+                    if (product.name == productName.trim() && product.size == chunks[1].trim()) {
+                        return product
+                    }
+                }
+                chunks = this.product.split('#')
+                if (chunks.length === 2) {
+                    if (product.name == productName.trim() && product.code == chunks[1].trim()) {
+                        return product
+                    }
+                }
+            })
             this.product = this.selectedProduct.name
             this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
         },
