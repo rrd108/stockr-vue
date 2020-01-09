@@ -72,7 +72,9 @@
                     <td>
                         <input type="text" v-model.lazy="product" @change="setSelectedProduct" ref="product" list="products" autocomplete="off">
                         <datalist id="products">
-                            <option v-for="product in products" :key="product.id">{{ product.name }}</option>
+                            <option v-for="product in products" :key="product.id">
+                                {{ product.name }} {{ product.size ? '> ' + product.size : ''}} {{ product.code ? '> ' + product.code : ''}}
+                            </option>
                         </datalist>
                     </td>
                     <td class="text-right">{{selectedProduct.stock | toNum}}</td>
@@ -322,7 +324,7 @@ export default {
             this.isSale = this.selectedPartner.group.percentage ? true : false
         },
         setSelectedProduct() {
-            this.selectedProduct = this.products.find(product => product.name == this.product)
+            this.selectedProduct = this.products.find(product => product.name == this.product.split('>')[0].trim())
             this.product = this.selectedProduct.name
             this.price = (this.selectedProduct.lastPurchasePrice * (1 + (this.selectedPartner.group.percentage / 100))).toFixed(2)
         },
