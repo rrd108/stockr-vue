@@ -4,9 +4,7 @@ export default {
             return this.$store.state.search
         },
         filteredItems() {
-            let filteredItems = this[this.model]
-
-            filteredItems.forEach(item => {
+            this[this.model].forEach(item => {
                 item.hidden = false
                 for (let [field, value] of Object.entries(this.search)) {
 
@@ -30,7 +28,9 @@ export default {
                 }
             })
 
-            this.$emit('setCount', filteredItems.filter(item => item.hidden !== true).length)
+            const filteredItems = this[this.model].filter(item => item.hidden !== true)
+
+            this.$emit('setCount', filteredItems.length)
             return filteredItems
         }
     },

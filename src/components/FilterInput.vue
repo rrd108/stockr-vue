@@ -22,7 +22,7 @@ export default {
 
     watch: {
         rowFilter(val) {
-            this.$store.commit('setSearch', {field: this.search, val: val});
+            this.$store.commit('setSearch', {field: this.search, val: val})
         }
     }
 }

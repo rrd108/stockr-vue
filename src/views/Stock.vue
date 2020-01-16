@@ -18,11 +18,7 @@
                 <td><filter-input :search="'products.code'" placeholder="code" /></td>
                 <td><filter-input :search="'products.size'" placeholder="size" /></td>
                 <td class="text-right">
-                    {{products.reduce((sum, product) =>
-                        sum + (product.hidden ? 0 : parseInt(product.stock))
-                        , 0) | toNum(0)
-                    }}
-                    {{$t("pcs")}}
+                    {{stock | toNum(0)}} {{$t("pcs")}}
                 </td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)) , 0)  | toCurrency}}</td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
@@ -54,7 +50,12 @@ export default {
     computed: {
         products() {
             return this.$store.state.products
-        }
+        },
+        stock() {
+            return this.products.reduce((sum, product) =>
+                sum + ((product.hidden || !product.stock) ? 0 : parseInt(product.stock)),
+                0)
+        },
     },
 
     created() {
