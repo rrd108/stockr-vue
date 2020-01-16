@@ -75,6 +75,7 @@ export default {
     logout() {
       this.$store.commit('removeUser');
       localStorage.removeItem('user');
+       this.$router.push('/')
     }
   }
 }
