@@ -85,7 +85,7 @@ router.beforeEach((to, from, next) => {
 
   if (to.name !== 'home') {
     if (!store.state.user.email) {
-      next('/')
+      next({ path: '/', query: { redirect: to.path } })
     } else {
       next() // go to wherever I'm going
     }

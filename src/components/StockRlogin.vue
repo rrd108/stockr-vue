@@ -81,6 +81,9 @@ export default {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
       this.$store.commit('saveUser', user);
+      if (this.$router.history.current.query.redirect) {
+         this.$router.push({ path: this.$router.history.current.query.redirect})
+      }
     }
   },
 
