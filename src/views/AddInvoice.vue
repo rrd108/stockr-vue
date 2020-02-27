@@ -100,6 +100,8 @@
                     <td v-show="isSale" class="text-right">{{selectedPartner.group ? selectedProduct.lastPurchasePrice * (1 + (selectedPartner.group.percentage / 100)) : 0 | toCurrency(currency)}}</td>
                     <td class="text-right">
                         <input v-model="price" type="number" class="price text-right" required="required" step="0.01">
+                        <span class="avg">{{((price / selectedProduct.avaragePurchasePrice) - 1) * 100 | toNum}}%</span>
+                        <span class="last">{{((price / selectedProduct.lastPurchasePrice) - 1) * 100 | toNum}}%</span>
                     </td>
                     <td class="text-right">{{price * quantity | toCurrency(currency)}}</td>
                     <td class="text-right">{{selectedProduct.vat}} %</td>
@@ -391,16 +393,16 @@ div.sale input {
     width: 0;
     height: 0;
 }
-i.avg, i.last {
+.avg, .last {
     font-size: .8rem;
     margin: .2rem;
     padding: .25rem .5rem;
     border-radius: .5rem;
 }
-i.avg {
+.avg {
     background: #d0eff4;
 }
-i.last {
+.last {
     background: #cdffc1;
 }
 @media screen and (max-width: 40em) {
