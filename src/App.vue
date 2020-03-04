@@ -10,6 +10,7 @@
 
 import StockRheader from '@/components/StockRheader.vue'
 import StockRcompany from '@/components/StockRcompany.vue'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'app',
@@ -19,16 +20,7 @@ export default {
     StockRcompany
   },
 
-  computed : {
-      isLoggedIn() {
-        let now = (new Date).getTime()
-        let expired = 7 * 24 * 60 * 60 * 1000
-        if ((now - this.$store.state.user.lastLogin) > expired) {
-          return false
-        }
-        return this.$store.state.user.email ? true : false
-      },
-  },
+  computed : mapGetters(['isLoggedIn']),
 
   created() {
     window.addEventListener('keypress', this.shortCuts)

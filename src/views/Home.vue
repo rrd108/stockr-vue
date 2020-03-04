@@ -9,6 +9,7 @@
 // @ is an alias to /src
 import StockRlogin from '@/components/StockRlogin.vue'
 import StockRstats from '@/components/StockRstats'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'home',
@@ -18,11 +19,6 @@ export default {
     StockRstats
   },
 
-  computed: {
-      isLoggedIn() {
-        return this.$store.state.user.email ? true : false;
-      }
-  },
-
+  computed : mapGetters(['isLoggedIn']),
 }
 </script>

@@ -44,6 +44,16 @@ export default new Vuex.Store({
       localStorage.removeItem('company')
     },
   },
+  getters: {
+    isLoggedIn: state => {
+      let now = (new Date).getTime()
+      let expired = 7 * 24 * 60 * 60 * 1000
+      if ((now - state.user.lastLogin) > expired) {
+        return false
+      }
+      return state.user.email ? true : false
+    }
+  },
   actions: {
     getGroups: ({ commit, state }) => {
       axios.get(process.env.VUE_APP_API_URL + 'groups.json?company=' + state.company.id + '&ApiKey=' + state.user.api_token)
