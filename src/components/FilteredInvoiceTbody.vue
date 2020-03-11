@@ -47,7 +47,7 @@ export default {
         invoiceNumber(value) {
             if (value.indexOf('|') != -1) {
                 value = value.split('|');
-                value = '<a href="' + value[2] + '">\
+                value = value[0] + ' <a href="' + value[2] + '">\
                     <i class="fi-page-pdf"></i>\
                     </a> ' + value[1];
             }
