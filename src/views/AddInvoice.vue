@@ -183,6 +183,7 @@ export default {
             invoicetype_id: 0,
             invoiceItems: [],
             isSale: true,
+            number: 0,
             partner: '',
             price: 0,
             product: '',
@@ -204,16 +205,6 @@ export default {
         },
         isMasterDataLoaded() {
             return this.buyerGroups.length && this.invoicetypes.length && this.partners.length && this.products.length && this.storages.length
-        },
-        number() {
-            let year = new Date().getFullYear()
-            let lastSellInvoice = this.$store.state.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
-            let number = year + '/' + 1
-            if (lastSellInvoice) {
-                number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
-                number = year + '/' + number
-            }
-            return number
         },
         partners() {
             return this.$store.state.partners
@@ -255,6 +246,7 @@ export default {
         if(Object.keys(this.$store.state.storages).length === 0) {
             this.$store.dispatch('getStorages')
         }
+        this.number = this.setNumber()
     },
 
     mounted() {
@@ -334,6 +326,16 @@ export default {
         setByPartner() {
             this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
             this.isSale = this.selectedPartner.group.percentage ? true : false
+        },
+        setNumber() {
+            let year = new Date().getFullYear()
+            let lastSellInvoice = this.$store.state.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
+            let number = year + '/' + 1
+            if (lastSellInvoice) {
+                number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
+                number = year + '/' + number
+            }
+            return number
         },
         setSelectedProduct() {
             this.selectedProduct = this.products.find(product => {
