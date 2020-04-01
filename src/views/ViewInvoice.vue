@@ -154,10 +154,10 @@ export default {
 
         generateInvoice() {
             axios.get(process.env.VUE_APP_API_URL + 'invoices/billingo/' + this.invoice.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-                    .then((response) => {
-                        this.invoice = response.data.invoice
-                        })
-                    .catch(error => console.log(error))
+                .then((response) => {
+                    this.invoice.number = response.data.invoice.number
+                    })
+                .catch(error => console.log(error))
         },
 
         getPdf() {
