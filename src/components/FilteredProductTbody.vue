@@ -1,7 +1,11 @@
 <template>
     <tbody>
         <tr v-for="product in filteredItems" :key="product.id">
-            <td>{{product.name}}</td>
+            <td>
+                <router-link :to="'products/' + product.id">
+                    <i class="fi-foot"> {{product.name}}</i>
+                </router-link>
+            </td>
             <td>{{product.code}}</td>
             <td>{{product.size}}</td>
             <td class="text-right">{{product.stock | toNum(0)}}</td>
