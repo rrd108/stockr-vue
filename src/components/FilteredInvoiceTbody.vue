@@ -22,6 +22,7 @@
 
 <script>
 import RowFilterMixin from '@/mixins/RowFilterMixin'
+import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
 
 export default {
     name: 'FilteredTbody',
@@ -40,20 +41,9 @@ export default {
     },
 
     mixins: [
+        InvoiceNumberFilterMixin,
         RowFilterMixin
     ],
-
-    filters : {
-        invoiceNumber(value) {
-            if (value.indexOf('|') != -1) {
-                value = value.split('|');
-                value = value[0] + ' <a href="' + value[2] + '">\
-                    <i class="fi-page-pdf"></i>\
-                    </a> ' + value[1];
-            }
-            return value;
-        }
-    }
 }
 </script>
 
