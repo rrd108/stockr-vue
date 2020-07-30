@@ -110,10 +110,10 @@ export default {
             return this.product.items.reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)
         },
         runoutDate() {
-            let today = new Date()
-            let daysSinceLastPurchase = (today - new Date(this.lastPurchase.invoice.date)) / (1000 * 60 * 60 *24)
+            const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
+            const daysSinceLastPurchase = (new Date() - lastPurchaseDate) / (1000 * 60 * 60 *24)
             let runoutDays = this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
-            return today.setDate(today.getDate() + runoutDays)
+            return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
         },
         totalSells() {
             return this.product.items.reduce((total, item) => total + (item.invoice.sale ? item.quantity : 0), 0)
