@@ -53,6 +53,29 @@
     </table>
 
     <table>
+      <thead>
+        <tr>
+          <th>{{$t("partner")}}</th>
+          <th>{{$t("turnover")}}</th>
+          <th>{{$t("amount")}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="customer in customers" :key="customer">
+          <th>
+            {{product.items.find(item => item.Partners.id == customer).invoice.partner.name}}
+          </th>
+          <td>
+            {{product.items.filter(item => item.Partners.id == customer).reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)}}
+          </td>
+          <td>
+            {{product.items.filter(item => item.Partners.id == customer).reduce((total, item) => total + (item.invoice.sale ? item.quantity * item.price : 0), 0) | toCurrency}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
         <thead>
             <tr>
                 <th class="text-center" scope="col">{{$t("sale")}}</th>
@@ -92,46 +115,49 @@ import axios from 'axios'
 import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
 
 export default {
-    name: 'ViewProduct',
+  name: 'ViewProduct',
 
-    data() {
-        return {
-            currency: this.$store.state.company.currency,
-            isLoaded: false,
-            product: {},
-        }
+  data() {
+    return {
+      currency: this.$store.state.company.currency,
+      isLoaded: false,
+      product: {},
+    }
+  },
+
+  computed : {
+    lastPurchase() {
+      return this.product.items.filter(item => item.invoice.sale == false).reduce((prev, current) => prev.invoice.date < current.invoice.date ? current : prev)
     },
-
-    computed : {
-        lastPurchase() {
-            return this.product.items.filter(item => item.invoice.sale == false).reduce((prev, current) => prev.invoice.date < current.invoice.date ? current : prev)
-        },
-        stock() {
-            return this.product.items.reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)
-        },
-        runoutDate() {
-            const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
-            const daysSinceLastPurchase = (new Date() - lastPurchaseDate) / (1000 * 60 * 60 *24)
-            let runoutDays = this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
-            return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
-        },
-        totalSells() {
-            return this.product.items.reduce((total, item) => total + (item.invoice.sale ? item.quantity : 0), 0)
-        },
+    customers() {
+      return [...new Set(this.product.items.filter(item => item.Partners.group_id != 4).map(item => item.Partners.id))].sort()
     },
-
-    mixins: [
-        InvoiceNumberFilterMixin,
-    ],
-
-    created() {
-        axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-            .then(response => {
-                this.isLoaded = true
-                this.product = response.data.product
-            })
-            .catch(err => console.error(err))
+    stock() {
+      return this.product.items.reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)
     },
+    runoutDate() {
+      const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
+      const daysSinceLastPurchase = (new Date() - lastPurchaseDate) / (1000 * 60 * 60 *24)
+      let runoutDays = this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
+      return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
+    },
+    totalSells() {
+      return this.product.items.reduce((total, item) => total + (item.invoice.sale ? item.quantity : 0), 0)
+    },
+  },
+
+  mixins: [
+      InvoiceNumberFilterMixin,
+  ],
+
+  created() {
+      axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+          .then(response => {
+              this.isLoaded = true
+              this.product = response.data.product
+          })
+          .catch(err => console.error(err))
+  },
 
 }
 </script>
