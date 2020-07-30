@@ -8,6 +8,7 @@
                 <th scope="col">{{$t("code")}}</th>
                 <th scope="col">{{$t("size")}}</th>
                 <th scope="col">{{$t("stock")}}</th>
+                <th scope="col">{{$t("sells")}}</th>
                 <th scope="col" rowspan="2">{{$t("avarage purchase price")}}</th>
                 <th scope="col" rowspan="2">{{$t("last purchase price")}}</th>
                 <th scope="col">{{$t("amount")}}</th>
@@ -19,6 +20,9 @@
                 <td><filter-input :search="'products.size'" placeholder="size" /></td>
                 <td class="text-right">
                     {{stock | toNum}} {{$t("pcs")}}
+                </td>
+                <td class="text-right">
+                    {{sells | toNum}} {{$t("pcs")}}
                 </td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)) , 0)  | toCurrency}}</td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
@@ -50,6 +54,11 @@ export default {
     computed: {
         products() {
             return this.$store.state.products
+        },
+        sells() {
+            return this.products.reduce((sum, product) =>
+                sum + ((product.hidden || !product.sells) ? 0 : parseInt(product.sells)),
+                0)
         },
         stock() {
             return this.products.reduce((sum, product) =>

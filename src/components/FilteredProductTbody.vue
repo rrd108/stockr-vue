@@ -9,6 +9,7 @@
             <td>{{product.code}}</td>
             <td>{{product.size}}</td>
             <td class="text-right">{{product.stock | toNum(1)}}</td>
+            <td class="text-right">{{product.sells | toNum(1)}}</td>
             <td class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
             <td class="text-right">{{product.lastPurchasePrice | toCurrency}}</td>
             <td class="text-right">{{product.stock * product.avaragePurchasePrice | toCurrency}}</td>
