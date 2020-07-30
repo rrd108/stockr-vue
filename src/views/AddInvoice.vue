@@ -81,7 +81,7 @@
                     </td>
                     <td class="text-right">{{selectedProduct.size}}</td>
                     <td class="text-right">{{selectedProduct.code}}</td>
-                    <td class="text-right">{{selectedProduct.stock | toNum}}</td>
+                    <td class="text-right">{{selectedProduct.stock | toNum(1)}}</td>
                     <td class="text-right">
                         <input v-model="quantity" type="number" class="quantity" required="required" step="0.01">
                     </td>
@@ -118,7 +118,7 @@
                     <td>{{invoiceItem.name}}</td>
                     <td>{{invoiceItem.size}}</td>
                     <td>{{invoiceItem.code}}</td>
-                    <td class="text-right">{{invoiceItem.stock | toNum}}</td>
+                    <td class="text-right">{{invoiceItem.stock | toNum(1)}}</td>
                     <td class="text-right">{{invoiceItem.quantity}}</td>
                     <td v-show="isSale" class="text-right">
                         <i class="fi-price-tag avg">

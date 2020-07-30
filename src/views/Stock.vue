@@ -18,7 +18,7 @@
                 <td><filter-input :search="'products.code'" placeholder="code" /></td>
                 <td><filter-input :search="'products.size'" placeholder="size" /></td>
                 <td class="text-right">
-                    {{stock | toNum(0)}} {{$t("pcs")}}
+                    {{stock | toNum(1)}} {{$t("pcs")}}
                 </td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)) , 0)  | toCurrency}}</td>
                 <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>

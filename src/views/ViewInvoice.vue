@@ -64,7 +64,7 @@
         <tfoot>
             <tr>
                 <td>{{$t("total")}}</td>
-                <td class="text-right">{{invoice.items.reduce((total, item) => total + parseInt(item.quantity), 0) | toNum}}</td>
+                <td class="text-right">{{invoice.items.reduce((total, item) => total + parseInt(item.quantity), 0) | toNum(1)}}</td>
                 <td></td>
                 <td class="text-right">{{invoice.items.reduce((total, item) => total + item.price * item.quantity, 0) | toCurrency(currency)}}</td>
                 <td></td>

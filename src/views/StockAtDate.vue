@@ -21,7 +21,7 @@
                 <td class="text-right">
                     {{products.reduce((sum, product) =>
                         sum + (product.hidden ? 0 : parseInt(product.stock))
-                        , 0) | toNum(0)
+                        , 0) | toNum(1)
                     }}
                     {{$t("pcs")}}
                 </td>
