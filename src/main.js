@@ -32,7 +32,7 @@ Vue.filter('toLocaleDateString', function (value) {
 });
 
 Vue.filter('toNum', function (value, precision) {
-  return precision ? value : parseInt(value || 0)
+  return precision ? parseFloat(value).toPrecision(precision) : parseInt(value || 0)
 });
 
 Vue.filter('toNumFormat', function (value, decimals = 0, dec_point, thousands_sep) {
