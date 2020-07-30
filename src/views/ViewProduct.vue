@@ -36,7 +36,7 @@
         </tr>
         <tr>
             <th scope="row">{{$t("stock")}}</th>
-            <td class="text-right">{{stock | toNum}}</td>
+            <td class="text-right">{{stock | toNum(1)}}</td>
             <th scope="row">{{$t("stock")}}</th>
             <td class="text-right">{{stock * product.avaragePurchasePrice | toCurrency(currency)}}</td>
             <th scope="row">{{$t("stock")}}</th>
@@ -46,7 +46,7 @@
             <th scope="row">{{$t("last purchase")}}</th>
             <td class="text-right">{{lastPurchase.invoice.date | toLocaleDateString}}</td>
             <th scope="row">{{$t("sells")}}</th>
-            <td class="text-right">{{totalSells | toNum}}</td>
+            <td class="text-right">{{totalSells | toNum(1) }}</td>
             <th scope="row">{{$t("runout")}}</th>
             <td class="text-right">{{runoutDate | toLocaleDateString}}</td>
         </tr>
@@ -78,7 +78,7 @@
                 <td>{{item.invoice.date | toLocaleDateString}}</td>
                 <td>{{item.invoice.partner.name}}</td>
                 <td>{{item.invoice.storage.name}}</td>
-                <td class="text-right">{{item.invoice.sale ? -1 * item.quantity : item.quantity | toNum}}</td>
+                <td class="text-right">{{item.invoice.sale ? -1 * item.quantity : item.quantity | toNum(1) }}</td>
                 <td class="text-right">{{item.price | toCurrency(currency)}}</td>
                 <td class="text-right">{{item.invoice.sale ? item.price * item.quantity : -1 * item.price * item.quantity | toCurrency(currency)}}</td>
             </tr>
