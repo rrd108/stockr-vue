@@ -339,21 +339,31 @@ export default {
         },
         setSelectedProduct() {
             this.selectedProduct = this.products.find(product => {
-                let chunks = this.product.split('>')
+                // productName: "product #CODE > 1kg"
+                let chunks = this.product.split(/[>#]/)
                 let productName = chunks[0]
-                if (chunks.length === 1) {
+
+                if (chunks.length === 1) {  // we have only product name
                     if (product.name == productName.trim()) {
                         return product
                     }
                 }
-                if (chunks.length === 2) {
-                    if (product.name == productName.trim() && product.size == chunks[1].trim()) {
-                        return product
+
+                if (chunks.length === 2) {  // we have product name AND (size OR code)
+                    if (this.product.indexOf('#')) {
+                        if (product.name == productName.trim() && product.code == chunks[1].trim()) {
+                            return product
+                        }
+                    }
+                    if (this.product.indexOf('>')) {
+                        if (product.name == productName.trim() && product.size == chunks[1].trim()) {
+                            return product
+                        }
                     }
                 }
-                chunks = this.product.split('#')
-                if (chunks.length === 2) {
-                    if (product.name == productName.trim() && product.code == chunks[1].trim()) {
+
+                if (chunks.length === 3) {  // we have product name AND size AND code
+                    if (product.name == productName.trim() && product.size == chunks[1].trim() && product.code == chunks[2].trim()) {
                         return product
                     }
                 }
