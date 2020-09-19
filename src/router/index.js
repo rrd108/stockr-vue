@@ -77,6 +77,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  //base: '/stockr/', //BB
   mode: 'history',
   routes
 })
