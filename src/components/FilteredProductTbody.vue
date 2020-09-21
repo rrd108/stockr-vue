@@ -2,6 +2,7 @@
     <tbody>
         <tr v-for="product in filteredItems" :key="product.id">
             <td>
+        <i class="fi-pencil" @click="edit(product.id)"></i>
                 <router-link :to="'products/' + product.id">
                     <i class="fi-foot"> {{product.name}}</i>
                 </router-link>
@@ -41,5 +42,24 @@ export default {
         RowFilterMixin
     ],
 
+  methods: {
+    edit(id) {
+      // TODO have a form for edit name, code, size, vat, hidden
+      console.log(this.products.find(product => product.id == id))
+    }
+  },
 }
 </script>
+
+<style scoped>
+td i.fi-pencil {
+    visibility: hidden;
+}
+i.fi-pencil {
+    margin-right: 1rem;
+}
+td:hover i.fi-pencil {
+    visibility: visible;
+    cursor: pointer;
+}
+</style>
