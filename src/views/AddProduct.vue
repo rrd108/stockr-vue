@@ -62,7 +62,7 @@ export default {
             const qs = require('qs');
             let data = {
                 company_id: this.$store.state.company.id,
-                name: this.name,
+                name: this.name.replace(/ +(?= )/g,''),
                 code: this.code,
                 size: this.size,
                 vat: this.vat,
