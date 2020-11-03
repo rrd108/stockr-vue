@@ -24,6 +24,9 @@
             <label for="size">{{$t("address")}}</label>
             <input type="text" v-model="address">
 
+            <label for="taxnumber">{{$t("tax number")}}</label>
+            <input type="text" v-model="taxnumber">
+
             <label for="size">{{$t("phone")}}</label>
             <input type="text" v-model="phone">
 
@@ -54,6 +57,7 @@ export default {
             isSaved: false,
             name: '',
             phone: '',
+            taxnumber: '',
             zip: '',
         }
     },
@@ -86,6 +90,7 @@ export default {
                 group_id: this.groups.find(group => group.name == this.group).id,
                 name: this.name,
                 phone: this.phone,
+                taxnumber: this.taxnumber,
                 zip: this.zip,
             }
             let data4vue = {
