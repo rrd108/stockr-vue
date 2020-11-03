@@ -4,7 +4,12 @@
       <table class="vertical-table" v-if="isLoaded">
         <tr>
             <th scope="row">{{$t("product")}}</th>
-            <td>{{product.name}} {{product.code}}</td>
+            <td>
+              <span @click="setForEdit('name')" v-show="editProductProperty != 'name'">{{product.name}}</span>
+              <input type="text" @blur="edit('name')" v-model="product.name" v-show="editProductProperty == 'name'">
+               -
+              <span @click="edit('code')">{{product.code}}</span>
+            </td>
             <th scope="row">{{$t("size")}}</th>
             <td>{{product.size}}</td>
             <th scope="row">{{$t("vat")}}</th>
@@ -120,6 +125,7 @@ export default {
   data() {
     return {
       currency: this.$store.state.company.currency,
+      editProductProperty:'',
       isLoaded: false,
       product: {},
     }
@@ -159,9 +165,26 @@ export default {
           .catch(err => console.error(err))
   },
 
+  methods: {
+    setForEdit(property) {
+      this.editProductProperty = property
+    },
+    edit(property) {
+      this.editProductProperty = false;
+      // TODO send to backend
+      console.log(property)
+      console.log(this.product[property])
+    }
+  },
+
 }
 </script>
 
 <style scoped>
-
+span {
+  cursor: pointer;
+}
+span:hover {
+  background-color: #ffc;
+}
 </style>>
