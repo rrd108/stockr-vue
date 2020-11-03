@@ -24,7 +24,7 @@
             <th scope="row">{{$t("profit")}}</th>
             <td class="text-right">
                 {{product.items.reduce((total, item) => total +
-                    (item.invoice.sale ? (item.price * item.quantity) : (-1 * item.price * item.quantity)), 0) | toCurrency(currency)}}
+                  (item.invoice.sale ? (item.price * item.quantity) : (-1 * item.price * item.quantity)), 0) | toCurrency(currency)}}
             </td>
         </tr>
         <tr>
