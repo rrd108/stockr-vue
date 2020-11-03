@@ -174,6 +174,11 @@ export default {
       // TODO send to backend
       console.log(property)
       console.log(this.product[property])
+      axios.put(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token, this.product)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(err => console.error(err))
     }
   },
 
