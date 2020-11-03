@@ -157,12 +157,12 @@ export default {
   ],
 
   created() {
-      axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-          .then(response => {
-              this.isLoaded = true
-              this.product = response.data.product
-          })
-          .catch(err => console.error(err))
+    axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+      .then(response => {
+        this.isLoaded = true
+        this.product = response.data.product
+      })
+      .catch(err => console.error(err))
   },
 
   methods: {
