@@ -12,7 +12,10 @@
               <input type="text" @blur="edit('code')" v-model="product.code" v-show="editProductProperty == 'code'">
             </td>
             <th scope="row">{{$t("size")}}</th>
-            <td>{{product.size}}</td>
+            <td>
+              <span @click="setForEdit('size')" v-show="editProductProperty != 'size'">#{{product.size}}</span>
+              <input type="text" @blur="edit('size')" v-model="product.size" v-show="editProductProperty == 'size'">
+            </td>
             <th scope="row">{{$t("vat")}}</th>
             <td>{{product.vat}} %</td>
         </tr>
