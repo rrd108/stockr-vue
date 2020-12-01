@@ -175,10 +175,8 @@ export default {
       let product = {}
       product[property] = this.product[property]
       axios.patch(`${process.env.VUE_APP_API_URL}/products/${this.$route.params.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`, product)
-      .then(response => {
-        this.$store.commit('updateProduct', {property: property, product: response.data.product})
-      })
-      .catch(err => console.error(err))
+        .then(response => this.$store.commit('updateProduct', {property: property, product: response.data.product}))
+        .catch(err => console.error(err))
     }
   },
 
