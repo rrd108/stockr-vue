@@ -8,7 +8,8 @@
               <span @click="setForEdit('name')" v-show="editProductProperty != 'name'">{{product.name}}</span>
               <input type="text" @blur="edit('name')" v-model="product.name" v-show="editProductProperty == 'name'">
                -
-              <span @click="edit('code')">{{product.code}}</span>
+              <span @click="setForEdit('code')" v-show="editProductProperty != 'code'">#{{product.code}}</span>
+              <input type="text" @blur="edit('code')" v-model="product.code" v-show="editProductProperty == 'code'">
             </td>
             <th scope="row">{{$t("size")}}</th>
             <td>{{product.size}}</td>
