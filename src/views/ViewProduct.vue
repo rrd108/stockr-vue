@@ -12,10 +12,7 @@
               <input type="text" @blur="edit('code')" v-model="product.code" v-show="editProductProperty == 'code'">
             </td>
             <th scope="row">{{$t("size")}}</th>
-            <td>
-              <span @click="setForEdit('size')" v-show="editProductProperty != 'size'">#{{product.size}}</span>
-              <input type="text" @blur="edit('size')" v-model="product.size" v-show="editProductProperty == 'size'">
-            </td>
+            <td><InlineEditInput propName="size" /></td>
             <th scope="row">{{$t("vat")}}</th>
             <td>{{product.vat}} %</td>
         </tr>
@@ -122,9 +119,12 @@
 <script>
 import axios from 'axios'
 import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
+import InlineEditInput from '@/components/InlineEditInput'
 
 export default {
   name: 'ViewProduct',
+
+  components: {InlineEditInput},
 
   data() {
     return {
