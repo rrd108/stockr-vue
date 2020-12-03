@@ -12,7 +12,7 @@
             <th scope="row">{{$t("size")}}</th>
             <td><quick-edit v-model="product.size" buttonCancelText="X" emptyText="méret" @input="edit('size')" /></td>
             <th scope="row">{{$t("vat")}}</th>
-            <td>{{product.vat}} %</td>
+            <td><quick-edit v-model="product.vat" buttonCancelText="X" emptyText="ÁFA" @input="edit('vat')" /> %</td>
         </tr>
         <tr>
             <th scope="row">{{$t("purchase")}}</th>
