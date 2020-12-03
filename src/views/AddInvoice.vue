@@ -429,6 +429,7 @@ div.sale input {
         text-align: left;
         font-weight: bold;
     }
+    /* TODO hardcoded texts */
     td:nth-of-type(1):before { content: "Termék"; }
     td:nth-of-type(2):before { content: "Méret"; }
     td:nth-of-type(3):before { content: "Kód"; }
