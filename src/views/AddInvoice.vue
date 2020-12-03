@@ -66,7 +66,7 @@
 
                     <th v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-center" scope="col">{{group.name}} <span class="small">{{group.percentage}}%</span></th>
 
-                    <th></th>
+                    <th>-</th>
                 </tr>
             </thead>
             <tbody>
@@ -430,15 +430,20 @@ div.sale input {
         font-weight: bold;
     }
     td:nth-of-type(1):before { content: "Termék"; }
-    td:nth-of-type(2):before { content: "Készlet"; }
-    td:nth-of-type(3):before { content: "Mennyiség"; }
-    td:nth-of-type(4):before { content: "Költség"; }
-    td:nth-of-type(5):before { content: "Eladási ár"; }
-    td:nth-of-type(6):before { content: "Ár"; }
-    td:nth-of-type(7):before { content: "Összeg"; }
-    td:nth-of-type(8):before { content: "ÁFA"; }
-    td:nth-of-type(9):before { content: "ÁFA"; }
-    td:nth-of-type(10):before { content: "Bruttó"; }
+    td:nth-of-type(2):before { content: "Méret"; }
+    td:nth-of-type(3):before { content: "Kód"; }
+    td:nth-of-type(4):before { content: "Készlet"; }
+    td:nth-of-type(5):before { content: "Mennyiség"; }
+    td:nth-of-type(6):before { content: "Költség"; }
+    td:nth-of-type(7):before { content: "Eladási ár"; }
+    td:nth-of-type(8):before { content: "Ár"; }
+    td:nth-of-type(9):before { content: "Összeg"; }
+    td:nth-of-type(10):before { content: "ÁFA"; }
+    td:nth-of-type(11):before { content: "ÁFA"; }
+    td:nth-of-type(12):before { content: "Bruttó"; }
+    td:nth-of-type(13):before { content: "Törzsvásárló"; }
+    td:nth-of-type(14):before { content: "Viszonteladó"; }
+    td:nth-of-type(15):before { content: "Kisker"; }
 
 }
 </style>
