@@ -43,6 +43,9 @@ export default new Vuex.Store({
       state.company = {}
       localStorage.removeItem('company')
     },
+    updateProduct: (state, update) => {
+      state.products.find(p => p.id == update.product.id)[update.property] = update.product[update.property]
+    },
   },
   getters: {
     isLoggedIn: state => {

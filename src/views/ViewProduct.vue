@@ -4,9 +4,13 @@
       <table class="vertical-table" v-if="isLoaded">
         <tr>
             <th scope="row">{{$t("product")}}</th>
-            <td>{{product.name}} {{product.code}}</td>
+            <td>
+              <quick-edit v-model="product.name" buttonCancelText="X" @input="edit('name')" />
+               -
+              <quick-edit v-model="product.code" buttonCancelText="X" emptyText="kód" @input="edit('code')" />
+            </td>
             <th scope="row">{{$t("size")}}</th>
-            <td>{{product.size}}</td>
+            <td><quick-edit v-model="product.size" buttonCancelText="X" emptyText="méret" @input="edit('size')" /></td>
             <th scope="row">{{$t("vat")}}</th>
             <td>{{product.vat}} %</td>
         </tr>
@@ -24,7 +28,7 @@
             <th scope="row">{{$t("profit")}}</th>
             <td class="text-right">
                 {{product.items.reduce((total, item) => total +
-                    (item.invoice.sale ? (item.price * item.quantity) : (-1 * item.price * item.quantity)), 0) | toCurrency(currency)}}
+                  (item.invoice.sale ? (item.price * item.quantity) : (-1 * item.price * item.quantity)), 0) | toCurrency(currency)}}
             </td>
         </tr>
         <tr>
@@ -113,13 +117,17 @@
 <script>
 import axios from 'axios'
 import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
+import QuickEdit from 'vue-quick-edit'
 
 export default {
   name: 'ViewProduct',
 
+  components: {QuickEdit},
+
   data() {
     return {
       currency: this.$store.state.company.currency,
+      editProductProperty:'',
       isLoaded: false,
       product: {},
     }
@@ -151,17 +159,36 @@ export default {
   ],
 
   created() {
-      axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
-          .then(response => {
-              this.isLoaded = true
-              this.product = response.data.product
-          })
-          .catch(err => console.error(err))
+    axios.get(process.env.VUE_APP_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+      .then(response => {
+        this.isLoaded = true
+        this.product = response.data.product
+      })
+      .catch(err => console.error(err))
+  },
+
+  methods: {
+    edit(property) {
+      this.editProductProperty = false;
+      let product = {}
+      product[property] = this.product[property]
+      axios.patch(`${process.env.VUE_APP_API_URL}/products/${this.$route.params.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`, product)
+        .then(response => this.$store.commit('updateProduct', {property: property, product: response.data.product}))
+        .catch(err => console.error(err))
+    }
   },
 
 }
 </script>
 
 <style scoped>
-
+span {
+  cursor: pointer;
+}
+span:hover {
+  background-color: #ffc;
+}
+.vue-quick-edit {
+  display: inline-block;
+}
 </style>>
