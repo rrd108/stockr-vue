@@ -5,17 +5,12 @@
         <tr>
             <th scope="row">{{$t("product")}}</th>
             <td>
-              <span @click="setForEdit('name')" v-show="editProductProperty != 'name'">{{product.name}}</span>
-              <input type="text" @blur="edit('name')" v-model="product.name" v-show="editProductProperty == 'name'">
+              <quick-edit v-model="product.name" buttonCancelText="X" @input="edit('name')" />
                -
-              <span @click="setForEdit('code')" v-show="editProductProperty != 'code'">#{{product.code}}</span>
-              <input type="text" @blur="edit('code')" v-model="product.code" v-show="editProductProperty == 'code'">
+              <quick-edit v-model="product.code" buttonCancelText="X" emptyText="kód" @input="edit('code')" />
             </td>
             <th scope="row">{{$t("size")}}</th>
-            <td>
-              <span @click="setForEdit('size')" v-show="editProductProperty != 'size'">#{{product.size}}</span>
-              <input type="text" @blur="edit('size')" v-model="product.size" v-show="editProductProperty == 'size'">
-            </td>
+            <td><quick-edit v-model="product.size" buttonCancelText="X" emptyText="méret" @input="edit('size')" /></td>
             <th scope="row">{{$t("vat")}}</th>
             <td>{{product.vat}} %</td>
         </tr>
@@ -122,9 +117,12 @@
 <script>
 import axios from 'axios'
 import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
+import QuickEdit from 'vue-quick-edit'
 
 export default {
   name: 'ViewProduct',
+
+  components: {QuickEdit},
 
   data() {
     return {
@@ -170,9 +168,6 @@ export default {
   },
 
   methods: {
-    setForEdit(property) {
-      this.editProductProperty = property
-    },
     edit(property) {
       this.editProductProperty = false;
       let product = {}
@@ -192,5 +187,8 @@ span {
 }
 span:hover {
   background-color: #ffc;
+}
+.vue-quick-edit {
+  display: inline-block;
 }
 </style>>
