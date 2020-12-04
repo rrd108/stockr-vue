@@ -1,82 +1,138 @@
 <template>
   <div class="small-12 columns content">
-    <h3>{{$t("products")}}</h3>
+    <h3>{{ $t("products") }} <i class="fi-filter" @click="showFilter = !showFilter"></i></h3>
+    <div v-show="showFilter">
+      <ul>
+        <li v-for="column in columns" :key="column.name" @click="column.show = !column.show" :class="{inactive : !column.show}"><i class="fi-eye"></i> {{ $t(column.name) }}</li>
+      </ul>
+    </div>
     <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col">{{$t("products")}} {{searchResultsCount}}</th>
-                <th scope="col">{{$t("code")}}</th>
-                <th scope="col">{{$t("size")}}</th>
-                <th scope="col">{{$t("stock")}}</th>
-                <th scope="col">{{$t("sells")}}</th>
-                <th scope="col" rowspan="2">{{$t("avarage purchase price")}}</th>
-                <th scope="col" rowspan="2">{{$t("last purchase price")}}</th>
-                <th scope="col">{{$t("amount")}}</th>
-                <th scope="col">{{$t("amount")}}</th>
-            </tr>
-            <tr>
-                <td><filter-input :search="'products.name'" placeholder="product" /></td>
-                <td><filter-input :search="'products.code'" placeholder="code" /></td>
-                <td><filter-input :search="'products.size'" placeholder="size" /></td>
-                <td class="text-right">
-                    {{stock | toNum}} {{$t("pcs")}}
-                </td>
-                <td class="text-right">
-                    {{sells | toNum}} {{$t("pcs")}}
-                </td>
-                <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)) , 0)  | toCurrency}}</td>
-                <td class="text-right">{{products.reduce((sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)) , 0) | toCurrency}}</td>
-            </tr>
-        </thead>
-        <tbody is="filtered-tbody" :products="products" @setCount="setCount($event)"></tbody>
+      <thead>
+        <tr>
+          <th scope="col">{{ $t("products") }} {{ searchResultsCount }}</th>
+          <th scope="col" v-for="column in columns" :key="column.name" v-show="column.show" :rowspan="column.rowspan">{{ $t(column.name) }}</th>
+          <th v-show="columns.find(column => column.name == 'avarage purchase price').show" scope="col">{{ $t("amount") }}</th>
+          <th v-show="columns.find(column => column.name == 'last purchase price').show" scope="col">{{ $t("amount") }}</th>
+        </tr>
+        <tr>
+          <td>
+            <filter-input :search="'products.name'" placeholder="product" />
+          </td>
+          <td v-show="columns.find(column => column.name == 'code').show"><filter-input :search="'products.code'" placeholder="code" /></td>
+          <td v-show="columns.find(column => column.name == 'size').show"><filter-input :search="'products.size'" placeholder="size" /></td>
+          <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{ stock | toNum }} {{ $t("pcs") }}</td>
+          <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{ sells | toNum }} {{ $t("pcs") }}</td>
+          <td v-show="columns.find(column => column.name == 'avarage purchase price').show" class="text-right">
+            {{
+              products.reduce(
+                (sum, product) =>
+                  sum +
+                  (product.hidden
+                    ? 0
+                    : parseInt(product.stock * product.avaragePurchasePrice)),
+                0
+              ) | toCurrency
+            }}
+          </td>
+          <td v-show="columns.find(column => column.name == 'last purchase price').show" class="text-right">
+            {{
+              products.reduce(
+                (sum, product) =>
+                  sum +
+                  (product.hidden
+                    ? 0
+                    : parseInt(product.stock * product.lastPurchasePrice)),
+                0
+              ) | toCurrency
+            }}
+          </td>
+        </tr>
+      </thead>
+      <tbody
+        is="filtered-tbody"
+        :products="products"
+        :columns="columns"
+        @setCount="setCount($event)"
+      ></tbody>
     </table>
   </div>
 </template>
 
 <script>
-import FilterInput from '@/components/FilterInput.vue'
-import FilteredTbody from '@/components/FilteredProductTbody.vue'
+import FilterInput from "@/components/FilterInput.vue"
+import FilteredTbody from "@/components/FilteredProductTbody.vue"
 
 export default {
-    name: 'Stock',
+  name: "Stock",
 
-    components : {
-        FilterInput,
-        FilteredTbody
-    },
+  components: {
+    FilterInput,
+    FilteredTbody,
+  },
 
-    data(){
-        return {
-            searchResultsCount: 0,
-        }
-    },
-
-    computed: {
-        products() {
-            return this.$store.state.products
-        },
-        sells() {
-            return this.products.reduce((sum, product) =>
-                sum + ((product.hidden || !product.sells) ? 0 : parseInt(product.sells)),
-                0)
-        },
-        stock() {
-            return this.products.reduce((sum, product) =>
-                sum + ((product.hidden || !product.stock) ? 0 : parseInt(product.stock)),
-                0)
-        },
-    },
-
-    created() {
-        if(Object.keys(this.$store.state.products).length === 0) {
-            this.$store.dispatch('getProducts')
-        }
-    },
-
-    methods : {
-        setCount(count) {
-            this.searchResultsCount = count
-        },
+  data() {
+    return {
+      columns: [
+        {name: 'code', show: true},
+        {name: 'size', show: true},
+        {name: 'stock', show: true},
+        {name: 'sells', show: true},
+        {name: 'avarage purchase price', show: true, 'rowspan': 2},
+        {name: 'last purchase price', show: true, 'rowspan': 2},
+      ],
+      searchResultsCount: 0,
+      showFilter: false,
     }
+  },
+
+  computed: {
+    products() {
+      return this.$store.state.products
+    },
+    sells() {
+      return this.products.reduce(
+        (sum, product) =>
+          sum +
+          (product.hidden || !product.sells ? 0 : parseInt(product.sells)),
+        0
+      )
+    },
+    stock() {
+      return this.products.reduce(
+        (sum, product) =>
+          sum +
+          (product.hidden || !product.stock ? 0 : parseInt(product.stock)),
+        0
+      )
+    },
+  },
+
+  created() {
+    if (Object.keys(this.$store.state.products).length === 0) {
+      this.$store.dispatch("getProducts")
+    }
+  },
+
+  methods: {
+    setCount(count) {
+      this.searchResultsCount = count
+    },
+  },
 }
 </script>
+
+<style scoped>
+  ul {
+    list-style-type: none;
+    display: flex;
+  }
+  li {
+    margin: 1em;
+  }
+  i, li {
+    cursor: pointer;
+  }
+  .inactive {
+    color: #cacaca;
+  }
+</style>

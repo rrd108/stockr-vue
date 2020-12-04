@@ -6,14 +6,14 @@
             <i class="fi-foot"> {{product.name}}</i>
         </router-link>
       </td>
-      <td>{{product.code}}</td>
-      <td>{{product.size}}</td>
-      <td class="text-right">{{product.stock | toNum(1)}}</td>
-      <td class="text-right">{{product.sells | toNum(1)}}</td>
-      <td class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
-      <td class="text-right">{{product.lastPurchasePrice | toCurrency}}</td>
-      <td class="text-right">{{product.stock * product.avaragePurchasePrice | toCurrency}}</td>
-      <td class="text-right">{{product.stock * product.lastPurchasePrice | toCurrency}}</td>
+      <td v-show="columns.find(column => column.name == 'code').show">{{product.code}}</td>
+      <td v-show="columns.find(column => column.name == 'size').show">{{product.size}}</td>
+      <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{product.stock | toNum(1)}}</td>
+      <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{product.sells | toNum(1)}}</td>
+      <td v-show="columns.find(column => column.name == 'avarage purchase price').show" class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
+      <td v-show="columns.find(column => column.name == 'last purchase price').show" class="text-right">{{product.lastPurchasePrice | toCurrency}}</td>
+      <td v-show="columns.find(column => column.name == 'avarage purchase price').show"  class="text-right">{{product.stock * product.avaragePurchasePrice | toCurrency}}</td>
+      <td v-show="columns.find(column => column.name == 'last purchase price').show"  class="text-right">{{product.stock * product.lastPurchasePrice | toCurrency}}</td>
     </tr>
   </tbody>
 </template>
@@ -29,6 +29,10 @@ export default {
       type: Array,
       required: true
     },
+    columns: {
+      type: Array,
+      required: true
+    }
   },
 
   data() {
