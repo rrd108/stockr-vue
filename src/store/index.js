@@ -24,7 +24,7 @@ export default new Vuex.Store({
     addProduct: (state, product) => state.products.unshift(product),
     saveUser: (state, user) => state.user = user,
     setCompany: (state, company) => state.company = company,
-    setGroups: (state, groups) => state.groups = groups,
+    setGroups: (state, groups) => state.groups = groups.map(group => ({...group, show: group.percentage ? true: false})),
     setInvoices: (state, invoices) => state.invoices = invoices,
     setInvoicetypes: (state, invoicetypes) => state.invoicetypes = invoicetypes,
     setPartners: (state, partners) => state.partners = partners,
@@ -55,7 +55,7 @@ export default new Vuex.Store({
         return false
       }
       return state.user.email ? true : false
-    }
+    },
   },
   actions: {
     getGroups: ({ commit, state }) => {

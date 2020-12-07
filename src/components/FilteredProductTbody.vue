@@ -14,6 +14,8 @@
       <td v-show="columns.find(column => column.name == 'last purchase price').show" class="text-right">{{product.lastPurchasePrice | toCurrency}}</td>
       <td v-show="columns.find(column => column.name == 'avarage purchase price').show"  class="text-right">{{product.stock * product.avaragePurchasePrice | toCurrency}}</td>
       <td v-show="columns.find(column => column.name == 'last purchase price').show"  class="text-right">{{product.stock * product.lastPurchasePrice | toCurrency}}</td>
+
+      <td v-for="column in groups" :key="column.name" v-show="column.show" class="text-center">{{(1 + (column.percentage / 100)) * product.lastPurchasePrice | toCurrency}}</td>
     </tr>
   </tbody>
 </template>
@@ -30,6 +32,10 @@ export default {
       required: true
     },
     columns: {
+      type: Array,
+      required: true
+    },
+    groups: {
       type: Array,
       required: true
     }
