@@ -1,34 +1,34 @@
 <template>
-  <div class='small-12 columns content'>
-    <h3>{{ $t('products') }} <i class='fi-filter' @click='showFilter = !showFilter'></i></h3>
-    <div v-show='showFilter'>
+  <div class="small-12 columns content">
+    <h3>{{ $t("products") }} <i class="fi-filter" @click="showFilter = !showFilter"></i></h3>
+    <div v-show="showFilter">
       <ul>
-        <li v-for='column in columns' :key='column.name' @click='column.show = !column.show' :class='{inactive : !column.show}'><i class='fi-eye'></i> {{ $t(column.name) }}</li>
+        <li v-for="column in columns" :key="column.name" @click="column.show = !column.show" :class="{inactive : !column.show}"><i class="fi-eye"></i> {{ $t(column.name) }}</li>
 
-        <li v-for='column in groups' :key='column.name' @click='column.show = !column.show' :class='{inactive : !column.show}'><i class='fi-eye'></i> {{ $t(column.name) }}</li>
+        <li v-for="column in groups" :key="column.name" @click="column.show = !column.show" :class="{inactive : !column.show}"><i class="fi-eye"></i> {{ $t(column.name) }}</li>
       </ul>
     </div>
-    <table cellpadding='0' cellspacing='0'>
+    <table cellpadding="0" cellspacing="0">
       <thead>
         <tr>
-          <th scope='col'>{{ $t('products') }} {{ searchResultsCount }}</th>
+          <th scope="col">{{ $t("products") }} {{ searchResultsCount }}</th>
 
-          <th scope='col' v-for='column in columns' :key='column.name' v-show='column.show' :rowspan='column.rowspan'>{{ $t(column.name) }}</th>
+          <th scope="col" v-for="column in columns" :key="column.name" v-show="column.show" :rowspan="column.rowspan">{{ $t(column.name) }}</th>
 
-          <th v-show='columns.find(column => column.name == 'avarage purchase price').show' scope='col'>{{ $t('amount') }}</th>
-          <th v-show='columns.find(column => column.name == 'last purchase price').show' scope='col'>{{ $t('amount') }}</th>
+          <th v-show="columns.find(column => column.name == 'avarage purchase price').show" scope="col">{{ $t("amount") }}</th>
+          <th v-show="columns.find(column => column.name == 'last purchase price').show" scope="col">{{ $t("amount") }}</th>
 
-          <th scope='col' v-for='column in groups' :key='column.name' v-show='column.show' :rowspan='column.rowspan'>{{ $t(column.name) }}</th>
+          <th scope="col" v-for="column in groups" :key="column.name" v-show="column.show" :rowspan="column.rowspan">{{ $t(column.name) }}</th>
         </tr>
         <tr>
           <td>
-            <filter-input :search=''products.name'' placeholder='product' />
+            <filter-input :search="'products.name'" placeholder="product" />
           </td>
-          <td v-show='columns.find(column => column.name == 'code').show'><filter-input :search=''products.code'' placeholder='code' /></td>
-          <td v-show='columns.find(column => column.name == 'size').show'><filter-input :search=''products.size'' placeholder='size' /></td>
-          <td v-show='columns.find(column => column.name == 'stock').show' class='text-right'>{{ stock | toNum }} {{ $t('pcs') }}</td>
-          <td v-show='columns.find(column => column.name == 'sells').show' class='text-right'>{{ sells | toNum }} {{ $t('pcs') }}</td>
-          <td v-show='columns.find(column => column.name == 'avarage purchase price').show' class='text-right'>
+          <td v-show="columns.find(column => column.name == 'code').show"><filter-input :search="'products.code'" placeholder="code" /></td>
+          <td v-show="columns.find(column => column.name == 'size').show"><filter-input :search="'products.size'" placeholder="size" /></td>
+          <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{ stock | toNum }} {{ $t("pcs") }}</td>
+          <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{ sells | toNum }} {{ $t("pcs") }}</td>
+          <td v-show="columns.find(column => column.name == 'avarage purchase price').show" class="text-right">
             {{
               products.reduce(
                 (sum, product) =>
@@ -40,7 +40,7 @@
               ) | toCurrency
             }}
           </td>
-          <td v-show='columns.find(column => column.name == 'last purchase price').show' class='text-right'>
+          <td v-show="columns.find(column => column.name == 'last purchase price').show" class="text-right">
             {{
               products.reduce(
                 (sum, product) =>
@@ -53,26 +53,26 @@
             }}
           </td>
 
-          <td v-for='column in groups' :key='column.name' v-show='column.show' class='text-center'>{{column.percentage}}</td>
+          <td v-for="column in groups" :key="column.name" v-show="column.show" class="text-center">{{column.percentage}}</td>
         </tr>
       </thead>
       <tbody
-        is='filtered-tbody'
-        :products='products'
-        :columns='columns'
-        :groups='groups'
-        @setCount='setCount($event)'
+        is="filtered-tbody"
+        :products="products"
+        :columns="columns"
+        :groups="groups"
+        @setCount="setCount($event)"
       ></tbody>
     </table>
   </div>
 </template>
 
 <script>
-import FilterInput from '@/components/FilterInput.vue'
-import FilteredTbody from '@/components/FilteredProductTbody.vue'
+import FilterInput from "@/components/FilterInput.vue"
+import FilteredTbody from "@/components/FilteredProductTbody.vue"
 
 export default {
-  name: 'Stock',
+  name: "Stock",
 
   components: {
     FilterInput,
@@ -121,10 +121,10 @@ export default {
 
   created() {
     if (Object.keys(this.$store.state.products).length === 0) {
-      this.$store.dispatch('getProducts')
+      this.$store.dispatch("getProducts")
     }
     if (Object.keys(this.$store.state.groups).length === 0) {
-      this.$store.dispatch('getGroups')
+      this.$store.dispatch("getGroups")
     }
   },
 
