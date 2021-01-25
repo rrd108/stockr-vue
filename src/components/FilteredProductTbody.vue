@@ -62,12 +62,16 @@ export default {
 
   methods: {
     daysToRunout(product) {
-      let days = (this.runout(product) - new Date) / (1000*60*60*24)
-      if (days <= 0) return 10 * this.days // where no sells we give back 10 * days
+      if (product.sells >= 0) {  // sells can be positive number if we get back products
+        return 1000000000 // where no sells we give back a huge number
+      }
       return (this.runout(product) - new Date) / (1000*60*60*24)
     },
     runout(product) {
-      if(product.sells < 0) {
+      if (product.stock <= 0) {
+        return new Date()
+      }
+      if (product.sells < 0) {
         let runoutDate = new Date()
         let runoutDays = parseInt(product.stock / (-product.sells / this.sellDaysFromApi))
         runoutDate.setDate(runoutDate.getDate() + runoutDays)
