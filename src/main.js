@@ -33,6 +33,7 @@ Vue.filter('toLocaleDateString', function (value) {
 });
 
 Vue.filter('toNum', function (value, precision) {
+  if (!value) return 0
   return precision ? parseFloat(value).toFixed(precision) : parseInt(value || 0)
 });
 
