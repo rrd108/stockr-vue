@@ -9,9 +9,9 @@
       <td v-show="columns.find(column => column.name == 'code').show">{{product.code}}</td>
       <td v-show="columns.find(column => column.name == 'size').show">{{product.size}}</td>
       <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{product.stock | toNum(1)}}</td>
-      <td v-show="columns.find(column => column.name == 'purchases').show" class="text-right">{{product.purchases | toNum(1)}}</td>
-      <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{product.sells | toNum(1)}}</td>
-      <td v-show="columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : (daysToRunout(product) < days)}">
+      <td v-show="columns.find(column => column.name == 'purchases') && columns.find(column => column.name == 'purchases').show" class="text-right">{{product.purchases | toNum(1)}}</td>
+      <td v-show="columns.find(column => column.name == 'sells') && columns.find(column => column.name == 'sells').show" class="text-right">{{product.sells | toNum(1)}}</td>
+      <td v-show="columns.find(column => column.name == 'runout') && columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : (daysToRunout(product) < days)}">
         {{runout(product) | toLocaleDateString('hu-HU')}}
       </td>
       <td v-show="columns.find(column => column.name == 'avarage purchase price') && columns.find(column => column.name == 'avarage purchase price').show" class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
