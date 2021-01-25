@@ -10,9 +10,9 @@
             <td v-html="$options.filters.invoiceNumber(invoice.number)"></td>
             <td>{{invoice.date | toLocaleDateString}}</td>
             <td>
-                <a :href="'../partners/view/' + invoice.partner.id">
+                <router-link :to="'partners/' + invoice.partner.id">
                     <i class="fi-torsos"> {{invoice.partner.name}}</i>
-                </a></td>
+                </router-link></td>
             <td><i class="fi-contrast"> {{invoice.storage.name}}</i></td>
             <td><i class="fi-book"> {{invoice.invoicetype.name}}</i></td>
             <td class="text-right">{{invoice.amount | toCurrency(invoice.currency)}}</td>
