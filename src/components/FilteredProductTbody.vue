@@ -67,13 +67,13 @@ export default {
       return (this.runout(product) - new Date) / (1000*60*60*24)
     },
     runout(product) {
-      if(product.sells == 0) {
-        return ''
+      if(product.sells < 0) {
+        let runoutDate = new Date()
+        let runoutDays = parseInt(product.stock / (-product.sells / this.sellDaysFromApi))
+        runoutDate.setDate(runoutDate.getDate() + runoutDays)
+        return runoutDate
       }
-      let runoutDate = new Date()
-      let runoutDays = parseInt(product.stock / (-product.sells / this.sellDaysFromApi))
-      runoutDate.setDate(runoutDate.getDate() + runoutDays)
-      return runoutDate
+      return ''
     }
   }
 
