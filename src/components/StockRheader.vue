@@ -18,6 +18,7 @@
                         <ul v-show="inStockMenu" class="nested menu">
                           <li><router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> {{$t("stock")}}</i></router-link></li>
                           <li><router-link :to="`/${$i18n.locale}/stock@date`"><i class="fi-list-thumbnails"> {{$t("stock at date")}}</i></router-link></li>
+                          <li><router-link :to="`/${$i18n.locale}/stock-rotation`"><i class="fi-list-thumbnails"> {{$t("stock rotation")}}</i></router-link></li>
                         </ul>
                       </li>
                       <li @mouseenter="inMasterDataMenu = true" @mouseleave="inMasterDataMenu = false" class="is-dropdown-submenu-parent">

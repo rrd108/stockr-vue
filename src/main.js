@@ -28,6 +28,7 @@ Vue.filter('toCurrency', function (value, currency = 'HUF', decimals = 2) {
 
 Vue.filter('toLocaleDateString', function (value) {
   // TODO get locale string from api (user)
+  if (value === '') return
   return new Date(value).toLocaleDateString('hu-HU')
 });
 

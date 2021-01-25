@@ -77,6 +77,11 @@ const routes = [
         name: 'stock',
         component: () => import('../views/Stock.vue')
       },
+      {
+        path: 'stock-rotation',
+        name: 'stock-rotation',
+        component: () => import('../views/StockRotation.vue')
+      },
     ]
   }
 ]
