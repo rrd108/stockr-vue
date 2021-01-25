@@ -19,7 +19,7 @@
           <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{ sum('sells') | toNum }} {{ $t("pcs") }}</td>
           <td v-show="columns.find(column => column.name == 'runout').show" class="text-right">
             <input type="number" v-model="days">
-            {{$t('days')}}
+            <i class="fi-filter" @click="showOnlyRunout = !showOnlyRunout"></i> {{$t('days')}}
           </td>
         </tr>
       </thead>
@@ -29,6 +29,7 @@
         :days="days"
         :groups="[]"
         :products="products"
+        :showOnlyRunout="showOnlyRunout"
         @setCount="setCount($event)"
       ></tbody>
     </table>
@@ -62,6 +63,7 @@ export default {
       products: [],
       searchResultsCount: 0,
       showFilter: false,
+      showOnlyRunout: false,
     }
   },
 

@@ -1,6 +1,6 @@
 <template>
   <tbody>
-    <tr v-for="product in filteredItems" :key="product.id">
+    <tr v-for="product in filteredItems" :key="product.id" v-show="(showOnlyRunout && isRunout(product) || !showOnlyRunout)">
       <td>
         <router-link :to="'products/' + product.id">
             <i class="fi-foot"> {{product.name}}</i>
@@ -11,7 +11,7 @@
       <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{product.stock | toNum(1)}}</td>
       <td v-show="columns.find(column => column.name == 'purchases') && columns.find(column => column.name == 'purchases').show" class="text-right">{{product.purchases | toNum(1)}}</td>
       <td v-show="columns.find(column => column.name == 'sells') && columns.find(column => column.name == 'sells').show" class="text-right">{{product.sells | toNum(1)}}</td>
-      <td v-show="columns.find(column => column.name == 'runout') && columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : (daysToRunout(product) < days)}">
+      <td v-show="columns.find(column => column.name == 'runout') && columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : isRunout(product)}">
         {{runout(product) | toLocaleDateString('hu-HU')}}
       </td>
       <td v-show="columns.find(column => column.name == 'avarage purchase price') && columns.find(column => column.name == 'avarage purchase price').show" class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
@@ -47,6 +47,10 @@ export default {
       type: Array,
       required: true
     },
+    showOnlyRunout: {
+      type: Boolean,
+      required: false
+    },
   },
 
   mixins: [
@@ -56,16 +60,16 @@ export default {
   data() {
     return {
       model: 'products',
-      sellDaysFromApi: 365
+      sellDaysFromApi: 365,
     }
   },
 
   methods: {
-    daysToRunout(product) {
+    isRunout(product) {
       if (product.sells >= 0) {  // sells can be positive number if we get back products
-        return 1000000000 // where no sells we give back a huge number
+        return false
       }
-      return (this.runout(product) - new Date) / (1000*60*60*24)
+      return ((this.runout(product) - new Date) / (1000*60*60*24) <= this.days) ? true : false
     },
     runout(product) {
       if (product.stock <= 0) {
