@@ -21,6 +21,9 @@
             <input type="number" v-model="days">
             <i class="fi-filter" @click="showOnlyRunout = !showOnlyRunout"></i> {{$t('days')}}
           </td>
+          <td v-show="columns.find(column => column.name == 'runout').show" class="text-right">
+            {{$t('minimum order')}}
+          </td>
         </tr>
       </thead>
       <tbody
@@ -58,6 +61,7 @@ export default {
         {name: 'purchases', show: true},
         {name: 'sells', show: true},
         {name: 'runout', show: true},
+        {name: 'order', show: true},
       ],
       days: 365,
       products: [],

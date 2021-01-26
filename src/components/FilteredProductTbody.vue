@@ -14,6 +14,9 @@
       <td v-show="columns.find(column => column.name == 'runout') && columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : isRunout(product)}">
         {{runout(product) | toLocaleDateString('hu-HU')}}
       </td>
+      <td v-show="columns.find(column => column.name == 'runout') && columns.find(column => column.name == 'runout').show" class="text-right" :class="{runout : isRunout(product)}">
+        {{-parseInt((product.sells / sellDaysFromApi) * days)}}
+      </td>
       <td v-show="columns.find(column => column.name == 'avarage purchase price') && columns.find(column => column.name == 'avarage purchase price').show" class="text-right">{{product.avaragePurchasePrice | toCurrency}}</td>
       <td v-show="columns.find(column => column.name == 'last purchase price') && columns.find(column => column.name == 'last purchase price').show" class="text-right">{{product.lastPurchasePrice | toCurrency}}</td>
       <td v-show="columns.find(column => column.name == 'avarage purchase price') && columns.find(column => column.name == 'avarage purchase price').show"  class="text-right">{{product.stock * product.avaragePurchasePrice | toCurrency}}</td>
