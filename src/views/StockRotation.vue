@@ -17,6 +17,7 @@
           <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{ sum('stock') | toNum }} {{ $t("pcs") }}</td>
           <td v-show="columns.find(column => column.name == 'purchases').show" class="text-right">{{ sum('purchases') | toNum }} {{ $t("pcs") }}</td>
           <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{ sum('sells') | toNum }} {{ $t("pcs") }}</td>
+          <td v-show="columns.find(column => column.name == 'profit').show" class="text-right">{{ sum('profit') | toNum }}</td>
           <td v-show="columns.find(column => column.name == 'runout').show" class="text-right">
             <input type="number" v-model="days">
             <i class="fi-filter" @click="showOnlyRunout = !showOnlyRunout"></i> {{$t('days')}}
@@ -60,6 +61,7 @@ export default {
         {name: 'stock', show: true},
         {name: 'purchases', show: true},
         {name: 'sells', show: true},
+        {name: 'profit', show: true},
         {name: 'runout', show: true},
         {name: 'order', show: true},
       ],
@@ -72,7 +74,7 @@ export default {
   },
 
   created() {
-    axios.get(process.env.VUE_APP_API_URL + 'products/stock-rotation.json?company=' + this.$store.state.company.id + '&ApiKey=' + this.$store.state.user.api_token)
+    axios.get(`${process.env.VUE_APP_API_URL}products/stock-rotation.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`)
       .then(response => this.products = response.data.rotation)
       .catch(err => console.error(err))
   },
