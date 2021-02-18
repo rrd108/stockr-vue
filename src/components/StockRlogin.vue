@@ -129,10 +129,10 @@ export default {
 
 <style scoped>
 .login {
-    margin: 5em auto;
-    width: 25em;
+    margin: 3rem auto;
+    width: 20rem;
     border: thin solid #aaa;
-    padding: 2em;
+    padding: 2rem;
     box-shadow: 5px 10px 8px #aaa;
 }
 .login img {
