@@ -36,9 +36,13 @@
         <label for="number"><i class="fi-ticket"> {{$t("number")}}</i></label>
         <input type="text" v-model="number" id="number">
       </div>
-      <div class="column small-12 large-3">
+      <div class="column small-12 large-2">
         <label for="currency"><i class="fi-euro"> {{$t("currency")}}</i></label>
         <input type="text" v-model="currency">
+      </div>
+      <div class="column small-12 large-1">
+        <label for="showProductsOnlyInStock"><i class="fi-check"> {{$t("In Stock")}}</i></label>
+        <input type="checkbox" v-model="showProductsOnlyInStock">
       </div>
       <div class="column small-12 large-3">
         <div :class="isSale ? 'sale out' : 'sale in'">
@@ -189,6 +193,7 @@ export default {
       product: '',
       selectedPartner: {},
       selectedProduct: {},
+      showProductsOnlyInStock: true,
       quantity: 0,
     }
   },
@@ -210,7 +215,7 @@ export default {
       return this.$store.state.partners
     },
     products() {
-      return this.$store.state.products
+      return this.showProductsOnlyInStock ? this.$store.state.products.filter(product => product.stock > 0) : this.$store.state.products
     },
     storages() {
       return this.$store.state.storages
