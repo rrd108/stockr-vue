@@ -78,7 +78,6 @@
         </tr>
       </tbody>
     </table>
-
     <table>
         <thead>
             <tr>
@@ -96,7 +95,7 @@
             <tr v-for="item in product.items" :key="item.id">
                 <td>
                     <!-- TODO create a component for this -->
-                    <router-link :to="'invoices/' + item.invoice.id">
+                    <router-link :to="`/${$i18n.locale}/invoices/${item.invoice.id}`">
                         <i v-if= "item.invoice.sale" class="fi-arrow-left out"></i>
                         <i v-if="!item.invoice.sale" class="fi-arrow-right in"></i>
                     </router-link>
