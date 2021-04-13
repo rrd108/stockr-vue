@@ -331,6 +331,9 @@ export default {
     setByPartner() {
       this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
       this.isSale = this.selectedPartner.group.percentage ? true : false
+      if (this.isSale === false) {
+        this.showProductsOnlyInStock = false
+      }
     },
     setNumber() {
       let year = new Date().getFullYear()
