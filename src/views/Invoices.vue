@@ -3,7 +3,7 @@
     <div class="pagerHeader">
       <h3>{{ $t("invoices") }}</h3>
       <ul>
-        <li v-for="month in months" :key="month" @click="selectedMonth = month">{{ month + 1 }}</li>
+        <li v-for="month in months" :key="month" @click="selectedMonth = month" :class="{active: (selectedMonth == month)}">{{ month + 1 }}</li>
       </ul>
     </div>
 
@@ -128,5 +128,10 @@ export default {
   margin: 0 .5em;
   cursor: pointer;
   padding: 0 1em;
+}
+
+.pagerHeader li.active {
+  color: #fff;
+  background-color: #2c83b6;
 }
 </style>
