@@ -1,6 +1,11 @@
 <template>
   <div class="small-12 columns content">
-    <h3>{{$t("invoices")}}</h3>
+    <div class="pagerHeader">
+      <h3>{{ $t("invoices") }}</h3>
+      <ul>
+        <li v-for="month in months" :key="month">{{ month + 1 }}</li>
+      </ul>
+    </div>
 
     <div class="callout success" v-show="$route.params.newInvoice">
         <h5>{{$route.params.newInvoice}} {{$t("saved")}}</h5>
@@ -48,11 +53,12 @@ export default {
         FilteredTbody
     },
 
-    data(){
-        return {
-            searchResultsCount: 0,
-        }
-    },
+  data() {
+    return {
+      months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
+      searchResultsCount: 0,
+    }
+  },
 
     computed: {
         invoices() {
@@ -68,3 +74,18 @@ export default {
 }
 </script>
 
+<style scoped>
+.pagerHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagerHeader ul {
+  display: flex;
+  list-style: none;
+}
+
+.pagerHeader li {
+  margin: 0 1em;
+}
+</style>
