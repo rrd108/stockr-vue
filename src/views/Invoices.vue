@@ -3,7 +3,7 @@
     <div class="pagerHeader">
       <h3>{{ $t("invoices") }}</h3>
       <ul>
-        <li v-for="month in months" :key="month">{{ month + 1 }}</li>
+        <li v-for="month in months" :key="month" @click="selectedMonth = month">{{ month + 1 }}</li>
       </ul>
     </div>
 
@@ -36,7 +36,7 @@
           <td>
             <filter-input :search="'invoices.number'" placeholder="number" />
           </td>
-          <td><filter-input :search="'invoices.date'" placeholder="date" /></td>
+          <td><filter-input :search="'invoices.date'" :searchValue="getSelectedMonth" placeholder="date" /></td>
           <td>
             <filter-input
               :search="'invoices.partner.name'"
@@ -85,10 +85,15 @@ export default {
     return {
       months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
       searchResultsCount: 0,
+      selectedMonth: new Date().getMonth()
     }
   },
 
   computed: {
+    getSelectedMonth() {
+      const leadingZero = this.selectedMonth < 10 ? '0' : ''
+      return `-${leadingZero}${this.selectedMonth + 1}-`
+    },
     invoices() {
       return this.$store.state.invoices.map((invoice) => ({
         ...invoice,
@@ -120,6 +125,8 @@ export default {
 }
 
 .pagerHeader li {
-  margin: 0 1em;
+  margin: 0 .5em;
+  cursor: pointer;
+  padding: 0 1em;
 }
 </style>
