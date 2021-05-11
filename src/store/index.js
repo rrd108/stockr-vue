@@ -20,6 +20,7 @@ export default new Vuex.Store({
   },
   mutations: {
     addInvoice: (state, invoice) => state.invoices.unshift(invoice),
+    addInvoices: (state, invoices) => state.invoices = [...state.invoices, ...invoices],
     addPartner: (state, partner) => state.partners.unshift(partner),
     addProduct: (state, product) => state.products.unshift(product),
     saveUser: (state, user) => state.user = user,
@@ -56,6 +57,8 @@ export default new Vuex.Store({
       }
       return state.user.email ? true : false
     },
+    //[...new Set()] returns the uniquey values from the map
+    invoiceMonths: state => [...new Set(state.invoices.map(invoice => invoice.date.substr(0,7)))],
   },
   actions: {
     getGroups: ({ commit, state }) => {
