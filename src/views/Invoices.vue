@@ -9,7 +9,7 @@
           @click="selectMonth(month)"
           :class="{ active: selectedMonth == month }"
         >
-          {{ month + 1 }}
+          {{ monthName(month) }}
         </li>
       </ul>
     </div>
@@ -123,6 +123,11 @@ export default {
   },
 
   methods: {
+    monthName(month) {
+      let date = new Date();
+      let firstDay = new Date(date.getFullYear(), month, 1);
+      return firstDay.toLocaleString('default', { month: 'long' })
+    },
     setCount(count) {
       this.searchResultsCount = count
     },
@@ -164,6 +169,7 @@ export default {
 .pagerHeader ul {
   display: flex;
   list-style: none;
+  font-size: .85rem;
 }
 
 .pagerHeader li {
@@ -175,5 +181,6 @@ export default {
 .pagerHeader li.active {
   color: #fff;
   background-color: #2c83b6;
+  border-radius: 1em;
 }
 </style>
