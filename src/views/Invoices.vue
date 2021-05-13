@@ -78,12 +78,14 @@
         :invoices="invoices"
         @setCount="setCount($event)"
       ></tbody>
+      <infinite-loading @infinite="selectMonth(selectedMonth-1)" />
     </table>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import InfiniteLoading from 'vue-infinite-loading'
 import FilterInput from '@/components/FilterInput.vue'
 import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
 import { mapGetters } from 'vuex'
@@ -94,6 +96,7 @@ export default {
   components: {
     FilterInput,
     FilteredTbody,
+    InfiniteLoading,
   },
 
   data() {
@@ -111,7 +114,6 @@ export default {
       return `-${leadingZero}${this.selectedMonth + 1}-`
     },
     invoices() {
-      // TODO request next mont on scroll: https://peachscript.github.io/vue-infinite-loading/guide/
       return this.$store.state.invoices.map((invoice) => ({
         ...invoice,
         amount: (invoice.amount = invoice.items.reduce(
@@ -124,8 +126,8 @@ export default {
 
   methods: {
     monthName(month) {
-      let date = new Date();
-      let firstDay = new Date(date.getFullYear(), month, 1);
+      let date = new Date()
+      let firstDay = new Date(date.getFullYear(), month, 1)
       return firstDay.toLocaleString('default', { month: 'long' })
     },
     setCount(count) {
@@ -169,7 +171,7 @@ export default {
 .pagerHeader ul {
   display: flex;
   list-style: none;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .pagerHeader li {
