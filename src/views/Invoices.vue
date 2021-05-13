@@ -163,6 +163,11 @@ export default {
 </script>
 
 <style scoped>
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #ddd;
+}
 .pagerHeader {
   display: flex;
   justify-content: space-between;
