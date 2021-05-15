@@ -78,7 +78,7 @@
         :invoices="invoices"
         @setCount="setCount($event)"
       ></tbody>
-      <infinite-loading @infinite="selectMonth(selectedMonth-1)" />
+      <infinite-loading @infinite="loadInvoices" />
     </table>
   </div>
 </template>
@@ -125,6 +125,11 @@ export default {
   },
 
   methods: {
+    loadInvoices() {
+      if (this.invoices.length > 10) {
+        this.selectMonth(this.selectedMonth - 1)
+      }
+    },
     monthName(month) {
       let date = new Date()
       let firstDay = new Date(date.getFullYear(), month, 1)
