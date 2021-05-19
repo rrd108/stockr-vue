@@ -2,25 +2,24 @@
   <div id="app">
     <stockRheader v-if="isLoggedIn" />
     <stockRcompany v-if="isLoggedIn && !this.$store.state.company.id" />
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-
 import StockRheader from '@/components/StockRheader.vue'
 import StockRcompany from '@/components/StockRcompany.vue'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
 
   components: {
     StockRheader,
-    StockRcompany
+    StockRcompany,
   },
 
-  computed : mapGetters(['isLoggedIn']),
+  computed: mapGetters(['isLoggedIn']),
 
   created() {
     window.addEventListener('keypress', this.shortCuts)
@@ -30,17 +29,17 @@ export default {
   },
   methods: {
     shortCuts(e) {
-      if(e.target.nodeName != 'INPUT') {
+      if (e.target.nodeName != 'INPUT') {
         let cmd = String.fromCharCode(e.keyCode).toLowerCase()
         if (cmd == 'b') {
-          this.$router.push({ name: 'add-invoice'})
+          this.$router.push({ name: 'add-invoice' })
         }
         if (cmd == 'h') {
-          this.$router.push({ name: 'help'})
+          this.$router.push({ name: 'help' })
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -54,12 +53,12 @@ export default {
   color: #2c3e50;
 }
 
-.in{
+.in {
   background: #bc50b1;
   color: #fff;
 }
 
-.out{
+.out {
   background: #50bc5b;
   color: #fff;
 }
@@ -72,16 +71,21 @@ input.price {
   display: inline-block;
 }
 .small {
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 .pointer {
-    cursor: pointer;
-    color:#2ba6cb;
+  cursor: pointer;
+  color: #2ba6cb;
+}
+.deleted {
+  text-decoration: line-through;
+  color: #aaa;
 }
 
 @media screen and (max-width: 40em) {
-    th, td {
-      display: block;
-    }
+  th,
+  td {
+    display: block;
+  }
 }
 </style>
