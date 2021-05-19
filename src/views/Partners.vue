@@ -1,6 +1,9 @@
 <template>
   <div class="small-12 large-6 columns content">
-    <h3><i class="fi-torsos"></i> Partners</h3>
+    <h3>
+      <i class="fi-torsos"> Partners</i>
+      <router-link :to="`/${$i18n.locale}/add-partner`"><i class="fi-plus"></i></router-link>
+    </h3>
     <section v-for="partner in this.$store.state.partners" :key="partner.id">
       <router-link :to="`/${$i18n.locale}/partners/${partner.id}`">
         <h4>{{ partner.name }}</h4>
@@ -20,7 +23,11 @@ export default {}
 </script>
 
 <style scoped>
-a {color: #fff;}
+h3 {
+  display: flex;
+  justify-content: space-between;
+}
+section a {color: #fff;}
 h4 {
   font-size: 1.5rem;
 }
