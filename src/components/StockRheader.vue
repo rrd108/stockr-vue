@@ -27,6 +27,7 @@
                           <ul class="nested vertical menu" v-show="inMasterDataMenu">
                             <li><router-link :to="`/${$i18n.locale}/add-product`"><i class="fi-foot"> {{$t("add product")}}</i></router-link></li>
                             <li><router-link :to="`/${$i18n.locale}/add-partner`"><i class="fi-torsos"> {{$t("add partner")}}</i></router-link></li>
+                            <li><router-link :to="`/${$i18n.locale}/partners`"><i class="fi-torsos"> {{$t("partners")}}</i></router-link></li>
                           </ul>
                         </transition>
                       </li>

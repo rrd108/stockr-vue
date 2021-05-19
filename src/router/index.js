@@ -59,6 +59,11 @@ const routes = [
         props: true
       },
       {
+        path: 'partners',
+        component: () => import('../views/Partners.vue'),
+        props: true
+      },
+      {
         path: 'products/:id',
         component: () => import('../views/ViewProduct.vue'),
         props: true
