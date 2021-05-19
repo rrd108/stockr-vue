@@ -32,7 +32,7 @@
             <span class="small-6 text-right">{{
               invoices.reduce(
                 (sum, invoice) =>
-                  sum + (invoice.hidden ? 0 : parseInt(invoice.amount)),
+                  sum + ((invoice.hidden || invoice.status == 'd') ? 0 : parseInt(invoice.amount)),
                 0
               ) | toCurrency
             }}</span>
