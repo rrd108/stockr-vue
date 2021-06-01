@@ -88,4 +88,10 @@ input.price {
     display: block;
   }
 }
+
+@media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
 </style>
