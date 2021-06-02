@@ -363,8 +363,16 @@ h2 {
   display: flex;
   justify-content: space-between;
 }
-span {
+h2 span {
   cursor: pointer;
+  background: #fff;
+  color: #50bc5b;
+  border-radius: 50%;
+  font-size: 1rem;
+  text-align: center;
+  font-weight:bold;
+  height: 1.2rem;
+  width: 1.2rem;
 }
 dd {
   display: flex;
