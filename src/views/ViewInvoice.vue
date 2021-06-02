@@ -2,10 +2,14 @@
   <div v-if="isLoaded" class="small-12 columns content">
     <h3>
       {{ invoice.storage.company.name }}
-      <i class="fi-trash" @click="deleteInvoice" v-show="invoice.status != 'd'"></i>
+      <i
+        class="fi-trash"
+        @click="deleteInvoice"
+        v-show="invoice.status != 'd'"
+      ></i>
     </h3>
 
-    <table class="vertical-table" :class="{deleted: (invoice.status == 'd')}">
+    <table class="vertical-table" :class="{ deleted: invoice.status == 'd' }">
       <tbody>
         <tr>
           <th scope="row">{{ $t('partner') }}</th>
@@ -47,7 +51,7 @@
                 invoice.partner.group.id != 4 &&
                 invoice.number.indexOf('|') == -1
               "
-              @click="generateInvoice"
+              @click="onInvoicing = true"
               class="fi-page-export-pdf pointer"
             >
               Billingo</i
@@ -67,7 +71,11 @@
       </tbody>
     </table>
 
-    <table cellpadding="0" cellspacing="0" :class="{deleted: (invoice.status == 'd')}">
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      :class="{ deleted: invoice.status == 'd' }"
+    >
       <thead>
         <tr :class="invoice.sale ? 'out' : 'in'">
           <th class="text-center" scope="col">{{ $t('product') }}</th>
@@ -148,6 +156,27 @@
         </tr>
       </tfoot>
     </table>
+
+    <aside v-show="onInvoicing">
+      <h2>Billingo számla kiállítás <span @click="onInvoicing = false">x</span></h2>
+      <dl>
+        <dt>Teljesítés dátuma</dt>
+        <dd><input type="date" v-model="fulfillment_date" /></dd>
+        <dt>Fizetési határidő</dt>
+        <dd><input type="date" v-model="due_date" /></dd>
+        <dt>Fizetési mód</dt>
+        <dd>
+          <input type="radio" id="kp" value="1" v-model="payment_mode" />
+          <label for="kp">Készpénz</label>
+          <br />
+          <input type="radio" id="transfer" value="2" v-model="payment_mode" />
+          <label for="transfer">Átutalás</label>
+        </dd>
+        <dt>Megjegyzés a számlára</dt>
+        <dd><input type="text" v-model="invoice_comment" /></dd>
+      </dl>
+      <button class="button" @click="generateInvoice">Számlázás</button>
+    </aside>
   </div>
 </template>
 
@@ -161,10 +190,15 @@ export default {
     return {
       api: '',
       currency: this.$store.state.company.currency,
+      due_date: null,
+      fulfillment_date: null,
       onEdit: false,
+      onInvoicing: false,
       invoice: {},
+      invoice_comment: '#gauranga',
       invoicetype_id: 0,
       isLoaded: false,
+      payment_mode: 2,
     }
   },
 
@@ -193,6 +227,10 @@ export default {
       )
       .then((response) => {
         this.invoice = response.data.invoice
+        this.fulfillment_date = this.due_date = response.data.invoice.date.substr(
+          0,
+          10
+        )
         this.isLoaded = true
       })
       .catch((err) => console.error(err))
@@ -260,7 +298,7 @@ export default {
       // TODO update status data in the store also
       axios
         .delete(
-          `${process.env.VUE_APP_API_URL}/invoices/delete/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`
+          `${process.env.VUE_APP_API_URL}invoices/delete/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`
         )
         .then((response) => console.log(response))
         .catch((error) => console.error(error))
@@ -269,13 +307,7 @@ export default {
     generateInvoice() {
       axios
         .get(
-          process.env.VUE_APP_API_URL +
-            'invoices/billingo/' +
-            this.invoice.id +
-            '.json?company=' +
-            this.$store.state.company.id +
-            '&ApiKey=' +
-            this.$store.state.user.api_token
+          `${process.env.VUE_APP_API_URL}invoices/billingo/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&due_date=${this.due_date}&fulfillment_date=${this.fulfillment_date}&payment_mode=${this.payment_mode}&invoice_comment=${this.invoice_comment}`
         )
         .then((response) => {
           this.invoice.number = response.data.invoice.number
@@ -314,5 +346,31 @@ export default {
 h3 {
   display: flex;
   justify-content: space-between;
+}
+
+aside {
+  box-sizing: border-box;
+  position: absolute;
+  top: 20vh;
+  left: 10vw;
+  width: 80vw;
+  padding: 1rem;
+  background-color: #50bc5b;
+  color: #fff;
+  border-radius: 0.5rem;
+}
+h2 {
+  display: flex;
+  justify-content: space-between;
+}
+span {
+  cursor: pointer;
+}
+dd {
+  display: flex;
+  align-items: baseline;
+}
+label {
+  color: #fff;
 }
 </style>>
