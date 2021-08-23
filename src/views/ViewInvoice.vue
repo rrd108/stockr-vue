@@ -158,7 +158,9 @@
     </table>
 
     <aside v-show="onInvoicing">
-      <h2>Billingo számla kiállítás <span @click="onInvoicing = false">x</span></h2>
+      <h2>
+        Billingo számla kiállítás <span @click="onInvoicing = false">x</span>
+      </h2>
       <dl>
         <dt>Teljesítés dátuma</dt>
         <dd><input type="date" v-model="fulfillment_date" /></dd>
@@ -166,10 +168,15 @@
         <dd><input type="date" v-model="due_date" /></dd>
         <dt>Fizetési mód</dt>
         <dd>
-          <input type="radio" id="kp" value="1" v-model="payment_mode" />
+          <input type="radio" id="kp" value="1" v-model="payment_method" />
           <label for="kp">Készpénz</label>
           <br />
-          <input type="radio" id="transfer" value="2" v-model="payment_mode" />
+          <input
+            type="radio"
+            id="transfer"
+            value="2"
+            v-model="payment_method"
+          />
           <label for="transfer">Átutalás</label>
         </dd>
         <dt>Megjegyzés a számlára</dt>
@@ -198,7 +205,7 @@ export default {
       invoice_comment: '#gauranga',
       invoicetype_id: 0,
       isLoaded: false,
-      payment_mode: 2,
+      payment_method: 2,
     }
   },
 
@@ -227,10 +234,8 @@ export default {
       )
       .then((response) => {
         this.invoice = response.data.invoice
-        this.fulfillment_date = this.due_date = response.data.invoice.date.substr(
-          0,
-          10
-        )
+        this.fulfillment_date = this.due_date =
+          response.data.invoice.date.substr(0, 10)
         this.isLoaded = true
       })
       .catch((err) => console.error(err))
@@ -307,12 +312,16 @@ export default {
     generateInvoice() {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}invoices/billingo/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&due_date=${this.due_date}&fulfillment_date=${this.fulfillment_date}&payment_mode=${this.payment_mode}&invoice_comment=${this.invoice_comment}`
+          `${process.env.VUE_APP_API_URL}invoices/billingo/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&due_date=${this.due_date}&fulfillment_date=${this.fulfillment_date}&payment_method=${this.payment_method}&invoice_comment=${this.invoice_comment}`
         )
         .then((response) => {
           this.invoice.number = response.data.invoice.number
+          this.onInvoicing = false
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error)
+          this.onInvoicing = false
+        })
     },
 
     getPdf() {
@@ -370,7 +379,7 @@ h2 span {
   border-radius: 50%;
   font-size: 1rem;
   text-align: center;
-  font-weight:bold;
+  font-weight: bold;
   height: 1.2rem;
   width: 1.2rem;
 }
