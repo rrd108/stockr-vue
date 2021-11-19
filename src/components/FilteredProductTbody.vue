@@ -7,20 +7,20 @@
     >
       <td>
         <router-link :to="'products/' + product.id">
-          <i class="fi-foot"> {{ product.name }}</i>
+          <i class="fi-foot"> {{ product.name }}</i> {{ product.en_name }}
         </router-link>
       </td>
 
-      <td v-show="columns.find((column) => column.name == 'code').show">
+      <td v-show="columns.find(column => column.name == 'code').show">
         {{ product.code }}
       </td>
 
-      <td v-show="columns.find((column) => column.name == 'size').show">
+      <td v-show="columns.find(column => column.name == 'size').show">
         {{ product.size }}
       </td>
 
       <td
-        v-show="columns.find((column) => column.name == 'stock').show"
+        v-show="columns.find(column => column.name == 'stock').show"
         class="text-right"
       >
         {{ product.stock | toNum(1) }}
@@ -28,8 +28,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'purchases') &&
-          columns.find((column) => column.name == 'purchases').show
+          columns.find(column => column.name == 'purchases') &&
+            columns.find(column => column.name == 'purchases').show
         "
         class="text-right"
       >
@@ -38,8 +38,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'sells') &&
-          columns.find((column) => column.name == 'sells').show
+          columns.find(column => column.name == 'sells') &&
+            columns.find(column => column.name == 'sells').show
         "
         class="text-right"
       >
@@ -48,8 +48,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'profit') &&
-          columns.find((column) => column.name == 'profit').show
+          columns.find(column => column.name == 'profit') &&
+            columns.find(column => column.name == 'profit').show
         "
         class="text-right"
       >
@@ -58,8 +58,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'runout') &&
-          columns.find((column) => column.name == 'runout').show
+          columns.find(column => column.name == 'runout') &&
+            columns.find(column => column.name == 'runout').show
         "
         class="text-right"
         :class="{ runout: isRunout(product) }"
@@ -69,8 +69,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'runout') &&
-          columns.find((column) => column.name == 'runout').show
+          columns.find(column => column.name == 'runout') &&
+            columns.find(column => column.name == 'runout').show
         "
         class="text-right"
         :class="{ runout: isRunout(product) }"
@@ -81,8 +81,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'avarage purchase price') &&
-          columns.find((column) => column.name == 'avarage purchase price').show
+          columns.find(column => column.name == 'avarage purchase price') &&
+            columns.find(column => column.name == 'avarage purchase price').show
         "
         class="text-right"
       >
@@ -91,8 +91,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'last purchase price') &&
-          columns.find((column) => column.name == 'last purchase price').show
+          columns.find(column => column.name == 'last purchase price') &&
+            columns.find(column => column.name == 'last purchase price').show
         "
         class="text-right"
       >
@@ -101,8 +101,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'avarage purchase price') &&
-          columns.find((column) => column.name == 'avarage purchase price').show
+          columns.find(column => column.name == 'avarage purchase price') &&
+            columns.find(column => column.name == 'avarage purchase price').show
         "
         class="text-right"
       >
@@ -111,8 +111,8 @@
 
       <td
         v-show="
-          columns.find((column) => column.name == 'last purchase price') &&
-          columns.find((column) => column.name == 'last purchase price').show
+          columns.find(column => column.name == 'last purchase price') &&
+            columns.find(column => column.name == 'last purchase price').show
         "
         class="text-right"
       >
@@ -143,31 +143,31 @@ export default {
   props: {
     columns: {
       type: Array,
-      required: true,
+      required: true
     },
     days: {
       type: Number,
-      required: false,
+      required: false
     },
     groups: {
       type: Array,
-      required: true,
+      required: true
     },
     products: {
       type: Array,
-      required: true,
+      required: true
     },
     showOnlyRunout: {
       type: Boolean,
-      required: false,
-    },
+      required: false
+    }
   },
 
   mixins: [RowFilterMixin],
 
   data() {
     return {
-      model: 'products',
+      model: 'products'
     }
   },
 
@@ -184,7 +184,7 @@ export default {
     },
     profit(product) {
       let productFromStore = this.$store.state.products.find(
-        (p) => p.id == product.id
+        p => p.id == product.id
       )
       return (
         product.sellsIncome -
@@ -204,8 +204,8 @@ export default {
         return runoutDate
       }
       return ''
-    },
-  },
+    }
+  }
 }
 </script>
 
