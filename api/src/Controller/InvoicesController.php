@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Controller;
 
+use SplFileObject;
+use Cake\Core\Configure;
 use App\Controller\AppController;
 use Billingo\API\Connector\HTTP\Request;
-use Cake\Core\Configure;
-use SplFileObject;
 
 /**
  * Invoices Controller
@@ -229,7 +230,7 @@ class InvoicesController extends AppController
                 $file = new SplFileObject($this->request->getData('File.tmp_name'), 'r');
                 $file->setFlags(
                     SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY
-                    |  SplFileObject::READ_AHEAD | SplFileObject::DROP_NEW_LINE
+                        |  SplFileObject::READ_AHEAD | SplFileObject::DROP_NEW_LINE
                 );
                 $file->setCsvControl(';');
                 $this->getRequest()->getSession()->write('productImportFile', collection($file));
@@ -262,8 +263,10 @@ class InvoicesController extends AppController
                 function ($value, $key) use (&$data, $minimumQuantity, &$i, $storage) {
                     if ($value[$this->request->getData('quantity')] > $minimumQuantity) {
                         foreach ($this->request->getData() as $key => $column) {
-                            if (in_array($key, ['quantity', 'price'])
-                                && isset($value[$this->request->getData($key)])) {
+                            if (
+                                in_array($key, ['quantity', 'price'])
+                                && isset($value[$this->request->getData($key)])
+                            ) {
                                 $data['items'][$i][$key] = $value[$this->request->getData($key)];
                             }
                         }
@@ -271,7 +274,7 @@ class InvoicesController extends AppController
                         $data['items'][$i]['product'] = [
                             'company_id' => $storage->company_id,
                             'name' => $value[$this->request->getData('name')],
-                            'size' => isset($value[$this->request->getData('size')]) ? $value[$this->request->getData('size')]: '',
+                            'size' => isset($value[$this->request->getData('size')]) ? $value[$this->request->getData('size')] : '',
                             'code' => isset($value[$this->request->getData('code')]) ? $value[$this->request->getData('code')] : '',
                             'vat' => $value[$this->request->getData('vat')]
                         ];
