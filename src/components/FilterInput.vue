@@ -9,23 +9,23 @@
 
 <script>
 export default {
-  name: "FilterInput",
+  name: 'FilterInput',
 
   props: {
     search: {
       type: String,
-      required: true,
+      required: true
     },
     searchValue: {
       type: null,
-      required: false,
+      required: false
     },
-    placeholder: String,
+    placeholder: String
   },
 
   data() {
     return {
-      rowFilterTerm: this.$store.state.search[this.search],
+      rowFilterTerm: this.$store.state.search[this.search]
     }
   },
 
@@ -34,11 +34,10 @@ export default {
       this.rowFilterTerm = val
     },
     rowFilterTerm(val) {
-      this.$store.commit("setSearch", { field: this.search, val: val })
-    },
-  },
+      this.$store.commit('setSearch', { field: this.search, val: val })
+    }
+  }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
