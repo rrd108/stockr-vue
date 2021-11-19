@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -30,6 +31,7 @@ class Product extends Entity
     protected $_accessible = [
         'company_id' => true,
         'name' => true,
+        'en_name' => true,
         'code' => true,
         'size' => true,
         'vat' => true,
