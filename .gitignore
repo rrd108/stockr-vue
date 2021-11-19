@@ -21,3 +21,5 @@ yarn-error.log*
 *.sw?
 
 \.env\.development
+
+.php-cs-fixer.cache
