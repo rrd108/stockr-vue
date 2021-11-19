@@ -146,7 +146,7 @@ class ProductsController extends AppController
                 'purchases' => 'lastYear.purchases',
                 'sells' => 'lastYear.sells',
                 'sellsIncome' => 'lastYear.sellsIncome',
-                'sellDays' => 'DATEDIFF(CURDATE(), lastYear.date)'        // TODO
+                'sellDays' => 'DATEDIFF(CURDATE(), lastYear.date)'
             ])
             ->enableAutoFields(false)
             ->from(['stock' => $stock])
