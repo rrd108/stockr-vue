@@ -14,7 +14,7 @@
         <label for="name">{{ $t('product') }}</label>
         <input type="text" v-model="name" required="required" id="name" />
 
-        <label for="name">{{ $t('product') }}</label>
+        <label for="name">{{ $t('product') }} EN</label>
         <input type="text" v-model="en_name" required="required" id="en_name" />
 
         <label for="code">{{ $t('code') }}</label>
