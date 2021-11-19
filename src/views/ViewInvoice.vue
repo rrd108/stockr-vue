@@ -91,7 +91,7 @@
         <tr v-for="item in invoice.items" :key="item.id">
           <td>
             {{ item.product.name }} {{ item.product.size }}
-            {{ item.product.code }}
+            {{ item.product.code }} <i>{{ item.product.en_name }}</i>
           </td>
           <td class="text-right">{{ item.quantity }}</td>
           <td class="text-right">{{ item.price | toCurrency(currency) }}</td>
