@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use App\Model\Entity\GroupsProduct;
@@ -75,6 +76,11 @@ class ProductsTable extends Table
             ->allowEmptyString('name');
 
         $validator
+            ->scalar('en_name')
+            ->maxLength('en_name', 255)
+            ->allowEmptyString('en_name');
+
+        $validator
             ->scalar('size')
             ->maxLength('size', 45)
             ->allowEmptyString('size');
@@ -114,7 +120,7 @@ class ProductsTable extends Table
             ->select(['stock' => 'SUM(IF(Invoices.sale, -1 * Items.quantity, Items.quantity))'])
             ->where([
                 'OR' => ['Invoices.date <=' => $stockDate, 'Invoices.date IS NULL']
-                ])
+            ])
             ->enableAutoFields(true)
             ->group('Products.id')
             ->leftJoinWith('Items.Invoices');
@@ -128,7 +134,7 @@ class ProductsTable extends Table
             ->select(['sells' => 'SUM(IF(Invoices.sale, -1 * Items.quantity, 0))'])
             ->where([
                 'OR' => ['Invoices.date <=' => $stockDate, 'Invoices.date IS NULL']
-                ])
+            ])
             ->enableAutoFields(true)
             ->group('Products.id')
             ->leftJoinWith('Items.Invoices');
@@ -141,10 +147,10 @@ class ProductsTable extends Table
             ->select([
                 'sells' => 'SUM(IF(Invoices.sale, -1 * Items.quantity, 0))',
                 'sellsIncome' => 'SUM(IF(Invoices.sale, Items.price * Items.quantity, 0))'
-                ])
+            ])
             ->where([
                 'OR' => ['Invoices.date >=' => $options['startDate'], 'Invoices.date IS NULL']
-                ])
+            ])
             ->enableAutoFields(true)
             ->group('Products.id')
             ->leftJoinWith('Items.Invoices');
@@ -157,10 +163,10 @@ class ProductsTable extends Table
             ->select([
                 'purchases' => 'SUM(IF(Invoices.sale, 0, Items.quantity))',
                 'date' => 'Invoices.date'
-                ])
+            ])
             ->where([
                 'OR' => ['Invoices.date >=' => $options['startDate'], 'Invoices.date IS NULL']
-                ])
+            ])
             ->enableAutoFields(true)
             ->group('Products.id')
             ->leftJoinWith('Items.Invoices');
@@ -181,19 +187,19 @@ class ProductsTable extends Table
                 'Products.vat',
                 'avaragePurchasePrice' => 'Avarage.avaragePurchasePrice',
                 'lastPurchasePrice' => 'LastP.lastPurchasePrice'
-                ])
+            ])
             ->join([
-                    'table' => $avaragePurchasePrice,
-                    'type' => 'left',
-                    'alias' => 'Avarage',
-                    'conditions' => 'Avarage.Products__id = Products.id'
-                ])
+                'table' => $avaragePurchasePrice,
+                'type' => 'left',
+                'alias' => 'Avarage',
+                'conditions' => 'Avarage.Products__id = Products.id'
+            ])
             ->join([
-                    'table' => $lastPurchasePrice,
-                    'type' => 'left',
-                    'alias' => 'LastP',
-                    'conditions' => 'LastP.Products__id = Products.id'
-                ]);
+                'table' => $lastPurchasePrice,
+                'type' => 'left',
+                'alias' => 'LastP',
+                'conditions' => 'LastP.Products__id = Products.id'
+            ]);
     }
 
     public function findLastPurchasePrice(Query $query, array $options)
@@ -208,22 +214,22 @@ class ProductsTable extends Table
             //generate a subquery with an empty result to do not fail on findPurchasePrice
             return $query->select(
                 [
-                'currency' => 'Invoices.currency',
-                'lastPurchasePrice' => 'Items.price',
-            ]
+                    'currency' => 'Invoices.currency',
+                    'lastPurchasePrice' => 'Items.price',
+                ]
             )
-            ->enableAutoFields(true)
-            ->matching(
-                'Items.Invoices',
-                function ($q) use ($options) {
-                    return $q->where(
-                        [
-                        'Invoices.currency' => $options['currency'],
-                        'Invoices.sale' => false,
-                    ]
-                    );
-                }
-            );
+                ->enableAutoFields(true)
+                ->matching(
+                    'Items.Invoices',
+                    function ($q) use ($options) {
+                        return $q->where(
+                            [
+                                'Invoices.currency' => $options['currency'],
+                                'Invoices.sale' => false,
+                            ]
+                        );
+                    }
+                );
         }
 
         $latestItems = $this->getAssociation('Items')->find()
@@ -243,9 +249,9 @@ class ProductsTable extends Table
                 function ($q) use ($options) {
                     return $q->where(
                         [
-                        'Invoices.currency' => $options['currency'],
-                        'Invoices.sale' => false,
-                    ]
+                            'Invoices.currency' => $options['currency'],
+                            'Invoices.sale' => false,
+                        ]
                     );
                 }
             )->where(['Items.id IN' => $latestItems]);
@@ -260,9 +266,9 @@ class ProductsTable extends Table
                 function ($q) use ($options) {
                     return $q->where(
                         [
-                        'Invoices.currency' => $options['currency'],
-                        'Invoices.sale' => false,
-                    ]
+                            'Invoices.currency' => $options['currency'],
+                            'Invoices.sale' => false,
+                        ]
                     );
                 }
             )->group('Items.product_id');
