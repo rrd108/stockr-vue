@@ -32,7 +32,10 @@
             <span class="small-6 text-right">{{
               invoices.reduce(
                 (sum, invoice) =>
-                  sum + ((invoice.hidden || invoice.status == 'd') ? 0 : parseInt(invoice.amount)),
+                  sum +
+                  (invoice.hidden || invoice.status == 'd'
+                    ? 0
+                    : parseInt(invoice.amount)),
                 0
               ) | toCurrency
             }}</span>
@@ -110,7 +113,7 @@ export default {
   computed: {
     ...mapGetters(['invoiceMonths']),
     getSelectedMonth() {
-      const leadingZero = this.selectedMonth < 10 ? '0' : ''
+      const leadingZero = this.selectedMonth < 9 ? '0' : ''
       return `-${leadingZero}${this.selectedMonth + 1}-`
     },
     invoices() {
