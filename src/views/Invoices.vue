@@ -11,6 +11,23 @@
         >
           {{ monthName(month) }}
         </li>
+        <li>
+          <select v-model="past" @change="getPast">
+            <option value="2021">2021</option>
+            <option value="12">december</option>
+            <option value="11">november</option>
+            <option value="10">október</option>
+            <option value="9">szeptember</option>
+            <option value="8">augusztus</option>
+            <option value="7">július</option>
+            <option value="6">június</option>
+            <option value="5">május</option>
+            <option value="4">április</option>
+            <option value="3">március</option>
+            <option value="2">február</option>
+            <option value="1">január</option>
+          </select>
+        </li>
       </ul>
     </div>
 
@@ -105,6 +122,7 @@ export default {
   data() {
     return {
       months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
+      past: '',
       searchResultsCount: 0,
       selectedMonth: new Date().getMonth(),
     }
@@ -152,19 +170,22 @@ export default {
         ) == -1
       ) {
         // the selected month is not yet in the store, get it from the API
-        axios
-          .get(
-            `${process.env.VUE_APP_API_URL}invoices.json?company=${
-              this.$store.state.company.id
-            }&ApiKey=${this.$store.state.user.api_token}&year=${year}&month=${
-              month + 1
-            }`
-          )
-          .then((response) =>
-            this.$store.commit('addInvoices', response.data.invoices)
-          )
-          .catch((err) => console.error(err))
+        this.getInvoices(year, month + 1)
       }
+    },
+    getInvoices(year, month) {
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}invoices.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&year=${year}&month=${month}`
+        )
+        .then((response) =>
+          this.$store.commit('addInvoices', response.data.invoices)
+        )
+        .catch((err) => console.error(err))
+    },
+    getPast() {
+      this.$store.commit('setInvoices', [])
+      this.getInvoices(2021, this.past)
     },
   },
 }
@@ -185,6 +206,12 @@ thead th {
   display: flex;
   list-style: none;
   font-size: 0.85rem;
+}
+
+select {
+  margin: auto;
+  padding: auto;
+  line-height: normal;
 }
 
 .pagerHeader li {
