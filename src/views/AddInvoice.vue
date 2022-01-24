@@ -419,12 +419,9 @@ export default {
       return this.$store.state.partners
     },
     products() {
-      return this.$store.state.products.filter(
-        (p) => p.id >= 2063 && p.id <= 2067
-      )
-      /*return this.showProductsOnlyInStock
+      return this.showProductsOnlyInStock
         ? this.$store.state.products.filter((product) => product.stock > 0)
-        : this.$store.state.products*/
+        : this.$store.state.products
     },
     storages() {
       return this.$store.state.storages
