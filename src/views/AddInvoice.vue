@@ -419,9 +419,12 @@ export default {
       return this.$store.state.partners
     },
     products() {
-      return this.showProductsOnlyInStock
+      return this.$store.state.products.filter(
+        (p) => p.id >= 2063 && p.id <= 2067
+      )
+      /*return this.showProductsOnlyInStock
         ? this.$store.state.products.filter((product) => product.stock > 0)
-        : this.$store.state.products
+        : this.$store.state.products*/
     },
     storages() {
       return this.$store.state.storages
@@ -593,7 +596,7 @@ export default {
 
         if (chunks.length === 1) {
           // we have only product name
-          if (product.name == productName.trim()) {
+          if (product.name.trim() == productName.trim()) {
             return product
           }
         }
@@ -602,16 +605,16 @@ export default {
           // we have product name AND (size OR code)
           if (this.product.indexOf('#')) {
             if (
-              product.name == productName.trim() &&
-              product.code == chunks[1].trim()
+              product.name.trim() == productName.trim() &&
+              product.code.trim() == chunks[1].trim()
             ) {
               return product
             }
           }
           if (this.product.indexOf('>')) {
             if (
-              product.name == productName.trim() &&
-              product.size == chunks[1].trim()
+              product.name.trim() == productName.trim() &&
+              product.size.trim() == chunks[1].trim()
             ) {
               return product
             }
@@ -620,10 +623,11 @@ export default {
 
         if (chunks.length === 3) {
           // we have product name AND size AND code
+          // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
           if (
-            product.name == productName.trim() &&
-            product.size == chunks[1].trim() &&
-            product.code == chunks[2].trim()
+            product.name.trim() == productName.trim() &&
+            product.size.trim() == chunks[1].trim() &&
+            product.code.trim() == chunks[2].trim()
           ) {
             return product
           }
