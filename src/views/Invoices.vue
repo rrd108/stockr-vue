@@ -12,8 +12,16 @@
           {{ monthName(month) }}
         </li>
         <li>
-          <select v-model="past" @change="getPast">
+          <select v-model="year" @change="getPast">
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
             <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+          </select>
+        </li>
+        <li>
+          <select v-model="past" @change="getPast">
             <option value="12">december</option>
             <option value="11">november</option>
             <option value="10">október</option>
@@ -122,9 +130,10 @@ export default {
   data() {
     return {
       months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
-      past: '',
+      past: new Date().getMonth() + 1,
       searchResultsCount: 0,
       selectedMonth: new Date().getMonth(),
+      year: new Date().getFullYear(),
     }
   },
 
@@ -152,8 +161,7 @@ export default {
       }
     },
     monthName(month) {
-      let date = new Date()
-      let firstDay = new Date(date.getFullYear(), month, 1)
+      let firstDay = new Date(this.year, month, 1)
       return firstDay.toLocaleString('default', { month: 'long' })
     },
     setCount(count) {
@@ -161,22 +169,20 @@ export default {
     },
     selectMonth(month) {
       this.selectedMonth = month
-      // TODO go back to other years
-      const year = new Date().getFullYear()
       if (
         this.invoiceMonths.findIndex(
           (invoiceMonth) =>
-            invoiceMonth == `${year}${this.getSelectedMonth}`.slice(0, -1)
+            invoiceMonth == `${this.year}${this.getSelectedMonth}`.slice(0, -1)
         ) == -1
       ) {
         // the selected month is not yet in the store, get it from the API
-        this.getInvoices(year, month + 1)
+        this.getInvoices(month + 1)
       }
     },
-    getInvoices(year, month) {
+    getInvoices(month) {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}invoices.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&year=${year}&month=${month}`
+          `${process.env.VUE_APP_API_URL}invoices.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&year=${this.year}&month=${month}`
         )
         .then((response) =>
           this.$store.commit('addInvoices', response.data.invoices)
@@ -185,7 +191,7 @@ export default {
     },
     getPast() {
       this.$store.commit('setInvoices', [])
-      this.getInvoices(2021, this.past)
+      this.getInvoices(this.past)
     },
   },
 }
