@@ -2,14 +2,15 @@
 
 namespace App\Model\Table;
 
-use App\Model\Entity\GroupsProduct;
 use ArrayObject;
-use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Event\Event;
+use Cake\Core\Configure;
+use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
+use App\Model\Entity\GroupsProduct;
+use Cake\Database\Expression\QueryExpression;
 
 /**
  * Products Model
@@ -118,9 +119,20 @@ class ProductsTable extends Table
         return $query
             ->find('forCompany')
             ->select(['stock' => 'SUM(IF(Invoices.sale, -1 * Items.quantity, Items.quantity))'])
-            ->where([
-                'OR' => ['Invoices.date <=' => $stockDate, 'Invoices.date IS NULL']
-            ])
+            ->where(function (QueryExpression $exp) use ($stockDate) {
+                return [
+                    $exp->or(
+                        [
+                            'Invoices.status IS NULL',
+                            'Invoices.status !=' => 'd',
+                        ]
+                    ),
+                    $exp->or([
+                        'Invoices.date <=' => $stockDate,
+                        'Invoices.date IS NULL',
+                    ]),
+                ];
+            })
             ->enableAutoFields(true)
             ->group('Products.id')
             ->leftJoinWith('Items.Invoices');
