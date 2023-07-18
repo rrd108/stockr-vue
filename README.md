@@ -13,3 +13,7 @@ npm run serve
 ```
 
 Deploying is via ftp
+
+# BB
+
+change `.env` and `vue.config.js`
