@@ -9,15 +9,17 @@ sudo systemctl start docker
 sudo chmod 666 /var/run/docker.sock
 cd ~/docker
 docker compose up php74
-npm run serve
+yarn dev
 ```
 
 Deploying is via ftp
 
 # BB
 
-change `.env` and `vue.config.js`
+change `.env`
 
 ```
-npm run build
+yarn build
 ```
+
+Update to vue3: https://v3-migration.vuejs.org/migration-build.html
