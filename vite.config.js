@@ -4,17 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   //plugins: [vue()],
-  plugins: [
-    createVuePlugin({
-      template: {
-        compilerOptions: {
-          compatConfig: {
-            MODE: 2,
-          },
-        },
-      },
-    }),
-  ],
+  plugins: [createVuePlugin()],
   resolve: {
     alias: {
       vue: '@vue/compat',
