@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useStockrStore } from '@/stores'
-
-import Home from '@/views/Home.vue'
+import Home from '@/pages/Home.vue'
 
 const routes = [
   {
@@ -12,66 +11,66 @@ const routes = [
   {
     path: '/help',
     name: 'help',
-    component: () => import('@/views/Help.vue'),
-  },
-  {
-    path: '/invoices/:id',
-    name: 'view-invoice',
-    component: () => import('@/views/ViewInvoice.vue'),
-    props: true,
+    component: () => import('@/pages/Help.vue'),
   },
   {
     path: '/invoices',
     name: 'invoices',
-    component: () => import('@/views/Invoices.vue'),
+    component: () => import('@/pages/Invoices.vue'),
+  },
+  {
+    path: '/invoices/:id',
+    name: 'view-invoice',
+    component: () => import('@/pages/ViewInvoice.vue'),
+    props: true,
   },
   {
     path: '/add-invoice',
     name: 'add-invoice',
-    component: () => import('@/views/AddInvoice.vue'),
+    component: () => import('@/pages/AddInvoice.vue'),
   },
   {
     path: '/add-partner',
     name: 'add-partner',
-    component: () => import('@/views/AddPartner.vue'),
+    component: () => import('@/pages/AddPartner.vue'),
   },
   {
     path: '/add-product',
-    component: () => import('@/views/AddProduct.vue'),
+    component: () => import('@/pages/AddProduct.vue'),
   },
   {
     path: '/partners/:id',
-    component: () => import('@/views/ViewPartner.vue'),
+    component: () => import('@/pages/ViewPartner.vue'),
     props: true,
   },
   {
     path: '/partners',
-    component: () => import('@/views/Partners.vue'),
+    component: () => import('@/pages/Partners.vue'),
     props: true,
   },
   {
     path: '/products/:id',
-    component: () => import('@/views/ViewProduct.vue'),
+    component: () => import('@/pages/ViewProduct.vue'),
     props: true,
   },
   {
     path: '/settings',
-    component: () => import('@/views/Settings.vue'),
+    component: () => import('@/pages/Settings.vue'),
   },
   {
     path: '/stock@date',
     name: 'stock@date',
-    component: () => import('@/views/StockAtDate.vue'),
+    component: () => import('@/pages/StockAtDate.vue'),
   },
   {
     path: '/stock',
     name: 'stock',
-    component: () => import('@/views/Stock.vue'),
+    component: () => import('@/pages/Stock.vue'),
   },
   {
     path: '/stock-rotation',
     name: 'stock-rotation',
-    component: () => import('@/views/StockRotation.vue'),
+    component: () => import('@/pages/StockRotation.vue'),
   },
 ]
 
@@ -80,17 +79,13 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.name !== 'home') {
-    const store = useStockrStore()
-    if (!store.user.email) {
-      next({ path: '/', query: { redirect: to.path } })
-    } else {
-      next() // go to wherever I'm going
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach(to => {
+//   if (to.name !== 'home') {
+//     const store = useStockrStore()
+//     if (!store.user.email) {
+//       return { path: '/', query: { redirect: to.path } }
+//     }
+//   }
+// })
 
 export default router
