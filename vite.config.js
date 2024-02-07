@@ -1,10 +1,9 @@
 import { defineConfig } from 'vite'
-import createVuePlugin from '@vitejs/plugin-vue'
+import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
 export default defineConfig({
-  //plugins: [vue()],
-  plugins: [createVuePlugin()],
+  plugins: [vue()],
   resolve: {
     alias: {
       vue: '@vue/compat',
