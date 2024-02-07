@@ -1,5 +1,5 @@
 module.exports = {
-  //publicPath: '/stockr',  // BB
+  //publicPath: '/~alambika/stockr', // BB
   pluginOptions: {
     i18n: {
       locale: 'hu',

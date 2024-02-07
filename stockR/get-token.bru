@@ -1,0 +1,24 @@
+meta {
+  name: get-token
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8084/stockrvue/api/user-get-token.json
+  body: multipartForm
+  auth: none
+}
+
+query {
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  email: rrd@krisna.hu
+  password: s6radhESyama
+}

@@ -17,3 +17,7 @@ Deploying is via ftp
 # BB
 
 change `.env` and `vue.config.js`
+
+```
+npm run build
+```

@@ -1,0 +1,28 @@
+meta {
+  name: add-product
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost/~rrd/stockrvue/api/products.json?company=1&currency=HUF&ApiKey=$2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
+  body: multipartForm
+  auth: none
+}
+
+query {
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 1
+  name: teszt termék
+  en_name: test product
+  code: EN1
+  size: 
+  vat: 18
+}
