@@ -182,7 +182,11 @@ export default {
     getInvoices(month) {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}invoices.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&year=${this.year}&month=${month}`
+          `${import.meta.env.VITE_API_URL}invoices.json?company=${
+            this.$store.state.company.id
+          }&ApiKey=${this.$store.state.user.api_token}&year=${
+            this.year
+          }&month=${month}`
         )
         .then((response) =>
           this.$store.commit('addInvoices', response.data.invoices)

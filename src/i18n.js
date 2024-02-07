@@ -3,21 +3,94 @@ import VueI18n from 'vue-i18n'
 
 Vue.use(VueI18n)
 
-function loadLocaleMessages () {
-  const locales = require.context('./locales', true, /[A-Za-z0-9-_,\s]+\.json$/i)
-  const messages = {}
-  locales.keys().forEach(key => {
-    const matched = key.match(/([A-Za-z0-9-_]+)\./i)
-    if (matched && matched.length > 1) {
-      const locale = matched[1]
-      messages[locale] = locales(key)
-    }
-  })
-  return messages
+const messages = {
+  en: {
+    login: {
+      rememberme: 'Remember me',
+      email: 'Email',
+      password: 'Password',
+      enter: 'Enter',
+      error: 'Email or password mismatch',
+    },
+    stock: 'Stock',
+    products: 'Products',
+    company: 'Company',
+    save: 'Save',
+    product: {
+      name: 'Name',
+      code: 'Code',
+      size: 'Size',
+    },
+  },
+  hu: {
+    login: {
+      rememberme: 'Emlékezz rám',
+      email: 'Email',
+      password: 'Jelszó',
+      enter: 'Belép',
+      error: 'Hibás email vagy jelszó',
+    },
+    'add partner': 'Új partner',
+    'add product': 'Új termék',
+    address: 'Cím',
+    amount: 'Összeg',
+    'avarage purchase price': 'Átlagos beszerzési ár',
+    city: 'Város',
+    code: 'Kód',
+    company: 'Cég',
+    'confirm password': 'Jelszó megerősítése',
+    cost: 'Költség',
+    currency: 'Valuta',
+    date: 'Dátum',
+    email: 'Email',
+    'gross amount': 'Bruttó',
+    group: 'Csoport',
+    groups: 'Csoport',
+    help: 'Help',
+    invoices: 'Bizonylat',
+    'invoice type': 'Bizonylat típus',
+    'invoice types': 'Bizonylat típus',
+    'last purchase price': 'Utolsó beszerzési ár',
+    logout: 'Kilépek',
+    'master data': 'Törzsadat',
+    name: 'Név',
+    'new invoice': 'Új bizonylat',
+    'new password': 'Új jelszó',
+    number: 'Szám',
+    password: 'Jelszó',
+    'password mismatch': 'A megadott jelszavak nem egyeznek meg egymással',
+    phone: 'Telefon',
+    sale: 'Eladás',
+    save: 'Ment',
+    saved: 'elmentve',
+    'selling price': 'Eladási ár',
+    sells: 'Eladás',
+    settings: 'Beállítások',
+    size: 'Méret',
+    stock: 'Készlet',
+    'stock at date': 'Készlet adott napon',
+    storage: 'Raktár',
+    storages: 'Raktár',
+    'password should be at least 6 characters and contain numbers and letters':
+      'A jelszónak legalább 6 karakter hosszúnak kell lennie és beűkből és számokból kell állnia',
+    partner: 'Partner',
+    partners: 'Partner',
+    pcs: 'db',
+    price: 'Ár',
+    product: 'Termék',
+    products: 'Termék',
+    purchase: 'Beszerzés',
+    purchases: 'Beszerzés',
+    quantity: 'Mennyiség',
+    type: 'Típus',
+    total: 'Összsesen',
+    vat: 'ÁFA',
+    zip: 'Irsz',
+  },
 }
 
 export default new VueI18n({
   locale: 'hu',
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages: loadLocaleMessages()
+  fallbackLocale: import.meta.env.VITE_I18N_FALLBACK_LOCALE || 'en',
+  messages,
 })

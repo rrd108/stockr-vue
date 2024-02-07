@@ -49,7 +49,7 @@
             <i
               v-if="
                 invoice.partner.group.id != 4 &&
-                  invoice.number.indexOf('|') == -1
+                invoice.number.indexOf('|') == -1
               "
               @click="onInvoicing = true"
               class="fi-page-export-pdf pointer"
@@ -205,14 +205,14 @@ export default {
       invoice_comment: '#gauranga',
       invoicetype_id: 0,
       isLoaded: false,
-      payment_method: 2
+      payment_method: 2,
     }
   },
 
   computed: {
     invoicetypes() {
       return this.$store.state.invoicetypes
-    }
+    },
   },
 
   created() {
@@ -220,11 +220,11 @@ export default {
       this.$store.dispatch('getInvoicetypes')
     }
 
-    this.api = process.env.VUE_APP_API_URL
+    this.api = import.meta.env.VITE_API_URL
 
     axios
       .get(
-        process.env.VUE_APP_API_URL +
+        import.meta.env.VITE_API_URL +
           'invoices/' +
           this.$route.params.id +
           '.json?company=' +
@@ -232,15 +232,13 @@ export default {
           '&ApiKey=' +
           this.$store.state.user.api_token
       )
-      .then(response => {
+      .then((response) => {
         this.invoice = response.data.invoice
-        this.fulfillment_date = this.due_date = response.data.invoice.date.substr(
-          0,
-          10
-        )
+        this.fulfillment_date = this.due_date =
+          response.data.invoice.date.substr(0, 10)
         this.isLoaded = true
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
   },
 
   filters: {
@@ -259,7 +257,7 @@ export default {
                     </a>'
       }
       return value + ' '
-    }
+    },
   },
 
   methods: {
@@ -267,35 +265,34 @@ export default {
       this.onEdit = !this.onEdit
       if (this.invoicetype_id) {
         this.invoice.invoicetype = this.invoicetypes.find(
-          invoicetype => invoicetype.id == this.invoicetype_id
+          (invoicetype) => invoicetype.id == this.invoicetype_id
         )
 
-        const qs = require('qs')
         let data = {
           id: this.invoice.id,
-          invoicetype_id: this.invoicetype_id
+          invoicetype_id: this.invoicetype_id,
         }
         // TODO axios.put does not work as sends out an OPTIONS request what gets a 302 response
         axios
           .post(
-            process.env.VUE_APP_API_URL +
+            import.meta.env.VITE_API_URL +
               'invoices/edit/' +
               this.invoice.id +
               '.json?company=' +
               this.$store.state.company.id +
               '&ApiKey=' +
               this.$store.state.user.api_token,
-            qs.stringify(data)
+            data
           )
           .then(() => {
             this.$store.commit(
               'setInvoices',
-              this.$store.state.invoices.map(invoice =>
+              this.$store.state.invoices.map((invoice) =>
                 invoice.id == this.invoice.id ? this.invoice : invoice
               )
             )
           })
-          .catch(error => console.log(error))
+          .catch((error) => console.log(error))
       } else {
         this.invoicetype_id = this.invoice.invoicetype.id
       }
@@ -305,22 +302,34 @@ export default {
       // TODO update status data in the store also
       axios
         .delete(
-          `${process.env.VUE_APP_API_URL}invoices/delete/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`
+          `${import.meta.env.VITE_API_URL}invoices/delete/${
+            this.invoice.id
+          }.json?company=${this.$store.state.company.id}&ApiKey=${
+            this.$store.state.user.api_token
+          }`
         )
-        .then(response => console.log(response))
-        .catch(error => console.error(error))
+        .then((response) => console.log(response))
+        .catch((error) => console.error(error))
     },
 
     generateInvoice() {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}invoices/billingo/${this.invoice.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}&due_date=${this.due_date}&fulfillment_date=${this.fulfillment_date}&payment_method=${this.payment_method}&invoice_comment=${this.invoice_comment}`
+          `${import.meta.env.VITE_API_URL}invoices/billingo/${
+            this.invoice.id
+          }.json?company=${this.$store.state.company.id}&ApiKey=${
+            this.$store.state.user.api_token
+          }&due_date=${this.due_date}&fulfillment_date=${
+            this.fulfillment_date
+          }&payment_method=${this.payment_method}&invoice_comment=${
+            this.invoice_comment
+          }`
         )
-        .then(response => {
+        .then((response) => {
           this.invoice.number = response.data.invoice.number
           this.onInvoicing = false
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           this.onInvoicing = false
         })
@@ -330,16 +339,16 @@ export default {
       axios({
         method: 'get',
         url:
-          process.env.VUE_APP_API_URL +
+          import.meta.env.VITE_API_URL +
           'invoices/' +
           this.invoice.id +
           '.pdf?company=' +
           this.$store.state.company.id +
           '&ApiKey=' +
           this.$store.state.user.api_token,
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       })
-        .then(response => {
+        .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]))
           const link = document.createElement('a')
           link.href = url
@@ -347,9 +356,9 @@ export default {
           document.body.appendChild(link)
           link.click()
         })
-        .catch(error => console.log(error))
-    }
-  }
+        .catch((error) => console.log(error))
+    },
+  },
 }
 </script>
 
@@ -391,5 +400,6 @@ dd {
 }
 label {
   color: #fff;
-}</style
->>
+}
+</style>
+>

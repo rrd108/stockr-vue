@@ -59,9 +59,22 @@ export default {
     edit(property) {
       let partner = {}
       partner[property] = this.partner[property]
-      axios.put(`${process.env.VUE_APP_API_URL}partners/${this.partner.id}.json?company=${this.$store.state.company.id}&ApiKey=${this.$store.state.user.api_token}`, partner)
-          .then(response => this.$store.commit('updatePartner', {property: property, partner: response.data.partner}))
-          .catch(error => console.log(error))
+      axios
+        .put(
+          `${import.meta.env.VITE_API_URL}partners/${
+            this.partner.id
+          }.json?company=${this.$store.state.company.id}&ApiKey=${
+            this.$store.state.user.api_token
+          }`,
+          partner
+        )
+        .then((response) =>
+          this.$store.commit('updatePartner', {
+            property: property,
+            partner: response.data.partner,
+          })
+        )
+        .catch((error) => console.log(error))
     },
   },
 }

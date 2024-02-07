@@ -38,7 +38,6 @@
 
 <script>
 import axios from 'axios'
-import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'AddProduct',
@@ -51,58 +50,57 @@ export default {
       size: '',
       vats: [],
       vat: undefined,
-      isSaved: false
+      isSaved: false,
     }
   },
 
-  validations: {
-    name: { required },
-    vat: { required }
-  },
+  // validations: {
+  //   name: { required },
+  //   vat: { required },
+  // },
 
   created() {
-    this.vats = process.env.VUE_APP_VAT_PERCENTAGES.split(',')
+    this.vats = import.meta.env.VITE_VAT_PERCENTAGES.split(',')
   },
 
   methods: {
     addProduct() {
-      const qs = require('qs')
       let data = {
         company_id: this.$store.state.company.id,
         name: this.name.replace(/ +(?= )/g, ''),
         en_name: this.en_name.replace(/ +(?= )/g, ''),
         code: this.code,
         size: this.size,
-        vat: this.vat
+        vat: this.vat,
       }
       let data4vue = {
         avaragePurchasePrice: 0,
         lastPurchasePrice: 0,
         stock: 0,
-        hidden: false
+        hidden: false,
       }
 
       axios
         .post(
-          process.env.VUE_APP_API_URL +
+          import.meta.env.VITE_API_URL +
             'products.json?company=' +
             this.$store.state.company.id +
             '&currency=' +
             this.$store.state.company.currency +
             '&ApiKey=' +
             this.$store.state.user.api_token,
-          qs.stringify(data)
+          data
         )
-        .then(response => {
+        .then((response) => {
           if (response.data.product.id) {
             this.isSaved = true
             this.$store.commit('addProduct', {
               ...response.data.product,
-              ...data4vue
+              ...data4vue,
             })
           }
         })
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
     },
     initializeForm() {
       // TODO
@@ -112,9 +110,9 @@ export default {
       this.size = ''
       this.vat = undefined
       this.isSaved = false
-      this.vats = process.env.VUE_APP_VAT_PERCENTAGES.split(',')
-    }
-  }
+      this.vats = import.meta.env.VITE_VAT_PERCENTAGES.split(',')
+    },
+  },
 }
 </script>
 

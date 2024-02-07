@@ -508,7 +508,6 @@ export default {
     saveInvoice() {
       this.addItem(false)
       if (this.invoiceItems.length) {
-        const qs = require('qs')
         let data = {
           storage_id: this.storage_id,
           invoicetype_id: this.invoicetype_id,
@@ -537,12 +536,12 @@ export default {
 
         axios
           .post(
-            process.env.VUE_APP_API_URL +
+            import.meta.env.VITE_API_URL +
               'invoices.json?company=' +
               this.$store.state.company.id +
               '&ApiKey=' +
               this.$store.state.user.api_token,
-            qs.stringify(data)
+            data
           )
           .then((response) => {
             if (response.data.invoice.id) {

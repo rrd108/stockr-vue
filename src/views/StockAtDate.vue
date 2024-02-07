@@ -207,7 +207,7 @@ export default {
       let products = []
       axios
         .get(
-          process.env.VUE_APP_API_URL +
+          import.meta.env.VITE_API_URL +
             'products/stock.json' +
             '?company=' +
             this.$store.state.company.id +

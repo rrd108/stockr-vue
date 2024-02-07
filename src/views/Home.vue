@@ -6,19 +6,18 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import StockRlogin from '@/components/StockRlogin.vue'
-import StockRstats from '@/components/StockRstats'
-import {mapGetters} from 'vuex'
+import StockRstats from '@/components/StockRstats.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'home',
 
   components: {
     StockRlogin,
-    StockRstats
+    StockRstats,
   },
 
-  computed : mapGetters(['isLoggedIn']),
+  computed: mapGetters(['isLoggedIn']),
 }
 </script>
