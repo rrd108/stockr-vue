@@ -109,14 +109,13 @@
         :invoices="invoices"
         @setCount="setCount($event)"
       ></tbody>
-      <infinite-loading @infinite="loadInvoices" />
+      <!-- TODO infinite-loading @infinite="loadInvoices" /-->
     </table>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import InfiniteLoading from 'vue-infinite-loading'
 import FilterInput from '@/components/FilterInput.vue'
 import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
 import { mapGetters } from 'vuex'
@@ -128,7 +127,6 @@ export default {
   components: {
     FilterInput,
     FilteredTbody,
-    InfiniteLoading,
   },
 
   data() {
