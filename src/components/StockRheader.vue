@@ -204,10 +204,10 @@ ul.dropdown li {
 .reveal-fade-leave-active {
   transition: all 0.2s ease;
 }
-.reveal-fade-enter {
+.reveal-fade-enter-from {
   opacity: 0;
 }
-.reveal-fade-leave-to {
+.reveal-fade-leave-active {
   opacity: 0;
 }
 @media screen and (max-width: 40em) {
