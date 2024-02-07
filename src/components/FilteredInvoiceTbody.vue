@@ -1,6 +1,10 @@
 <template>
   <tbody>
-    <tr v-for="invoice in filteredItems" :key="invoice.id" :class="{deleted: (invoice.status == 'd')}">
+    <tr
+      v-for="invoice in filteredItems"
+      :key="invoice.id"
+      :class="{ deleted: invoice.status == 'd' }"
+    >
       <td>
         <router-link :to="'invoices/' + invoice.id">
           <i v-if="invoice.sale" class="fi-arrow-left out"></i>
@@ -8,7 +12,7 @@
         </router-link>
       </td>
       <td v-html="$options.filters.invoiceNumber(invoice.number)"></td>
-      <td>{{ invoice.date | toLocaleDateString }}</td>
+      <td>{{ toLocaleDateString(invoice.date) }}</td>
       <td>
         <router-link :to="'partners/' + invoice.partner.id">
           <i class="fi-torsos"> {{ invoice.partner.name }}</i>
@@ -21,15 +25,17 @@
         <i class="fi-book"> {{ invoice.invoicetype.name }}</i>
       </td>
       <td class="text-right">
-        {{ invoice.amount | toCurrency(invoice.currency) }}
+        {{ toCurrency(invoice.amount, invoice.currency) }}
       </td>
     </tr>
   </tbody>
 </template>
 
 <script>
-import RowFilterMixin from '@/mixins/RowFilterMixin'
-import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
+import rowFilter from '@/composables/useRowFilter'
+import invoiceNumber from '@/composables/useInvoiceNumber'
+import toCurrency from '@/composables/useToCurrency'
+import toLocaleDateString from '@/composables/useToLocaleDateString'
 
 export default {
   name: 'FilteredTbody',
@@ -47,7 +53,12 @@ export default {
     }
   },
 
-  mixins: [InvoiceNumberFilterMixin, RowFilterMixin],
+  methods: {
+    invoiceNumber,
+    rowFilter,
+  },
+
+  mixins: [RowFilterMixin],
 }
 </script>
 

@@ -42,35 +42,44 @@
         <th scope="row">{{ $t('purchase') }}</th>
         <td class="text-right">
           {{
-            product.items.reduce(
-              (total, item) =>
-                total +
-                (item.invoice.sale ? 0 : -1 * item.price * item.quantity),
-              0
-            ) | toCurrency(currency)
+            toCurrency(
+              product.items.reduce(
+                (total, item) =>
+                  total +
+                  (item.invoice.sale ? 0 : -1 * item.price * item.quantity),
+                0
+              ),
+              currency
+            )
           }}
         </td>
         <th scope="row">{{ $t('sells') }}</th>
         <td class="text-right">
           {{
-            product.items.reduce(
-              (total, item) =>
-                total + (item.invoice.sale ? item.price * item.quantity : 0),
-              0
-            ) | toCurrency(currency)
+            toCurrency(
+              product.items.reduce(
+                (total, item) =>
+                  total + (item.invoice.sale ? item.price * item.quantity : 0),
+                0
+              ),
+              currency
+            )
           }}
         </td>
         <th scope="row">{{ $t('profit') }}</th>
         <td class="text-right">
           {{
-            product.items.reduce(
-              (total, item) =>
-                total +
-                (item.invoice.sale
-                  ? item.price * item.quantity
-                  : -1 * item.price * item.quantity),
-              0
-            ) | toCurrency(currency)
+            toCurrency(
+              product.items.reduce(
+                (total, item) =>
+                  total +
+                  (item.invoice.sale
+                    ? item.price * item.quantity
+                    : -1 * item.price * item.quantity),
+                0
+              ),
+              currency
+            )
           }}
         </td>
       </tr>
@@ -79,34 +88,34 @@
         <td></td>
         <th scope="row">{{ $t('avarage purchase price') }}</th>
         <td class="text-right">
-          {{ product.avaragePurchasePrice | toCurrency(currency) }}
+          {{ toCurrency(product.avaragePurchasePrice, currency) }}
         </td>
         <th scope="row">{{ $t('last purchase price') }}</th>
         <td class="text-right">
-          {{ product.lastPurchasePrice | toCurrency(currency) }}
+          {{ toCurrency(product.lastPurchasePrice, currency) }}
         </td>
       </tr>
       <tr>
         <th scope="row">{{ $t('stock') }}</th>
-        <td class="text-right">{{ stock | toNum(1) }}</td>
+        <td class="text-right">{{ toNum(stock, 1) }}</td>
         <th scope="row">{{ $t('stock') }}</th>
         <td class="text-right">
-          {{ (stock * product.avaragePurchasePrice) | toCurrency(currency) }}
+          {{ toCurrency(stock * product.avaragePurchasePrice, currency) }}
         </td>
         <th scope="row">{{ $t('stock') }}</th>
         <td class="text-right">
-          {{ (stock * product.lastPurchasePrice) | toCurrency(currency) }}
+          {{ toCurrency(stock * product.lastPurchasePrice, currency) }}
         </td>
       </tr>
       <tr>
         <th scope="row">{{ $t('last purchase') }}</th>
         <td class="text-right">
-          {{ lastPurchase.invoice.date | toLocaleDateString }}
+          {{ toLocaleDateString(lastPurchase.invoice.date) }}
         </td>
         <th scope="row">{{ $t('sells') }}</th>
-        <td class="text-right">{{ totalSells | toNum(1) }}</td>
+        <td class="text-right">{{ toNum(totalSells, 1) }}</td>
         <th scope="row">{{ $t('runout') }}</th>
-        <td class="text-right">{{ runoutDate | toLocaleDateString }}</td>
+        <td class="text-right">{{ toLocaleDateString(runoutDate) }}</td>
       </tr>
     </table>
 
@@ -140,14 +149,16 @@
           </td>
           <td>
             {{
-              product.items
-                .filter((item) => item.Partners.id == customer)
-                .reduce(
-                  (total, item) =>
-                    total +
-                    (item.invoice.sale ? item.quantity * item.price : 0),
-                  0
-                ) | toCurrency
+              toCurrency(
+                product.items
+                  .filter((item) => item.Partners.id == customer)
+                  .reduce(
+                    (total, item) =>
+                      total +
+                      (item.invoice.sale ? item.quantity * item.price : 0),
+                    0
+                  )
+              )
             }}
           </td>
         </tr>
@@ -176,20 +187,20 @@
             </router-link>
           </td>
           <td v-html="$options.filters.invoiceNumber(item.invoice.number)"></td>
-          <td>{{ item.invoice.date | toLocaleDateString }}</td>
+          <td>{{ toLocaleDateString(item.invoice.date) }}</td>
           <td>{{ item.invoice.partner.name }}</td>
           <td>{{ item.invoice.storage.name }}</td>
           <td class="text-right">
             {{
-              item.invoice.sale ? -1 * item.quantity : item.quantity | toNum(1)
+              toNum(item.invoice.sale ? -1 * item.quantity : item.quantity, 1)
             }}
           </td>
-          <td class="text-right">{{ item.price | toCurrency(currency) }}</td>
+          <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
           <td class="text-right">
             {{
               item.invoice.sale
-                ? item.price * item.quantity
-                : (-1 * item.price * item.quantity) | toCurrency(currency)
+                ? toCurrency(item.price * item.quantity, currency)
+                : toCurrency(-1 * item.price * item.quantity, currency)
             }}
           </td>
         </tr>
@@ -200,8 +211,11 @@
 
 <script>
 import axios from 'axios'
-import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin.vue'
+import invoiceNumber from '@/composables/useInvoiceNumber'
 import QuickEdit from 'vue-quick-edit'
+import toCurrency from '@/composables/useToCurrency'
+import toNum from '@/composables/useToNum'
+import toLocaleDateString from '@/composables/useToLocaleDateString'
 
 export default {
   name: 'ViewProduct',
@@ -257,8 +271,6 @@ export default {
     },
   },
 
-  mixins: [InvoiceNumberFilterMixin],
-
   created() {
     axios
       .get(
@@ -278,6 +290,7 @@ export default {
   },
 
   methods: {
+    invoiceNumber,
     edit(property) {
       this.editProductProperty = false
       let product = {}

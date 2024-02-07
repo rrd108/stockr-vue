@@ -38,7 +38,7 @@
             </select>
           </td>
           <th scope="row">{{ $t('date') }}</th>
-          <td>{{ invoice.date | toLocaleDateString }}</td>
+          <td>{{ toLocaleDateString(invoice.date) }}</td>
         </tr>
         <tr>
           <th scope="row">{{ $t('number') }}</th>
@@ -94,21 +94,25 @@
             {{ item.product.code }} <i>{{ item.product.en_name }}</i>
           </td>
           <td class="text-right">{{ item.quantity }}</td>
-          <td class="text-right">{{ item.price | toCurrency(currency) }}</td>
+          <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
           <td class="text-right">
-            {{ (item.price * item.quantity) | toCurrency(currency) }}
+            {{ toCurrency(item.price * item.quantity, currency) }}
           </td>
           <td class="text-right">{{ item.product.vat }} %</td>
           <td class="text-right">
             {{
-              ((item.product.vat * item.price * item.quantity) / 100)
-                | toCurrency(currency)
+              toCurrency(
+                (item.product.vat * item.price * item.quantity) / 100,
+                currency
+              )
             }}
           </td>
           <td class="text-right">
             {{
-              (item.price * item.quantity * (1 + item.product.vat / 100))
-                | toCurrency(currency)
+              toCurrency(
+                item.price * item.quantity * (1 + item.product.vat / 100),
+                currency
+              )
             }}
           </td>
         </tr>
@@ -118,39 +122,52 @@
           <td>{{ $t('total') }}</td>
           <td class="text-right">
             {{
-              invoice.items.reduce(
-                (total, item) => total + parseInt(item.quantity),
-                0
-              ) | toNum(1)
+              toNum(
+                invoice.items.reduce(
+                  (total, item) => total + parseInt(item.quantity),
+                  0
+                ),
+                1
+              )
             }}
           </td>
           <td></td>
           <td class="text-right">
             {{
-              invoice.items.reduce(
-                (total, item) => total + item.price * item.quantity,
-                0
-              ) | toCurrency(currency)
+              toCurrency(
+                invoice.items.reduce(
+                  (total, item) => total + item.price * item.quantity,
+                  0
+                ),
+                currency
+              )
             }}
           </td>
           <td></td>
           <td class="text-right">
             {{
-              invoice.items.reduce(
-                (total, item) =>
-                  total + (item.price * item.quantity * item.product.vat) / 100,
-                0
-              ) | toCurrency(currency)
+              toCurrency(
+                invoice.items.reduce(
+                  (total, item) =>
+                    total +
+                    (item.price * item.quantity * item.product.vat) / 100,
+                  0
+                ),
+                currency
+              )
             }}
           </td>
           <td class="text-right">
             {{
-              invoice.items.reduce(
-                (total, item) =>
-                  total +
-                  item.price * item.quantity * (1 + item.product.vat / 100),
-                0
-              ) | toCurrency(currency)
+              toCurrency(
+                invoice.items.reduce(
+                  (total, item) =>
+                    total +
+                    item.price * item.quantity * (1 + item.product.vat / 100),
+                  0
+                ),
+                currency
+              )
             }}
           </td>
         </tr>
@@ -189,6 +206,9 @@
 
 <script>
 import axios from 'axios'
+import toCurrency from '@/composables/useToCurrency'
+import toNum from '@/composables/useToNum'
+import toLocaleDateString from '@/composables/useToLocaleDateString'
 
 export default {
   name: 'ViewInvoce',

@@ -30,25 +30,25 @@
             v-show="columns.find((column) => column.name == 'stock').show"
             class="text-right"
           >
-            {{ sum('stock') | toNum }} {{ $t('pcs') }}
+            {{ toNum(sum('stock')) }} {{ $t('pcs') }}
           </td>
           <td
             v-show="columns.find((column) => column.name == 'purchases').show"
             class="text-right"
           >
-            {{ sum('purchases') | toNum }} {{ $t('pcs') }}
+            {{ toNum(sum('purchases')) }} {{ $t('pcs') }}
           </td>
           <td
             v-show="columns.find((column) => column.name == 'sells').show"
             class="text-right"
           >
-            {{ sum('sells') | toNum }} {{ $t('pcs') }}
+            {{ toNum(sum('sells')) }} {{ $t('pcs') }}
           </td>
           <td
             v-show="columns.find((column) => column.name == 'profit').show"
             class="text-right"
           >
-            {{ sum('profit') | toNum }}
+            {{ toNum(sum('profit')) }}
           </td>
           <td
             v-show="columns.find((column) => column.name == 'runout').show"
@@ -83,6 +83,7 @@
 import axios from 'axios'
 import FilterInput from '@/components/FilterInput'
 import FilteredTbody from '@/components/FilteredProductTbody'
+import toNum from '@/composables/useToNum'
 
 export default {
   name: 'StockRotation',

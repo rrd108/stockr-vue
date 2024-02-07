@@ -11,66 +11,66 @@
         </router-link>
       </td>
 
-      <td v-show="columns.find(column => column.name == 'code').show">
+      <td v-show="columns.find((column) => column.name == 'code').show">
         {{ product.code }}
       </td>
 
-      <td v-show="columns.find(column => column.name == 'size').show">
+      <td v-show="columns.find((column) => column.name == 'size').show">
         {{ product.size }}
       </td>
 
       <td
-        v-show="columns.find(column => column.name == 'stock').show"
+        v-show="columns.find((column) => column.name == 'stock').show"
         class="text-right"
       >
-        {{ product.stock | toNum(1) }}
+        {{ toNum(product.stock, 1) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'purchases') &&
-            columns.find(column => column.name == 'purchases').show
+          columns.find((column) => column.name == 'purchases') &&
+          columns.find((column) => column.name == 'purchases').show
         "
         class="text-right"
       >
-        {{ product.purchases | toNum(1) }}
+        {{ toNum(product.purchases, 1) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'sells') &&
-            columns.find(column => column.name == 'sells').show
+          columns.find((column) => column.name == 'sells') &&
+          columns.find((column) => column.name == 'sells').show
         "
         class="text-right"
       >
-        {{ product.sells | toNum(1) }}
+        {{ toNum(product.sells, 1) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'profit') &&
-            columns.find(column => column.name == 'profit').show
+          columns.find((column) => column.name == 'profit') &&
+          columns.find((column) => column.name == 'profit').show
         "
         class="text-right"
       >
-        {{ profit(product) | toCurrency }}
+        {{ toCurrency(profit(product)) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'runout') &&
-            columns.find(column => column.name == 'runout').show
+          columns.find((column) => column.name == 'runout') &&
+          columns.find((column) => column.name == 'runout').show
         "
         class="text-right"
         :class="{ runout: isRunout(product) }"
       >
-        {{ runout(product) | toLocaleDateString('hu-HU') }}
+        {{ toLocaleDateString(runout(product), 'hu-HU') }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'runout') &&
-            columns.find(column => column.name == 'runout').show
+          columns.find((column) => column.name == 'runout') &&
+          columns.find((column) => column.name == 'runout').show
         "
         class="text-right"
         :class="{ runout: isRunout(product) }"
@@ -81,42 +81,42 @@
 
       <td
         v-show="
-          columns.find(column => column.name == 'avarage purchase price') &&
-            columns.find(column => column.name == 'avarage purchase price').show
+          columns.find((column) => column.name == 'avarage purchase price') &&
+          columns.find((column) => column.name == 'avarage purchase price').show
         "
         class="text-right"
       >
-        {{ product.avaragePurchasePrice | toCurrency }}
+        {{ toCurrency(product.avaragePurchasePrice) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'last purchase price') &&
-            columns.find(column => column.name == 'last purchase price').show
+          columns.find((column) => column.name == 'last purchase price') &&
+          columns.find((column) => column.name == 'last purchase price').show
         "
         class="text-right"
       >
-        {{ product.lastPurchasePrice | toCurrency }}
+        {{ toCurrency(product.lastPurchasePrice) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'avarage purchase price') &&
-            columns.find(column => column.name == 'avarage purchase price').show
+          columns.find((column) => column.name == 'avarage purchase price') &&
+          columns.find((column) => column.name == 'avarage purchase price').show
         "
         class="text-right"
       >
-        {{ (product.stock * product.avaragePurchasePrice) | toCurrency }}
+        {{ toCurrency(product.stock * product.avaragePurchasePrice) }}
       </td>
 
       <td
         v-show="
-          columns.find(column => column.name == 'last purchase price') &&
-            columns.find(column => column.name == 'last purchase price').show
+          columns.find((column) => column.name == 'last purchase price') &&
+          columns.find((column) => column.name == 'last purchase price').show
         "
         class="text-right"
       >
-        {{ (product.stock * product.lastPurchasePrice) | toCurrency }}
+        {{ toCurrency(product.stock * product.lastPurchasePrice) }}
       </td>
 
       <td
@@ -126,8 +126,7 @@
         class="text-center"
       >
         {{
-          ((1 + column.percentage / 100) * product.lastPurchasePrice)
-            | toCurrency
+          toCurrency((1 + column.percentage / 100) * product.lastPurchasePrice)
         }}
       </td>
     </tr>
@@ -136,6 +135,9 @@
 
 <script>
 import RowFilterMixin from '@/mixins/RowFilterMixin'
+import toCurrency from '@/composables/useToCurrency'
+import toNum from '@/composables/useToNum'
+import toLocaleDateString from '@/composables/useToLocaleDateString'
 
 export default {
   name: 'FilteredTbody',
@@ -143,31 +145,31 @@ export default {
   props: {
     columns: {
       type: Array,
-      required: true
+      required: true,
     },
     days: {
       type: Number,
-      required: false
+      required: false,
     },
     groups: {
       type: Array,
-      required: true
+      required: true,
     },
     products: {
       type: Array,
-      required: true
+      required: true,
     },
     showOnlyRunout: {
       type: Boolean,
-      required: false
-    }
+      required: false,
+    },
   },
 
   mixins: [RowFilterMixin],
 
   data() {
     return {
-      model: 'products'
+      model: 'products',
     }
   },
 
@@ -184,7 +186,7 @@ export default {
     },
     profit(product) {
       let productFromStore = this.$store.state.products.find(
-        p => p.id == product.id
+        (p) => p.id == product.id
       )
       return (
         product.sellsIncome -
@@ -204,8 +206,8 @@ export default {
         return runoutDate
       }
       return ''
-    }
-  }
+    },
+  },
 }
 </script>
 

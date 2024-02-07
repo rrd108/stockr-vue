@@ -1,12 +1,23 @@
 import { defineConfig } from 'vite'
-import { createVuePlugin as vue } from 'vite-plugin-vue2'
-import i18n from 'vue-i18n'
+import createVuePlugin from '@vitejs/plugin-vue'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [vue()],
+  //plugins: [vue()],
+  plugins: [
+    createVuePlugin({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2,
+          },
+        },
+      },
+    }),
+  ],
   resolve: {
     alias: {
+      vue: '@vue/compat',
       '@': path.resolve(__dirname, './src'), // map '@' to './src'
     },
   },

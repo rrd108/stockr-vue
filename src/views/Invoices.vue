@@ -55,14 +55,16 @@
           <th scope="col" class="row">
             <span class="small-6">{{ $t('amount') }}</span>
             <span class="small-6 text-right">{{
-              invoices.reduce(
-                (sum, invoice) =>
-                  sum +
-                  (invoice.hidden || invoice.status == 'd'
-                    ? 0
-                    : parseInt(invoice.amount)),
-                0
-              ) | toCurrency
+              toCurrency(
+                invoices.reduce(
+                  (sum, invoice) =>
+                    sum +
+                    (invoice.hidden || invoice.status == 'd'
+                      ? 0
+                      : parseInt(invoice.amount)),
+                  0
+                )
+              )
             }}</span>
           </th>
         </tr>
@@ -117,6 +119,7 @@ import InfiniteLoading from 'vue-infinite-loading'
 import FilterInput from '@/components/FilterInput.vue'
 import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
 import { mapGetters } from 'vuex'
+import toCurrency from '@/composables/useToCurrency'
 
 export default {
   name: 'Invoices',

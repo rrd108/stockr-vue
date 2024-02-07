@@ -2,21 +2,21 @@
   <div class="cards">
     <div class="small-6 large-4">
       <div class="widget out">
-        <h2>{{ stats.totals.sells | toCurrency(currency) }}</h2>
+        <h2>{{ toCurrency(stats.totals.sells, currency) }}</h2>
         <i class="fi-arrow-left"> {{ $t('sells') }}</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget in">
-        <h2>{{ stats.totals.purchases | toCurrency(currency) }}</h2>
+        <h2>{{ toCurrency(stats.totals.purchases, currency) }}</h2>
         <i class="fi-arrow-right"> {{ $t('purchases') }}</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget w1">
-        <h2>{{ stats.totals.stock | toNumFormat }} {{ $t('pcs') }}</h2>
+        <h2>{{ toNumFormat(stats.totals.stock) }} {{ $t('pcs') }}</h2>
         <i class="fi-list-thumbnails"> {{ $t('stock') }}</i>
       </div>
     </div>
@@ -46,6 +46,8 @@
 
 <script>
 import axios from 'axios'
+import toCurrency from '@/composables/useToCurrency'
+import toNumFormat from '@/composables/useToNumFormat'
 
 export default {
   name: 'stats',
@@ -64,6 +66,11 @@ export default {
         products: 0,
       },
     }
+  },
+
+  methods: {
+    toCurrency,
+    toNumFormat,
   },
 
   created() {

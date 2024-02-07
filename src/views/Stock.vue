@@ -83,13 +83,13 @@
             v-show="columns.find((column) => column.name == 'stock').show"
             class="text-right"
           >
-            {{ stock | toNum }} {{ $t('pcs') }}
+            {{ toNum(stock) }} {{ $t('pcs') }}
           </td>
           <td
             v-show="columns.find((column) => column.name == 'sells').show"
             class="text-right"
           >
-            {{ sells | toNum }} {{ $t('pcs') }}
+            {{ toNum(sells) }} {{ $t('pcs') }}
           </td>
           <td
             v-show="
@@ -99,14 +99,16 @@
             class="text-right"
           >
             {{
-              products.reduce(
-                (sum, product) =>
-                  sum +
-                  (product.hidden
-                    ? 0
-                    : parseInt(product.stock * product.avaragePurchasePrice)),
-                0
-              ) | toCurrency
+              toCurrency(
+                products.reduce(
+                  (sum, product) =>
+                    sum +
+                    (product.hidden
+                      ? 0
+                      : parseInt(product.stock * product.avaragePurchasePrice)),
+                  0
+                )
+              )
             }}
           </td>
           <td
@@ -117,14 +119,16 @@
             class="text-right"
           >
             {{
-              products.reduce(
-                (sum, product) =>
-                  sum +
-                  (product.hidden
-                    ? 0
-                    : parseInt(product.stock * product.lastPurchasePrice)),
-                0
-              ) | toCurrency
+              toCurrency(
+                products.reduce(
+                  (sum, product) =>
+                    sum +
+                    (product.hidden
+                      ? 0
+                      : parseInt(product.stock * product.lastPurchasePrice)),
+                  0
+                )
+              )
             }}
           </td>
 
@@ -152,6 +156,8 @@
 <script>
 import FilterInput from '@/components/FilterInput.vue'
 import FilteredTbody from '@/components/FilteredProductTbody.vue'
+import toCurrency from '@/composables/useToCurrency'
+import toNum from '@/composables/useToNum'
 
 export default {
   name: 'Stock',

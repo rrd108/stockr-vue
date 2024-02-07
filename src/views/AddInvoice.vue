@@ -148,7 +148,7 @@
             </td>
             <td class="text-right">{{ selectedProduct.size }}</td>
             <td class="text-right">{{ selectedProduct.code }}</td>
-            <td class="text-right">{{ selectedProduct.stock | toNum(1) }}</td>
+            <td class="text-right">{{ toNum(selectedProduct.stock, 1) }}</td>
             <td class="text-right">
               <input
                 v-model="quantity"
@@ -164,9 +164,7 @@
                 class="fi-price-tag avg"
                 :title="$t('avarage purchase price')"
               >
-                {{
-                  selectedProduct.avaragePurchasePrice | toCurrency(currency)
-                }}
+                {{ toCurrency(selectedProduct.avaragePurchasePrice, currency) }}
               </i>
               <br />
               <i
@@ -174,15 +172,18 @@
                 :title="$t('last purchase price')"
                 class="fi-price-tag last"
               >
-                {{ selectedProduct.lastPurchasePrice | toCurrency(currency) }}
+                {{ toCurrency(selectedProduct.lastPurchasePrice, currency) }}
               </i>
             </td>
             <td v-show="isSale" class="text-right">
               {{
                 selectedPartner.group
-                  ? selectedProduct.lastPurchasePrice *
-                    (1 + selectedPartner.group.percentage / 100)
-                  : 0 | toCurrency(currency)
+                  ? toCurrency(
+                      selectedProduct.lastPurchasePrice *
+                        (1 + selectedPartner.group.percentage / 100),
+                      currency
+                    )
+                  : 0
               }}
             </td>
             <td class="text-right">
@@ -195,31 +196,35 @@
               />
               <span class="avg"
                 >{{
-                  ((price / selectedProduct.avaragePurchasePrice - 1) * 100)
-                    | toNum
+                  toNum(
+                    (price / selectedProduct.avaragePurchasePrice - 1) * 100
+                  )
                 }}%</span
               >
               <span class="last"
                 >{{
-                  ((price / selectedProduct.lastPurchasePrice - 1) * 100)
-                    | toNum
+                  toNum((price / selectedProduct.lastPurchasePrice - 1) * 100)
                 }}%</span
               >
             </td>
             <td class="text-right">
-              {{ (price * quantity) | toCurrency(currency) }}
+              {{ toCurrency(price * quantity, currency) }}
             </td>
             <td class="text-right">{{ selectedProduct.vat }} %</td>
             <td class="text-right">
               {{
-                (price * quantity * (selectedProduct.vat / 100))
-                  | toCurrency(currency)
+                toCurrency(
+                  price * quantity * (selectedProduct.vat / 100),
+                  currency
+                )
               }}
             </td>
             <td class="text-right">
               {{
-                (price * quantity * (1 + selectedProduct.vat / 100))
-                  | toCurrency(currency)
+                toCurrency(
+                  price * quantity * (1 + selectedProduct.vat / 100),
+                  currency
+                )
               }}
             </td>
 
@@ -240,48 +245,53 @@
             <td>{{ invoiceItem.name }}</td>
             <td>{{ invoiceItem.size }}</td>
             <td>{{ invoiceItem.code }}</td>
-            <td class="text-right">{{ invoiceItem.stock | toNum(1) }}</td>
+            <td class="text-right">{{ toNum(invoiceItem.stock, 1) }}</td>
             <td class="text-right">{{ invoiceItem.quantity }}</td>
             <td v-show="isSale" class="text-right">
               <i class="fi-price-tag avg">
-                {{ invoiceItem.avaragePurchasePrice | toCurrency(currency) }}
+                {{ toCurrency(invoiceItem.avaragePurchasePrice, currency) }}
               </i>
               <br />
               <i class="fi-price-tag last">
-                {{ invoiceItem.lastPurchasePrice | toCurrency(currency) }}
+                {{ toCurrency(invoiceItem.lastPurchasePrice, currency) }}
               </i>
             </td>
             <td v-show="isSale" class="text-right">
               {{
-                (invoiceItem.lastPurchasePrice *
-                  (1 + selectedPartner.group.percentage / 100))
-                  | toCurrency(currency)
+                toCurrency(
+                  invoiceItem.lastPurchasePrice *
+                    (1 + selectedPartner.group.percentage / 100),
+                  currency
+                )
               }}
             </td>
             <td class="text-right">
-              {{ invoiceItem.price | toCurrency(currency) }}
+              {{ toCurrency(invoiceItem.price, currency) }}
             </td>
             <td class="text-right">
               {{
-                (invoiceItem.price * invoiceItem.quantity)
-                  | toCurrency(currency)
+                toCurrency(invoiceItem.price * invoiceItem.quantity, currency)
               }}
             </td>
             <td class="text-right">{{ invoiceItem.vat }} %</td>
             <td class="text-right">
               {{
-                (invoiceItem.price *
-                  invoiceItem.quantity *
-                  (invoiceItem.vat / 100))
-                  | toCurrency(currency)
+                toCurrency(
+                  invoiceItem.price *
+                    invoiceItem.quantity *
+                    (invoiceItem.vat / 100),
+                  currency
+                )
               }}
             </td>
             <td class="text-right">
               {{
-                (invoiceItem.price *
-                  invoiceItem.quantity *
-                  (1 + invoiceItem.vat / 100))
-                  | toCurrency(currency)
+                toCurrency(
+                  invoiceItem.price *
+                    invoiceItem.quantity *
+                    (1 + invoiceItem.vat / 100),
+                  currency
+                )
               }}
             </td>
 
@@ -291,7 +301,7 @@
               v-show="!isSale"
               class="text-right"
             >
-              {{ invoiceItem.sellingPrices[group.id] | toCurrency(currency) }}
+              {{ toCurrency(invoiceItem.sellingPrices[group.id], currency) }}
             </td>
 
             <td class="pointer">
@@ -322,29 +332,38 @@
             <td></td>
             <td class="text-right">
               {{
-                invoiceItems.reduce(
-                  (total, item) => total + item.quantity * item.price,
-                  0
-                ) | toCurrency(currency)
+                toCurrency(
+                  invoiceItems.reduce(
+                    (total, item) => total + item.quantity * item.price,
+                    0
+                  ),
+                  currency
+                )
               }}
             </td>
             <td class="text-right">-</td>
             <td class="text-right">
               {{
-                invoiceItems.reduce(
-                  (total, item) =>
-                    total + (item.quantity * item.price * item.vat) / 100,
-                  0
-                ) | toCurrency(currency)
+                toCurrency(
+                  invoiceItems.reduce(
+                    (total, item) =>
+                      total + (item.quantity * item.price * item.vat) / 100,
+                    0
+                  ),
+                  currency
+                )
               }}
             </td>
             <td class="text-right">
               {{
-                invoiceItems.reduce(
-                  (total, item) =>
-                    total + item.quantity * item.price * (1 + item.vat / 100),
-                  0
-                ) | toCurrency(currency)
+                toCurrency(
+                  invoiceItems.reduce(
+                    (total, item) =>
+                      total + item.quantity * item.price * (1 + item.vat / 100),
+                    0
+                  ),
+                  currency
+                )
               }}
             </td>
 
@@ -367,6 +386,8 @@
 
 <script>
 import axios from 'axios'
+import toCurrency from '@/composables/toCurrency'
+import toNum from '@/composables/toNum'
 
 export default {
   name: 'AddInvoice',
