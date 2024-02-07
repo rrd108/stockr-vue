@@ -1,163 +1,163 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-
+import { createStore as _createStore } from 'vuex'
 import axios from 'axios'
 
-export default new Vuex.Store({
-  state: {
-    company: {},
-    groups: [],
-    invoices: [],
-    invoicetypes: [],
-    partners: [],
-    products: [],
-    storages: [],
-    storageId: 0,
-    search: {},
-    user: {},
-  },
-  mutations: {
-    addInvoice: (state, invoice) => state.invoices.unshift(invoice),
-    addInvoices: (state, invoices) =>
-      (state.invoices = [...state.invoices, ...invoices]),
-    addPartner: (state, partner) => state.partners.unshift(partner),
-    addProduct: (state, product) => state.products.unshift(product),
-    saveUser: (state, user) => (state.user = user),
-    setCompany: (state, company) => (state.company = company),
-    setGroups: (state, groups) =>
-      (state.groups = groups.map((group) => ({
-        ...group,
-        show: group.percentage ? true : false,
-      }))),
-    setInvoices: (state, invoices) => (state.invoices = invoices),
-    setInvoicetypes: (state, invoicetypes) =>
-      (state.invoicetypes = invoicetypes),
-    setPartners: (state, partners) => (state.partners = partners),
-    setProducts: (state, products) => (state.products = products),
-    setStorages: (state, storages) => (state.storages = storages),
-    setStorageId: (state, storageId) => (state.storageId = storageId),
-    setSearch: (state, search) => {
-      // this will not work as we would add new property to the object, so we would loose reactivity
-      // state.search[search.field] = search.val
-      let tmp = {}
-      tmp[search.field] = search.val
-      state.search = { ...state.search, ...tmp }
+const createStore = () => {
+  return _createStore({
+    state: {
+      company: {},
+      groups: [],
+      invoices: [],
+      invoicetypes: [],
+      partners: [],
+      products: [],
+      storages: [],
+      storageId: 0,
+      search: {},
+      user: {},
     },
-    removeUser: (state) => (state.user = {}),
-    unsetCompany: (state) => {
-      state.company = {}
-      localStorage.removeItem('company')
+    mutations: {
+      addInvoice: (state, invoice) => state.invoices.unshift(invoice),
+      addInvoices: (state, invoices) =>
+        (state.invoices = [...state.invoices, ...invoices]),
+      addPartner: (state, partner) => state.partners.unshift(partner),
+      addProduct: (state, product) => state.products.unshift(product),
+      saveUser: (state, user) => (state.user = user),
+      setCompany: (state, company) => (state.company = company),
+      setGroups: (state, groups) =>
+        (state.groups = groups.map((group) => ({
+          ...group,
+          show: group.percentage ? true : false,
+        }))),
+      setInvoices: (state, invoices) => (state.invoices = invoices),
+      setInvoicetypes: (state, invoicetypes) =>
+        (state.invoicetypes = invoicetypes),
+      setPartners: (state, partners) => (state.partners = partners),
+      setProducts: (state, products) => (state.products = products),
+      setStorages: (state, storages) => (state.storages = storages),
+      setStorageId: (state, storageId) => (state.storageId = storageId),
+      setSearch: (state, search) => {
+        // this will not work as we would add new property to the object, so we would loose reactivity
+        // state.search[search.field] = search.val
+        let tmp = {}
+        tmp[search.field] = search.val
+        state.search = { ...state.search, ...tmp }
+      },
+      removeUser: (state) => (state.user = {}),
+      unsetCompany: (state) => {
+        state.company = {}
+        localStorage.removeItem('company')
+      },
+      updatePartner: (state, update) => {
+        state.partners.find((p) => p.id == update.partner.id)[update.property] =
+          update.partner[update.property]
+      },
+      updateProduct: (state, update) => {
+        state.products.find((p) => p.id == update.product.id)[update.property] =
+          update.product[update.property]
+      },
     },
-    updatePartner: (state, update) => {
-      state.partners.find((p) => p.id == update.partner.id)[update.property] =
-        update.partner[update.property]
+    getters: {
+      isLoggedIn: (state) => {
+        let now = new Date().getTime()
+        let expired = 7 * 24 * 60 * 60 * 1000
+        if (now - state.user.lastLogin > expired) {
+          return false
+        }
+        return state.user.email ? true : false
+      },
+      //[...new Set()] returns the uniquey values from the map
+      invoiceMonths: (state) => [
+        ...new Set(state.invoices.map((invoice) => invoice.date.substr(0, 7))),
+      ],
     },
-    updateProduct: (state, update) => {
-      state.products.find((p) => p.id == update.product.id)[update.property] =
-        update.product[update.property]
-    },
-  },
-  getters: {
-    isLoggedIn: (state) => {
-      let now = new Date().getTime()
-      let expired = 7 * 24 * 60 * 60 * 1000
-      if (now - state.user.lastLogin > expired) {
-        return false
-      }
-      return state.user.email ? true : false
-    },
-    //[...new Set()] returns the uniquey values from the map
-    invoiceMonths: (state) => [
-      ...new Set(state.invoices.map((invoice) => invoice.date.substr(0, 7))),
-    ],
-  },
-  actions: {
-    getGroups: ({ commit, state }) => {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'groups.json?company=' +
-            state.company.id +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((response) => commit('setGroups', response.data.groups))
-        .catch((err) => console.error(err))
-    },
-    getInvoices: ({ commit, state }) => {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'invoices.json?company=' +
-            state.company.id +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((response) => commit('setInvoices', response.data.invoices))
-        .catch((err) => console.error(err))
-    },
-    getInvoicetypes: ({ commit, state }) => {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'invoicetypes.json?company=' +
-            state.company.id +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((response) =>
-          commit('setInvoicetypes', response.data.invoicetypes)
-        )
-        .catch((err) => console.error(err))
-    },
-    getPartners: ({ commit, state }) => {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'partners.json?company=' +
-            state.company.id +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((response) => commit('setPartners', response.data.partners))
-        .catch((err) => console.error(err))
-    },
-    getProducts: ({ commit, state }) => {
-      let products = {}
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'products/stock.json?company=' +
-            state.company.id +
-            '&currency=' +
-            state.company.currency +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((resp) => {
-          products = resp.data.products
-          products.forEach((product) => {
-            product.hidden = false
+    actions: {
+      getGroups: ({ commit, state }) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'groups.json?company=' +
+              state.company.id +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((response) => commit('setGroups', response.data.groups))
+          .catch((err) => console.error(err))
+      },
+      getInvoices: ({ commit, state }) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'invoices.json?company=' +
+              state.company.id +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((response) => commit('setInvoices', response.data.invoices))
+          .catch((err) => console.error(err))
+      },
+      getInvoicetypes: ({ commit, state }) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'invoicetypes.json?company=' +
+              state.company.id +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((response) =>
+            commit('setInvoicetypes', response.data.invoicetypes)
+          )
+          .catch((err) => console.error(err))
+      },
+      getPartners: ({ commit, state }) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'partners.json?company=' +
+              state.company.id +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((response) => commit('setPartners', response.data.partners))
+          .catch((err) => console.error(err))
+      },
+      getProducts: ({ commit, state }) => {
+        let products = {}
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'products/stock.json?company=' +
+              state.company.id +
+              '&currency=' +
+              state.company.currency +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((resp) => {
+            products = resp.data.products
+            products.forEach((product) => {
+              product.hidden = false
+            })
+            return products
           })
-          return products
-        })
-        .then((products) => commit('setProducts', products))
-        .catch((err) => console.error(err))
+          .then((products) => commit('setProducts', products))
+          .catch((err) => console.error(err))
+      },
+      getStorages: ({ commit, state }) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_URL +
+              'storages.json?company=' +
+              state.company.id +
+              '&ApiKey=' +
+              state.user.api_token
+          )
+          .then((response) => commit('setStorages', response.data.storages))
+          .catch((err) => console.error(err))
+      },
     },
-    getStorages: ({ commit, state }) => {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'storages.json?company=' +
-            state.company.id +
-            '&ApiKey=' +
-            state.user.api_token
-        )
-        .then((response) => commit('setStorages', response.data.storages))
-        .catch((err) => console.error(err))
-    },
-  },
-  modules: {},
-})
+    modules: {},
+  })
+}
+
+export default createStore
