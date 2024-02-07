@@ -13,11 +13,10 @@
 
   const hasError = computed(() => email.value && password.value && !store.user)
 
-  // const user = JSON.parse(localStorage.getItem('user'))
-  // if (user) {
-  //   console.log('user set from localStorage', user)
-  //   store.user = user
-  // }
+  const user = JSON.parse(localStorage.getItem('user'))
+  if (user) {
+    store.user = user
+  }
 
   const login = () =>
     axios({

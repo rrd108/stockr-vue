@@ -26,36 +26,36 @@
           <ul class="dropdown menu">
             <li><img alt="StokR logo" src="../assets/img/logo.png" /></li>
             <li>
-              <router-link :to="`/`"
-                ><i class="fi-home"><span> Főoldal</span></i></router-link
-              >
+              <router-link to="/">
+                <i class="fi-home"><span> Főoldal</span></i>
+              </router-link>
             </li>
             <li @mouseenter="inInvoicesMenu = true" @mouseleave="inInvoicesMenu = false" class="is-dropdown-submenu-parent">
-              <router-link :to="`/invoices`"
-                ><i class="fi-book"><span> Számlák</span></i></router-link
-              >
+              <router-link to="/invoices">
+                <i class="fi-book"><span> Számlák</span></i>
+              </router-link>
               <ul class="nested vertical menu" v-show="inInvoicesMenu">
                 <li>
-                  <router-link :to="`/invoices`"><i class="fi-book"> Számlák</i></router-link>
+                  <router-link to="/invoices"><i class="fi-book"> Számlák</i></router-link>
                 </li>
                 <li>
-                  <router-link :to="`/add-invoice`"><i class="fi-plus"> Új számla</i></router-link>
+                  <router-link to="/add-invoice"><i class="fi-plus"> Új számla</i></router-link>
                 </li>
               </ul>
             </li>
             <li @mouseenter="inStockMenu = true" @mouseleave="inStockMenu = false" class="is-dropdown-submenu-parent">
-              <router-link :to="`/stock`"
+              <router-link to="/stock"
                 ><i class="fi-list-thumbnails"> <span>Készlet</span></i></router-link
               >
               <ul v-show="inStockMenu" class="nested menu">
                 <li>
-                  <router-link :to="`/stock`"><i class="fi-list-thumbnails"> Készlet</i></router-link>
+                  <router-link to="/stock"><i class="fi-list-thumbnails"> Készlet</i></router-link>
                 </li>
                 <li>
-                  <router-link :to="`/stock@date`"><i class="fi-list-thumbnails"> Készlet adott napon</i></router-link>
+                  <router-link to="/stock@date"><i class="fi-list-thumbnails"> Készlet adott napon</i></router-link>
                 </li>
                 <li>
-                  <router-link :to="`/stock-rotation`"><i class="fi-list-thumbnails"> Készlet forgás</i></router-link>
+                  <router-link to="/stock-rotation"><i class="fi-list-thumbnails"> Készlet forgás</i></router-link>
                 </li>
               </ul>
             </li>
@@ -70,19 +70,19 @@
               <transition name="reveal-fade">
                 <ul class="nested vertical menu" v-show="inMasterDataMenu">
                   <li>
-                    <router-link :to="`/add-product`"><i class="fi-foot"> Új termék</i></router-link>
+                    <router-link to="/add-product"><i class="fi-foot"> Új termék</i></router-link>
                   </li>
                   <li>
-                    <router-link :to="`/add-partner`"><i class="fi-torsos"> Új partner</i></router-link>
+                    <router-link to="/add-partner"><i class="fi-torsos"> Új partner</i></router-link>
                   </li>
                   <li>
-                    <router-link :to="`/partners`"><i class="fi-torsos"> Partnerek</i></router-link>
+                    <router-link to="/partners"><i class="fi-torsos"> Partnerek</i></router-link>
                   </li>
                 </ul>
               </transition>
             </li>
             <li>
-              <router-link :to="`/help`"
+              <router-link to="/help"
                 ><i class="fi-info"><span> Súgó</span></i></router-link
               >
             </li>

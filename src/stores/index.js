@@ -5,13 +5,13 @@ import axios from 'axios'
 export const useStockrStore = defineStore('stockrStore', () => {
   const company = ref({})
   const groups = []
-  const invoices = []
+  const invoices = ref([])
   const invoicetypes = []
   const partners = []
   const products = []
   const storages = []
   const storageId = 0
-  const search = {}
+  const search = ref({})
   const user = ref({})
 
   const isLoggedIn = computed(() => {
@@ -25,7 +25,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
     return user.value.email ? true : false
   })
 
-  const invoiceMonths = () => [...new Set(invoices.map(invoice => invoice.date.substr(0, 7)))]
+  const invoiceMonths = () => [...new Set(invoices.value.map(invoice => invoice.date.substr(0, 7)))]
 
   const getGroups = () =>
     axios
@@ -36,7 +36,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
   const getInvoices = () =>
     axios
       .get(import.meta.env.VITE_API_URL + 'invoices.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
-      .then(response => invoices.push(...response.data.invoices))
+      .then(response => (invoices.value = response.data.invoices))
       .catch(err => console.error(err))
 
   const getInvoicetypes = () =>
