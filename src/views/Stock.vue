@@ -30,42 +30,14 @@
         <tr>
           <th scope="col">Termék {{ searchResultsCount }}</th>
 
-          <th
-            scope="col"
-            v-for="column in columns"
-            :key="column.name"
-            v-show="column.show"
-            :rowspan="column.rowspan"
-          >
+          <th scope="col" v-for="column in columns" :key="column.name" v-show="column.show" :rowspan="column.rowspan">
             {{ column.name }}
           </th>
 
-          <th
-            v-show="
-              columns.find((column) => column.name == 'avarage purchase price')
-                .show
-            "
-            scope="col"
-          >
-            Összeg
-          </th>
-          <th
-            v-show="
-              columns.find((column) => column.name == 'last purchase price')
-                .show
-            "
-            scope="col"
-          >
-            Összeg
-          </th>
+          <th v-show="columns.find(column => column.name == 'avarage purchase price').show" scope="col">Összeg</th>
+          <th v-show="columns.find(column => column.name == 'last purchase price').show" scope="col">Összeg</th>
 
-          <th
-            scope="col"
-            v-for="column in groups"
-            :key="column.name"
-            v-show="column.show"
-            :rowspan="column.rowspan"
-          >
+          <th scope="col" v-for="column in groups" :key="column.name" v-show="column.show" :rowspan="column.rowspan">
             {{ column.name }}
           </th>
         </tr>
@@ -73,71 +45,36 @@
           <td>
             <filter-input :search="'products.name'" placeholder="product" />
           </td>
-          <td v-show="columns.find((column) => column.name == 'code').show">
+          <td v-show="columns.find(column => column.name == 'code').show">
             <filter-input :search="'products.code'" placeholder="code" />
           </td>
-          <td v-show="columns.find((column) => column.name == 'size').show">
+          <td v-show="columns.find(column => column.name == 'size').show">
             <filter-input :search="'products.size'" placeholder="size" />
           </td>
-          <td
-            v-show="columns.find((column) => column.name == 'stock').show"
-            class="text-right"
-          >
-            {{ toNum(stock) }} db
-          </td>
-          <td
-            v-show="columns.find((column) => column.name == 'sells').show"
-            class="text-right"
-          >
-            {{ toNum(sells) }} db
-          </td>
-          <td
-            v-show="
-              columns.find((column) => column.name == 'avarage purchase price')
-                .show
-            "
-            class="text-right"
-          >
+          <td v-show="columns.find(column => column.name == 'stock').show" class="text-right">{{ toNum(stock) }} db</td>
+          <td v-show="columns.find(column => column.name == 'sells').show" class="text-right">{{ toNum(sells) }} db</td>
+          <td v-show="columns.find(column => column.name == 'avarage purchase price').show" class="text-right">
             {{
               toCurrency(
                 products.reduce(
-                  (sum, product) =>
-                    sum +
-                    (product.hidden
-                      ? 0
-                      : parseInt(product.stock * product.avaragePurchasePrice)),
+                  (sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.avaragePurchasePrice)),
                   0
                 )
               )
             }}
           </td>
-          <td
-            v-show="
-              columns.find((column) => column.name == 'last purchase price')
-                .show
-            "
-            class="text-right"
-          >
+          <td v-show="columns.find(column => column.name == 'last purchase price').show" class="text-right">
             {{
               toCurrency(
                 products.reduce(
-                  (sum, product) =>
-                    sum +
-                    (product.hidden
-                      ? 0
-                      : parseInt(product.stock * product.lastPurchasePrice)),
+                  (sum, product) => sum + (product.hidden ? 0 : parseInt(product.stock * product.lastPurchasePrice)),
                   0
                 )
               )
             }}
           </td>
 
-          <td
-            v-for="column in groups"
-            :key="column.name"
-            v-show="column.show"
-            class="text-center"
-          >
+          <td v-for="column in groups" :key="column.name" v-show="column.show" class="text-center">
             {{ column.percentage }}
           </td>
         </tr>
@@ -154,94 +91,90 @@
 </template>
 
 <script>
-import FilterInput from '@/components/FilterInput.vue'
-import FilteredTbody from '@/components/FilteredProductTbody.vue'
-import toCurrency from '@/composables/useToCurrency'
-import toNum from '@/composables/useToNum'
+  import FilterInput from '@/components/FilterInput.vue'
+  import FilteredTbody from '@/components/FilteredProductTbody.vue'
+  import toCurrency from '@/composables/useToCurrency'
+  import toNum from '@/composables/useToNum'
 
-export default {
-  name: 'Stock',
+  export default {
+    name: 'Stock',
 
-  components: {
-    FilterInput,
-    FilteredTbody,
-  },
-
-  data() {
-    return {
-      columns: [
-        { name: 'code', show: true },
-        { name: 'size', show: true },
-        { name: 'stock', show: true },
-        { name: 'sells', show: true },
-        { name: 'avarage purchase price', show: true, rowspan: 2 },
-        { name: 'last purchase price', show: true, rowspan: 2 },
-      ],
-      searchResultsCount: 0,
-      showFilter: false,
-    }
-  },
-
-  computed: {
-    groups() {
-      return this.$store.state.groups
+    components: {
+      FilterInput,
+      FilteredTbody,
     },
-    products() {
-      return this.$store.state.products
-    },
-    sells() {
-      return this.products.reduce(
-        (sum, product) =>
-          sum +
-          (product.hidden || !product.sells ? 0 : parseInt(product.sells)),
-        0
-      )
-    },
-    stock() {
-      return this.products.reduce(
-        (sum, product) =>
-          sum +
-          (product.hidden || !product.stock ? 0 : parseInt(product.stock)),
-        0
-      )
-    },
-  },
 
-  created() {
-    if (Object.keys(this.$store.state.products).length === 0) {
-      this.$store.dispatch('getProducts')
-    }
-    if (Object.keys(this.$store.state.groups).length === 0) {
-      this.$store.dispatch('getGroups')
-    }
-  },
-
-  methods: {
-    setCount(count) {
-      this.searchResultsCount = count
+    data() {
+      return {
+        columns: [
+          { name: 'code', show: true },
+          { name: 'size', show: true },
+          { name: 'stock', show: true },
+          { name: 'sells', show: true },
+          { name: 'avarage purchase price', show: true, rowspan: 2 },
+          { name: 'last purchase price', show: true, rowspan: 2 },
+        ],
+        searchResultsCount: 0,
+        showFilter: false,
+      }
     },
-  },
-}
+
+    computed: {
+      groups() {
+        return this.$store.groups
+      },
+      products() {
+        return this.$store.products
+      },
+      sells() {
+        return this.products.reduce(
+          (sum, product) => sum + (product.hidden || !product.sells ? 0 : parseInt(product.sells)),
+          0
+        )
+      },
+      stock() {
+        return this.products.reduce(
+          (sum, product) => sum + (product.hidden || !product.stock ? 0 : parseInt(product.stock)),
+          0
+        )
+      },
+    },
+
+    created() {
+      if (Object.keys(this.$store.products).length === 0) {
+        this.$store.dispatch('getProducts')
+      }
+      if (Object.keys(this.$store.groups).length === 0) {
+        this.$store.dispatch('getGroups')
+      }
+    },
+
+    methods: {
+      setCount(count) {
+        this.searchResultsCount = count
+      },
+    },
+  }
 </script>
 
 <style scoped>
-thead th {
-  position: sticky;
-  top: 0;
-  background-color: #ddd;
-}
-ul {
-  list-style-type: none;
-  display: flex;
-}
-li {
-  margin: 1em;
-}
-i,
-li {
-  cursor: pointer;
-}
-.inactive {
-  color: #cacaca;
-}
+  thead th {
+    position: sticky;
+    top: 0;
+    background-color: #ddd;
+  }
+  ul {
+    list-style-type: none;
+    display: flex;
+  }
+  li {
+    margin: 1em;
+  }
+  i,
+  li {
+    cursor: pointer;
+  }
+  .inactive {
+    color: #cacaca;
+  }
 </style>

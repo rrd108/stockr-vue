@@ -1,10 +1,10 @@
 export default rowFilter = {
   computed: {
     search() {
-      return this.$store.state.search
+      return this.$store.search
     },
     filteredItems() {
-      this[this.model].forEach((item) => {
+      this[this.model].forEach(item => {
         item.hidden = false
         for (let [field, value] of Object.entries(this.search)) {
           //remove the first tag in property list as we already on that level
@@ -27,9 +27,7 @@ export default rowFilter = {
         }
       })
 
-      const filteredItems = this[this.model].filter(
-        (item) => item.hidden !== true
-      )
+      const filteredItems = this[this.model].filter(item => item.hidden !== true)
 
       this.$emit('setCount', filteredItems.length)
       return filteredItems

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store'
+import { useStockrStore } from '@/stores'
 
 import Home from '@/views/Home.vue'
 
@@ -82,7 +82,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.name !== 'home') {
-    if (!store.state.user.email) {
+    const store = useStockrStore()
+    if (!store.user.email) {
       next({ path: '/', query: { redirect: to.path } })
     } else {
       next() // go to wherever I'm going

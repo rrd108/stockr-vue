@@ -5,36 +5,17 @@
       <tr>
         <th scope="row">Termék</th>
         <td>
-          <quick-edit
-            v-model="product.name"
-            buttonCancelText="X"
-            @input="edit('name')"
-          />
+          <quick-edit v-model="product.name" buttonCancelText="X" @input="edit('name')" />
           -
-          <quick-edit
-            v-model="product.code"
-            buttonCancelText="X"
-            emptyText="kód"
-            @input="edit('code')"
-          />
+          <quick-edit v-model="product.code" buttonCancelText="X" emptyText="kód" @input="edit('code')" />
         </td>
         <th scope="row">Méret</th>
         <td>
-          <quick-edit
-            v-model="product.size"
-            buttonCancelText="X"
-            emptyText="méret"
-            @input="edit('size')"
-          />
+          <quick-edit v-model="product.size" buttonCancelText="X" emptyText="méret" @input="edit('size')" />
         </td>
         <th scope="row">ÁFA</th>
         <td>
-          <quick-edit
-            v-model="product.vat"
-            buttonCancelText="X"
-            emptyText="ÁFA"
-            @input="edit('vat')"
-          />
+          <quick-edit v-model="product.vat" buttonCancelText="X" emptyText="ÁFA" @input="edit('vat')" />
           %
         </td>
       </tr>
@@ -43,12 +24,7 @@
         <td class="text-right">
           {{
             toCurrency(
-              product.items.reduce(
-                (total, item) =>
-                  total +
-                  (item.invoice.sale ? 0 : -1 * item.price * item.quantity),
-                0
-              ),
+              product.items.reduce((total, item) => total + (item.invoice.sale ? 0 : -1 * item.price * item.quantity), 0),
               currency
             )
           }}
@@ -57,11 +33,7 @@
         <td class="text-right">
           {{
             toCurrency(
-              product.items.reduce(
-                (total, item) =>
-                  total + (item.invoice.sale ? item.price * item.quantity : 0),
-                0
-              ),
+              product.items.reduce((total, item) => total + (item.invoice.sale ? item.price * item.quantity : 0), 0),
               currency
             )
           }}
@@ -71,11 +43,7 @@
           {{
             toCurrency(
               product.items.reduce(
-                (total, item) =>
-                  total +
-                  (item.invoice.sale
-                    ? item.price * item.quantity
-                    : -1 * item.price * item.quantity),
+                (total, item) => total + (item.invoice.sale ? item.price * item.quantity : -1 * item.price * item.quantity),
                 0
               ),
               currency
@@ -130,34 +98,21 @@
       <tbody>
         <tr v-for="customer in customers" :key="customer">
           <th>
-            {{
-              product.items.find((item) => item.Partners.id == customer).invoice
-                .partner.name
-            }}
+            {{ product.items.find(item => item.Partners.id == customer).invoice.partner.name }}
           </th>
           <td>
             {{
               product.items
-                .filter((item) => item.Partners.id == customer)
-                .reduce(
-                  (total, item) =>
-                    total +
-                    (item.invoice.sale ? -1 * item.quantity : item.quantity),
-                  0
-                )
+                .filter(item => item.Partners.id == customer)
+                .reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)
             }}
           </td>
           <td>
             {{
               toCurrency(
                 product.items
-                  .filter((item) => item.Partners.id == customer)
-                  .reduce(
-                    (total, item) =>
-                      total +
-                      (item.invoice.sale ? item.quantity * item.price : 0),
-                    0
-                  )
+                  .filter(item => item.Partners.id == customer)
+                  .reduce((total, item) => total + (item.invoice.sale ? item.quantity * item.price : 0), 0)
               )
             }}
           </td>
@@ -191,9 +146,7 @@
           <td>{{ item.invoice.partner.name }}</td>
           <td>{{ item.invoice.storage.name }}</td>
           <td class="text-right">
-            {{
-              toNum(item.invoice.sale ? -1 * item.quantity : item.quantity, 1)
-            }}
+            {{ toNum(item.invoice.sale ? -1 * item.quantity : item.quantity, 1) }}
           </td>
           <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
           <td class="text-right">
@@ -210,121 +163,107 @@
 </template>
 
 <script>
-import axios from 'axios'
-import invoiceNumber from '@/composables/useInvoiceNumber'
-import QuickEdit from 'vue-quick-edit'
-import toCurrency from '@/composables/useToCurrency'
-import toNum from '@/composables/useToNum'
-import toLocaleDateString from '@/composables/useToLocaleDateString'
+  import axios from 'axios'
+  import invoiceNumber from '@/composables/useInvoiceNumber'
+  import QuickEdit from 'vue-quick-edit'
+  import toCurrency from '@/composables/useToCurrency'
+  import toNum from '@/composables/useToNum'
+  import toLocaleDateString from '@/composables/useToLocaleDateString'
 
-export default {
-  name: 'ViewProduct',
+  export default {
+    name: 'ViewProduct',
 
-  components: { QuickEdit },
+    components: { QuickEdit },
 
-  data() {
-    return {
-      currency: this.$store.state.company.currency,
-      editProductProperty: '',
-      isLoaded: false,
-      product: {},
-    }
-  },
+    data() {
+      return {
+        currency: this.$store.company.currency,
+        editProductProperty: '',
+        isLoaded: false,
+        product: {},
+      }
+    },
 
-  computed: {
-    lastPurchase() {
-      return this.product.items
-        .filter((item) => item.invoice.sale == false)
-        .reduce((prev, current) =>
-          prev.invoice.date < current.invoice.date ? current : prev
+    computed: {
+      lastPurchase() {
+        return this.product.items
+          .filter(item => item.invoice.sale == false)
+          .reduce((prev, current) => (prev.invoice.date < current.invoice.date ? current : prev))
+      },
+      customers() {
+        return [
+          ...new Set(this.product.items.filter(item => item.Partners.group_id != 4).map(item => item.Partners.id)),
+        ].sort()
+      },
+      stock() {
+        return this.product.items.reduce(
+          (total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity),
+          0
         )
+      },
+      runoutDate() {
+        const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
+        const daysSinceLastPurchase = (new Date() - lastPurchaseDate) / (1000 * 60 * 60 * 24)
+        let runoutDays = this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
+        return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
+      },
+      totalSells() {
+        return this.product.items.reduce((total, item) => total + (item.invoice.sale ? item.quantity : 0), 0)
+      },
     },
-    customers() {
-      return [
-        ...new Set(
-          this.product.items
-            .filter((item) => item.Partners.group_id != 4)
-            .map((item) => item.Partners.id)
-        ),
-      ].sort()
-    },
-    stock() {
-      return this.product.items.reduce(
-        (total, item) =>
-          total + (item.invoice.sale ? -1 * item.quantity : item.quantity),
-        0
-      )
-    },
-    runoutDate() {
-      const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
-      const daysSinceLastPurchase =
-        (new Date() - lastPurchaseDate) / (1000 * 60 * 60 * 24)
-      let runoutDays =
-        this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
-      return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
-    },
-    totalSells() {
-      return this.product.items.reduce(
-        (total, item) => total + (item.invoice.sale ? item.quantity : 0),
-        0
-      )
-    },
-  },
 
-  created() {
-    axios
-      .get(
-        import.meta.env.VITE_API_URL +
-          'products/' +
-          this.$route.params.id +
-          '.json?company=' +
-          this.$store.state.company.id +
-          '&ApiKey=' +
-          this.$store.state.user.api_token
-      )
-      .then((response) => {
-        this.isLoaded = true
-        this.product = response.data.product
-      })
-      .catch((err) => console.error(err))
-  },
-
-  methods: {
-    invoiceNumber,
-    edit(property) {
-      this.editProductProperty = false
-      let product = {}
-      product[property] = this.product[property]
+    created() {
       axios
-        .patch(
-          `${import.meta.env.VITE_API_URL}/products/${
-            this.$route.params.id
-          }.json?company=${this.$store.state.company.id}&ApiKey=${
-            this.$store.state.user.api_token
-          }`,
-          product
+        .get(
+          import.meta.env.VITE_API_URL +
+            'products/' +
+            this.$route.params.id +
+            '.json?company=' +
+            this.$store.company.id +
+            '&ApiKey=' +
+            this.$store.user.api_token
         )
-        .then((response) =>
-          this.$store.commit('updateProduct', {
-            property: property,
-            product: response.data.product,
-          })
-        )
-        .catch((err) => console.error(err))
+        .then(response => {
+          this.isLoaded = true
+          this.product = response.data.product
+        })
+        .catch(err => console.error(err))
     },
-  },
-}
+
+    methods: {
+      invoiceNumber,
+      edit(property) {
+        this.editProductProperty = false
+        let product = {}
+        product[property] = this.product[property]
+        axios
+          .patch(
+            `${import.meta.env.VITE_API_URL}/products/${this.$route.params.id}.json?company=${
+              this.$store.company.id
+            }&ApiKey=${this.$store.user.api_token}`,
+            product
+          )
+          .then(response =>
+            this.$store.commit('updateProduct', {
+              property: property,
+              product: response.data.product,
+            })
+          )
+          .catch(err => console.error(err))
+      },
+    },
+  }
 </script>
 
 <style scoped>
-span {
-  cursor: pointer;
-}
-span:hover {
-  background-color: #ffc;
-}
-.vue-quick-edit {
-  display: inline-block;
-}
+  span {
+    cursor: pointer;
+  }
+  span:hover {
+    background-color: #ffc;
+  }
+  .vue-quick-edit {
+    display: inline-block;
+  }
 </style>
 >

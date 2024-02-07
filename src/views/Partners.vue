@@ -4,7 +4,7 @@
       <i class="fi-torsos"> Partners</i>
       <router-link :to="`/add-partner`"><i class="fi-plus"></i></router-link>
     </h3>
-    <section v-for="partner in this.$store.state.partners" :key="partner.id">
+    <section v-for="partner in this.$store.partners" :key="partner.id">
       <router-link :to="`/partners/${partner.id}`">
         <h4>{{ partner.name }}</h4>
         <ul>
@@ -19,28 +19,28 @@
 </template>
 
 <script>
-export default {}
+  export default {}
 </script>
 
 <style scoped>
-h3 {
-  display: flex;
-  justify-content: space-between;
-}
-section a {
-  color: #fff;
-}
-h4 {
-  font-size: 1.5rem;
-}
-section {
-  background-color: #0192a5;
-  color: #fff;
-  padding: 1em;
-  margin: 1em;
-  border-radius: 0.5em;
-}
-ul {
-  list-style: none;
-}
+  h3 {
+    display: flex;
+    justify-content: space-between;
+  }
+  section a {
+    color: #fff;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+  section {
+    background-color: #0192a5;
+    color: #fff;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 0.5em;
+  }
+  ul {
+    list-style: none;
+  }
 </style>

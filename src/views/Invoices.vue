@@ -3,12 +3,7 @@
     <div class="pagerHeader">
       <h3>Bizonylat</h3>
       <ul>
-        <li
-          v-for="month in months"
-          :key="month"
-          @click="selectMonth(month)"
-          :class="{ active: selectedMonth == month }"
-        >
+        <li v-for="month in months" :key="month" @click="selectMonth(month)" :class="{ active: selectedMonth == month }">
           {{ monthName(month) }}
         </li>
         <li>
@@ -58,11 +53,7 @@
             <span class="small-6 text-right">{{
               toCurrency(
                 invoices.reduce(
-                  (sum, invoice) =>
-                    sum +
-                    (invoice.hidden || invoice.status == 'd'
-                      ? 0
-                      : parseInt(invoice.amount)),
+                  (sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : parseInt(invoice.amount)),
                   0
                 )
               )
@@ -75,166 +66,143 @@
             <filter-input :search="'invoices.number'" placeholder="number" />
           </td>
           <td>
-            <filter-input
-              :search="'invoices.date'"
-              :searchValue="getSelectedMonth"
-              placeholder="date"
-            />
+            <filter-input :search="'invoices.date'" :searchValue="getSelectedMonth" placeholder="date" />
           </td>
           <td>
-            <filter-input
-              :search="'invoices.partner.name'"
-              placeholder="partner"
-            />
+            <filter-input :search="'invoices.partner.name'" placeholder="partner" />
           </td>
           <td>
-            <filter-input
-              :search="'invoices.storage.name'"
-              placeholder="storage"
-            />
+            <filter-input :search="'invoices.storage.name'" placeholder="storage" />
           </td>
           <td>
-            <filter-input
-              :search="'invoices.invoicetype.name'"
-              placeholder="invoice type"
-            />
+            <filter-input :search="'invoices.invoicetype.name'" placeholder="invoice type" />
           </td>
           <td class="text-right">
             <filter-input :search="'invoices.amount'" placeholder="amount" />
           </td>
         </tr>
       </thead>
-      <tbody
-        is="filtered-tbody"
-        :invoices="invoices"
-        @setCount="setCount($event)"
-      ></tbody>
+      <tbody is="filtered-tbody" :invoices="invoices" @setCount="setCount($event)"></tbody>
       <!-- TODO infinite-loading @infinite="loadInvoices" /-->
     </table>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import FilterInput from '@/components/FilterInput.vue'
-import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
-import { mapGetters } from 'vuex'
-import toCurrency from '@/composables/useToCurrency'
+  import axios from 'axios'
+  import FilterInput from '@/components/FilterInput.vue'
+  import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
+  import toCurrency from '@/composables/useToCurrency'
+  import stockrStore from '@/store'
 
-export default {
-  name: 'Invoices',
+  const store = stockrStore()
 
-  components: {
-    FilterInput,
-    FilteredTbody,
-  },
+  export default {
+    name: 'Invoices',
 
-  data() {
-    return {
-      months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
-      past: new Date().getMonth() + 1,
-      searchResultsCount: 0,
-      selectedMonth: new Date().getMonth(),
-      year: new Date().getFullYear(),
-    }
-  },
-
-  computed: {
-    ...mapGetters(['invoiceMonths']),
-    getSelectedMonth() {
-      const leadingZero = this.selectedMonth < 9 ? '0' : ''
-      return `-${leadingZero}${this.selectedMonth + 1}-`
+    components: {
+      FilterInput,
+      FilteredTbody,
     },
-    invoices() {
-      return this.$store.state.invoices.map((invoice) => ({
-        ...invoice,
-        amount: (invoice.amount = invoice.items.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0
-        )),
-      }))
-    },
-  },
 
-  methods: {
-    loadInvoices() {
-      if (this.invoices.length > 10) {
-        this.selectMonth(this.selectedMonth - 1)
+    data() {
+      return {
+        months: [...Array(new Date().getMonth() + 1).keys()].reverse(),
+        past: new Date().getMonth() + 1,
+        searchResultsCount: 0,
+        selectedMonth: new Date().getMonth(),
+        year: new Date().getFullYear(),
       }
     },
-    monthName(month) {
-      let firstDay = new Date(this.year, month, 1)
-      return firstDay.toLocaleString('default', { month: 'long' })
+
+    computed: {
+      invoiceMonths: store.invoiceMonths,
+      getSelectedMonth() {
+        const leadingZero = this.selectedMonth < 9 ? '0' : ''
+        return `-${leadingZero}${this.selectedMonth + 1}-`
+      },
+      invoices() {
+        return this.$store.invoices.map(invoice => ({
+          ...invoice,
+          amount: (invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)),
+        }))
+      },
     },
-    setCount(count) {
-      this.searchResultsCount = count
+
+    methods: {
+      loadInvoices() {
+        if (this.invoices.length > 10) {
+          this.selectMonth(this.selectedMonth - 1)
+        }
+      },
+      monthName(month) {
+        let firstDay = new Date(this.year, month, 1)
+        return firstDay.toLocaleString('default', { month: 'long' })
+      },
+      setCount(count) {
+        this.searchResultsCount = count
+      },
+      selectMonth(month) {
+        this.selectedMonth = month
+        if (
+          this.invoiceMonths.findIndex(
+            invoiceMonth => invoiceMonth == `${this.year}${this.getSelectedMonth}`.slice(0, -1)
+          ) == -1
+        ) {
+          // the selected month is not yet in the store, get it from the API
+          this.getInvoices(month + 1)
+        }
+      },
+      getInvoices(month) {
+        axios
+          .get(
+            `${import.meta.env.VITE_API_URL}invoices.json?company=${this.$store.company.id}&ApiKey=${
+              this.$store.user.api_token
+            }&year=${this.year}&month=${month}`
+          )
+          .then(response => this.$store.commit('addInvoices', response.data.invoices))
+          .catch(err => console.error(err))
+      },
+      getPast() {
+        this.$store.commit('setInvoices', [])
+        this.getInvoices(this.past)
+      },
     },
-    selectMonth(month) {
-      this.selectedMonth = month
-      if (
-        this.invoiceMonths.findIndex(
-          (invoiceMonth) =>
-            invoiceMonth == `${this.year}${this.getSelectedMonth}`.slice(0, -1)
-        ) == -1
-      ) {
-        // the selected month is not yet in the store, get it from the API
-        this.getInvoices(month + 1)
-      }
-    },
-    getInvoices(month) {
-      axios
-        .get(
-          `${import.meta.env.VITE_API_URL}invoices.json?company=${
-            this.$store.state.company.id
-          }&ApiKey=${this.$store.state.user.api_token}&year=${
-            this.year
-          }&month=${month}`
-        )
-        .then((response) =>
-          this.$store.commit('addInvoices', response.data.invoices)
-        )
-        .catch((err) => console.error(err))
-    },
-    getPast() {
-      this.$store.commit('setInvoices', [])
-      this.getInvoices(this.past)
-    },
-  },
-}
+  }
 </script>
 
 <style scoped>
-thead th {
-  position: sticky;
-  top: 0;
-  background-color: #ddd;
-}
-.pagerHeader {
-  display: flex;
-  justify-content: space-between;
-}
+  thead th {
+    position: sticky;
+    top: 0;
+    background-color: #ddd;
+  }
+  .pagerHeader {
+    display: flex;
+    justify-content: space-between;
+  }
 
-.pagerHeader ul {
-  display: flex;
-  list-style: none;
-  font-size: 0.85rem;
-}
+  .pagerHeader ul {
+    display: flex;
+    list-style: none;
+    font-size: 0.85rem;
+  }
 
-select {
-  margin: auto;
-  padding: auto;
-  line-height: normal;
-}
+  select {
+    margin: auto;
+    padding: auto;
+    line-height: normal;
+  }
 
-.pagerHeader li {
-  margin: 0 0.5em;
-  cursor: pointer;
-  padding: 0.5em 1em;
-}
+  .pagerHeader li {
+    margin: 0 0.5em;
+    cursor: pointer;
+    padding: 0.5em 1em;
+  }
 
-.pagerHeader li.active {
-  color: #fff;
-  background-color: #2c83b6;
-  border-radius: 1em;
-}
+  .pagerHeader li.active {
+    color: #fff;
+    background-color: #2c83b6;
+    border-radius: 1em;
+  }
 </style>

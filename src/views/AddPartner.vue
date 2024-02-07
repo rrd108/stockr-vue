@@ -4,9 +4,7 @@
     <div class="callout success" v-show="isSaved">
       <h5>{{ name }} elmentve</h5>
       <p>
-        <a @click.prevent="initializeForm"
-          ><i class="fi-plus"> Új partner </i></a
-        >
+        <a @click.prevent="initializeForm"><i class="fi-plus"> Új partner </i></a>
       </p>
     </div>
     <form @submit.prevent="addPartner" v-show="!isSaved">
@@ -47,93 +45,86 @@
 </template>
 
 <script>
-import axios from 'axios'
+  import axios from 'axios'
 
-export default {
-  name: 'AddPartner',
+  export default {
+    name: 'AddPartner',
 
-  data() {
-    return {
-      address: '',
-      city: '',
-      email: '',
-      group: '',
-      isSaved: false,
-      name: '',
-      phone: '',
-      taxnumber: '',
-      zip: '',
-    }
-  },
-
-  // validations: {
-  //   name: { required },
-  //   group: { required },
-  // },
-
-  computed: {
-    groups() {
-      return this.$store.state.groups
-    },
-  },
-
-  created() {
-    if (Object.keys(this.$store.state.groups).length === 0) {
-      this.$store.dispatch('getGroups')
-    }
-  },
-
-  methods: {
-    addPartner() {
-      let data = {
-        company_id: this.$store.state.company.id,
-        address: this.address,
-        city: this.city,
-        email: this.email,
-        group_id: this.groups.find((group) => group.name == this.group).id,
-        name: this.name,
-        phone: this.phone,
-        taxnumber: this.taxnumber,
-        zip: this.zip,
+    data() {
+      return {
+        address: '',
+        city: '',
+        email: '',
+        group: '',
+        isSaved: false,
+        name: '',
+        phone: '',
+        taxnumber: '',
+        zip: '',
       }
-      let data4vue = {
-        group: this.groups.find((group) => group.name == this.group),
-      }
+    },
 
-      axios
-        .post(
-          import.meta.env.VITE_API_URL +
-            'partners.json?company=' +
-            this.$store.state.company.id +
-            '&ApiKey=' +
-            this.$store.state.user.api_token,
-          data
-        )
-        .then((response) => {
-          if (response.data.partner.id) {
-            this.isSaved = true
-            this.$store.commit('addPartner', {
-              ...response.data.partner,
-              ...data4vue,
-            })
-          }
-        })
-        .catch((error) => console.log(error))
+    // validations: {
+    //   name: { required },
+    //   group: { required },
+    // },
+
+    computed: {
+      groups() {
+        return this.$store.groups
+      },
     },
-    initializeForm() {
-      // TODO
-      this.address =
-        this.city =
-        this.email =
-        this.group =
-        this.name =
-        this.phone =
-        this.zip =
-          ''
-      this.isSaved = false
+
+    created() {
+      if (Object.keys(this.$store.groups).length === 0) {
+        this.$store.dispatch('getGroups')
+      }
     },
-  },
-}
+
+    methods: {
+      addPartner() {
+        let data = {
+          company_id: this.$store.company.id,
+          address: this.address,
+          city: this.city,
+          email: this.email,
+          group_id: this.groups.find(group => group.name == this.group).id,
+          name: this.name,
+          phone: this.phone,
+          taxnumber: this.taxnumber,
+          zip: this.zip,
+        }
+        let data4vue = {
+          group: this.groups.find(group => group.name == this.group),
+        }
+
+        axios
+          .post(
+            import.meta.env.VITE_API_URL +
+              'partners.json?company=' +
+              this.$store.company.id +
+              '&ApiKey=' +
+              this.$store.user.api_token,
+            data
+          )
+          .then(response => {
+            if (response.data.partner.id) {
+              this.isSaved = true
+              this.$store.commit('addPartner', {
+                ...response.data.partner,
+                ...data4vue,
+              })
+            }
+          })
+          .catch(error => console.log(error))
+      },
+      initializeForm() {
+        // TODO
+        this.address = this.city = this.email = this.group = this.name = this.phone = this.zip = ''
+        this.isSaved = false
+      },
+    },
+  }
 </script>
 
 <style></style>

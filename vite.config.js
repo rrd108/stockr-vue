@@ -6,7 +6,6 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      vue: '@vue/compat',
       '@': path.resolve(__dirname, './src'), // map '@' to './src'
     },
   },
