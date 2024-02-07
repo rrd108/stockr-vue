@@ -37,13 +37,26 @@
       filteredInvoices.value = invoices.filter(invoice => {
         for (const key in searchTerms.value) {
           if (!searchTerms.value[key]) {
-            return true
+            continue
           }
 
-          if (searchTerms.value[key] && !invoice[key].toLowerCase().includes(searchTerms.value[key])) {
+          let invoiceKey = key.split('_')
+          let invoiceProp
+          if (invoiceKey.length == 1) {
+            invoiceProp = invoice[invoiceKey]
+          } else {
+            invoiceProp = invoice[invoiceKey[0]][invoiceKey[1]]
+          }
+
+          if (typeof invoiceProp === 'number') {
+            invoiceProp = invoiceProp.toString()
+          }
+
+          if (!invoiceProp.toLowerCase().includes(searchTerms.value[key])) {
             return false
           }
         }
+
         return true
       })
     },
