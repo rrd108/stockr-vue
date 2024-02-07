@@ -107,7 +107,6 @@
 </template>
 
 <script>
-  import RowFilterMixin from '@/mixins/RowFilterMixin'
   import toCurrency from '@/composables/useToCurrency'
   import toNum from '@/composables/useToNum'
   import toLocaleDateString from '@/composables/useToLocaleDateString'
@@ -138,7 +137,7 @@
       },
     },
 
-    mixins: [RowFilterMixin],
+    //mixins: [RowFilterMixin],
 
     data() {
       return {

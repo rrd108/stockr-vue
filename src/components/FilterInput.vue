@@ -1,38 +1,14 @@
-<template>
-  <input type="text" v-model="rowFilterTerm" autocomplete="off" :placeholder="placeholder" />
-</template>
-
-<script>
-  export default {
-    name: 'FilterInput',
-
-    props: {
-      search: {
-        type: String,
-        required: true,
-      },
-      searchValue: {
-        type: null,
-        required: false,
-      },
-      placeholder: String,
+<script setup>
+  const props = defineProps({
+    placeholder: {
+      type: String,
     },
-
-    data() {
-      return {
-        rowFilterTerm: this.$store.search[this.search],
-      }
-    },
-
-    watch: {
-      searchValue(val) {
-        this.rowFilterTerm = val
-      },
-      rowFilterTerm(val) {
-        this.$store.commit('setSearch', { field: this.search, val: val })
-      },
-    },
-  }
+  })
+  const filter = defineModel()
 </script>
+
+<template>
+  <input type="text" v-model="filter" autocomplete="off" :placeholder="placeholder" />
+</template>
 
 <style scoped></style>
