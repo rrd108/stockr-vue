@@ -1,7 +1,7 @@
 <template>
   <div class="small-12 columns content">
     <h3>
-      {{ $t('products') }}
+      Termék
       <i class="fi-filter" @click="showFilter = !showFilter"></i>
     </h3>
     <div v-show="showFilter">
@@ -12,7 +12,7 @@
           @click="column.show = !column.show"
           :class="{ inactive: !column.show }"
         >
-          <i class="fi-eye"></i> {{ $t(column.name) }}
+          <i class="fi-eye"></i> {{ column.name }}
         </li>
 
         <li
@@ -21,14 +21,14 @@
           @click="column.show = !column.show"
           :class="{ inactive: !column.show }"
         >
-          <i class="fi-eye"></i> {{ $t(column.name) }}
+          <i class="fi-eye"></i> {{ column.name }}
         </li>
       </ul>
     </div>
     <table cellpadding="0" cellspacing="0">
       <thead>
         <tr>
-          <th scope="col">{{ $t('products') }} {{ searchResultsCount }}</th>
+          <th scope="col">Termék {{ searchResultsCount }}</th>
 
           <th
             scope="col"
@@ -37,7 +37,7 @@
             v-show="column.show"
             :rowspan="column.rowspan"
           >
-            {{ $t(column.name) }}
+            {{ column.name }}
           </th>
 
           <th
@@ -47,7 +47,7 @@
             "
             scope="col"
           >
-            {{ $t('amount') }}
+            Összeg
           </th>
           <th
             v-show="
@@ -56,7 +56,7 @@
             "
             scope="col"
           >
-            {{ $t('amount') }}
+            Összeg
           </th>
 
           <th
@@ -66,7 +66,7 @@
             v-show="column.show"
             :rowspan="column.rowspan"
           >
-            {{ $t(column.name) }}
+            {{ column.name }}
           </th>
         </tr>
         <tr>
@@ -83,13 +83,13 @@
             v-show="columns.find((column) => column.name == 'stock').show"
             class="text-right"
           >
-            {{ toNum(stock) }} {{ $t('pcs') }}
+            {{ toNum(stock) }} db
           </td>
           <td
             v-show="columns.find((column) => column.name == 'sells').show"
             class="text-right"
           >
-            {{ toNum(sells) }} {{ $t('pcs') }}
+            {{ toNum(sells) }} db
           </td>
           <td
             v-show="

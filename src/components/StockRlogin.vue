@@ -14,7 +14,7 @@
     <form @submit.prevent="login" v-show="!this.resetPassSuccess">
       <fieldset>
         <div v-if="hasError" class="callout warning">
-          <legend>{{ $t('login.error') }}</legend>
+          <legend>Hibás email vagy jelszó</legend>
         </div>
         <div class="input email required">
           <label for="email">Email</label>
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="input password required">
-          <label for="password">{{ $t('login.password') }}</label>
+          <label for="password"> Jelszó </label>
           <input
             type="password"
             v-model="password"
@@ -49,27 +49,14 @@
               value="1"
               :checked="rememberme"
               id="remember-me"
-            />{{ $t('login.rememberme') }}
+            />
+            Emlékezz rám
           </label>
         </div>
       </fieldset>
 
       <div class="row align-center">
-        <button class="button" type="submit">{{ $t('login.enter') }}</button>
-      </div>
-
-      <div class="row align-center">
-        <div class="locale-changer">
-          <select v-model="$i18n.locale">
-            <option
-              v-for="(lang, i) in $i18n.availableLocales"
-              :key="`Lang${i}`"
-              :value="lang"
-            >
-              {{ lang }}
-            </option>
-          </select>
-        </div>
+        <button class="button" type="submit">Belép</button>
       </div>
 
       <div class="row align-center">

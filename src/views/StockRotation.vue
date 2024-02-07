@@ -1,10 +1,10 @@
 <template>
   <div class="small-12 columns content">
-    <h3>{{ $t('stock rotation in the last 365 days') }}</h3>
+    <h3>Forgalom az elmúlt 365 napban</h3>
     <table cellpadding="0" cellspacing="0">
       <thead>
         <tr>
-          <th scope="col">{{ $t('products') }} {{ searchResultsCount }}</th>
+          <th scope="col">Termék {{ searchResultsCount }}</th>
 
           <th
             scope="col"
@@ -13,7 +13,7 @@
             v-show="column.show"
             :rowspan="column.rowspan"
           >
-            {{ $t(column.name) }}
+            {{ column.name }}
           </th>
         </tr>
         <tr>
@@ -30,19 +30,19 @@
             v-show="columns.find((column) => column.name == 'stock').show"
             class="text-right"
           >
-            {{ toNum(sum('stock')) }} {{ $t('pcs') }}
+            {{ toNum(sum('stock')) }} db
           </td>
           <td
             v-show="columns.find((column) => column.name == 'purchases').show"
             class="text-right"
           >
-            {{ toNum(sum('purchases')) }} {{ $t('pcs') }}
+            {{ toNum(sum('purchases')) }} db
           </td>
           <td
             v-show="columns.find((column) => column.name == 'sells').show"
             class="text-right"
           >
-            {{ toNum(sum('sells')) }} {{ $t('pcs') }}
+            {{ toNum(sum('sells')) }} db
           </td>
           <td
             v-show="columns.find((column) => column.name == 'profit').show"
@@ -56,13 +56,13 @@
           >
             <input type="number" v-model="days" />
             <i class="fi-filter" @click="showOnlyRunout = !showOnlyRunout"></i>
-            {{ $t('days') }}
+            nap
           </td>
           <td
             v-show="columns.find((column) => column.name == 'runout').show"
             class="text-right"
           >
-            {{ $t('minimum order') }}
+            minimális rendelés
           </td>
         </tr>
       </thead>

@@ -1,14 +1,10 @@
 <template>
   <form @submit.prevent="saveInvoice">
-    <h3 :class="isSale ? 'out' : 'in'">
-      <i class="fi-plus"></i> {{ $t('new invoice') }}
-    </h3>
+    <h3 :class="isSale ? 'out' : 'in'"><i class="fi-plus"></i> Új bizonylat</h3>
 
     <div class="row">
       <div class="column small-12 large-6">
-        <label for="storage-id"
-          ><i class="fi-contrast"> {{ $t('storage') }}</i></label
-        >
+        <label for="storage-id"><i class="fi-contrast"> Raktár </i></label>
         <select v-model="storage_id" id="storage-id" ref="storage">
           <option
             v-for="storage in storages"
@@ -21,7 +17,7 @@
       </div>
       <div class="column small-12 large-6">
         <label for="invoicetype-id"
-          ><i class="fi-shield"> {{ $t('invoice type') }}</i></label
+          ><i class="fi-shield"> Bizonylat típus </i></label
         >
         <select v-model="invoicetype_id" id="invoicetype-id">
           <option
@@ -38,7 +34,7 @@
     <div class="row">
       <div class="column small-12 large-6">
         <label for="partner-id"
-          ><i class="fi-torsos"> {{ $t('partner') }}</i> /
+          ><i class="fi-torsos"> Partner </i> /
           {{ selectedPartner.group ? selectedPartner.group.name : '' }}</label
         >
         <input
@@ -56,36 +52,30 @@
         </datalist>
       </div>
       <div class="column small-12 large-6">
-        <label for="date"
-          ><i class="fi-calendar"> {{ $t('date') }}</i></label
-        >
+        <label for="date"><i class="fi-calendar"> Dátum </i></label>
         <input type="date" v-model="date" />
       </div>
     </div>
 
     <div class="row">
       <div class="column small-12 large-6">
-        <label for="number"
-          ><i class="fi-ticket"> {{ $t('number') }}</i></label
-        >
+        <label for="number"><i class="fi-ticket"> Szám </i></label>
         <input type="text" v-model="number" id="number" />
       </div>
       <div class="column small-12 large-2">
-        <label for="currency"
-          ><i class="fi-euro"> {{ $t('currency') }}</i></label
-        >
+        <label for="currency"><i class="fi-euro"> Valuta </i></label>
         <input type="text" v-model="currency" />
       </div>
       <div class="column small-12 large-1">
         <label for="showProductsOnlyInStock"
-          ><i class="fi-check"> {{ $t('In Stock') }}</i></label
+          ><i class="fi-check"> Készleten</i></label
         >
         <input type="checkbox" v-model="showProductsOnlyInStock" />
       </div>
       <div class="column small-12 large-3">
         <div :class="isSale ? 'sale out' : 'sale in'">
           <label for="isSale">
-            {{ isSale ? $t('sale') : $t('purchase')
+            {{ isSale ? 'Eladás' : 'Beszerzés'
             }}<input type="checkbox" v-model="isSale" id="isSale"
           /></label>
         </div>
@@ -96,22 +86,18 @@
       <table cellpadding="0" cellspacing="0">
         <thead>
           <tr :class="isSale ? 'out' : 'in'">
-            <th class="text-center" scope="col">{{ $t('product') }}</th>
-            <th class="text-center" scope="col">{{ $t('size') }}</th>
-            <th class="text-center" scope="col">{{ $t('code') }}</th>
-            <th class="text-center" scope="col">{{ $t('stock') }}</th>
-            <th class="text-center" scope="col">{{ $t('quantity') }}</th>
-            <th v-show="isSale" class="text-center" scope="col">
-              {{ $t('cost') }}
-            </th>
-            <th v-show="isSale" class="text-center" scope="col">
-              {{ $t('selling price') }}
-            </th>
-            <th class="text-center" scope="col">{{ $t('price') }}</th>
-            <th class="text-center" scope="col">{{ $t('amount') }}</th>
-            <th class="text-center" scope="col">{{ $t('vat') }}</th>
-            <th class="text-center" scope="col">{{ $t('vat') }}</th>
-            <th class="text-center" scope="col">{{ $t('gross amount') }}</th>
+            <th class="text-center" scope="col">Termék</th>
+            <th class="text-center" scope="col">Méret</th>
+            <th class="text-center" scope="col">Kód</th>
+            <th class="text-center" scope="col">Készlet</th>
+            <th class="text-center" scope="col">Mennyiség</th>
+            <th v-show="isSale" class="text-center" scope="col">Költség</th>
+            <th v-show="isSale" class="text-center" scope="col">Eladási ár</th>
+            <th class="text-center" scope="col">Ár</th>
+            <th class="text-center" scope="col">Összeg</th>
+            <th class="text-center" scope="col">ÁFA</th>
+            <th class="text-center" scope="col">ÁFA</th>
+            <th class="text-center" scope="col">Bruttó</th>
 
             <th
               v-for="group in buyerGroups"
@@ -162,14 +148,14 @@
               <i
                 v-show="selectedProduct.avaragePurchasePrice"
                 class="fi-price-tag avg"
-                :title="$t('avarage purchase price')"
+                :title="Átlagos beszerzési ár"
               >
                 {{ toCurrency(selectedProduct.avaragePurchasePrice, currency) }}
               </i>
               <br />
               <i
                 v-show="selectedProduct.lastPurchasePrice"
-                :title="$t('last purchase price')"
+                :title="Utolsó beszerzési ár"
                 class="fi-price-tag last"
               >
                 {{ toCurrency(selectedProduct.lastPurchasePrice, currency) }}
@@ -313,7 +299,7 @@
           <tr>
             <td>
               <button class="button" id="saveInvoice" type="submit">
-                <i class="fi-check"> {{ $t('save') }}</i>
+                <i class="fi-check"> Ment </i>
               </button>
             </td>
             <td></td>

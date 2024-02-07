@@ -1,7 +1,7 @@
 <template>
   <div class="companies small-12">
     <fieldset>
-      <legend>{{ $t('company') }}</legend>
+      <legend>Cég</legend>
       <select v-model="selectedCompany" @change="setAppCompany">
         <option
           v-for="company in companies"

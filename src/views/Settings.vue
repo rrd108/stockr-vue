@@ -2,21 +2,16 @@
   <form @submit.prevent="changePass">
     <div class="row">
       <div class="callout alert" v-show="!$v.password.strongPassword">
-        {{
-          $t(
-            'password should be at least 6 characters and contain numbers and letters'
-          )
-        }}
+        A jelszónak legalább 6 karakternek kell lenni és tartalmaznia kell betűt
+        és számot
       </div>
       <div class="callout alert" v-show="!$v.passwordre.sameAsPassword">
-        {{ $t('password mismatch') }}
+        A megadott jelszavak nem egyeznek meg egymással
       </div>
     </div>
 
     <div class="row">
-      <label for="password"
-        ><i class="fi-key"> {{ $t('new password') }}</i></label
-      >
+      <label for="password"><i class="fi-key"> Új jelszó </i></label>
       <input
         type="password"
         id="password"
@@ -24,7 +19,7 @@
         required
       />
       <label for="passwordre"
-        ><i class="fi-key"> {{ $t('confirm password') }}</i></label
+        ><i class="fi-key"> Jelszó megerősítése </i></label
       >
       <input
         type="password"
@@ -33,7 +28,7 @@
         required
       />
 
-      <button class="button" type="submit">{{ $t('save') }}</button>
+      <button class="button" type="submit">Ment</button>
     </div>
   </form>
 </template>

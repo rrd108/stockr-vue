@@ -1,23 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import i18n from '@/i18n'
 
 import Home from '@/views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    redirect: `/${i18n.locale}`
-  },
-  {
-    path: '/:lang',
-    component: {
-      render(c) { return c('router-view') }
-    },
-    children: [
       {
         path: '/',
         name: 'home',
@@ -87,8 +76,6 @@ const routes = [
         name: 'stock-rotation',
         component: () => import('../views/StockRotation.vue')
       },
-    ]
-  }
 ]
 
 const router = new VueRouter({
@@ -98,12 +85,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  let language = to.params.lang;
-  if (!language) {
-    language = 'hu';
-  }
-  i18n.locale = language;
-
   if (to.name !== 'home') {
     if (!store.state.user.email) {
       next({ path: '/', query: { redirect: to.path } })

@@ -3,42 +3,42 @@
     <div class="small-6 large-4">
       <div class="widget out">
         <h2>{{ toCurrency(stats.totals.sells, currency) }}</h2>
-        <i class="fi-arrow-left"> {{ $t('sells') }}</i>
+        <i class="fi-arrow-left"> Eladás</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget in">
         <h2>{{ toCurrency(stats.totals.purchases, currency) }}</h2>
-        <i class="fi-arrow-right"> {{ $t('purchases') }}</i>
+        <i class="fi-arrow-right"> Beszerzés</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget w1">
-        <h2>{{ toNumFormat(stats.totals.stock) }} {{ $t('pcs') }}</h2>
-        <i class="fi-list-thumbnails"> {{ $t('stock') }}</i>
+        <h2>{{ toNumFormat(stats.totals.stock) }} db</h2>
+        <i class="fi-list-thumbnails"> Készlet</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget w2">
         <h2>{{ stats.partners }}</h2>
-        <i class="fi-torsos"> {{ $t('partners') }}</i>
+        <i class="fi-torsos"> Partner</i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget w3">
         <h2>{{ stats.invoices }}</h2>
-        <i class="fi-book"> {{ $t('invoices') }}</i>
+        <i class="fi-book"> Bizonylat </i>
       </div>
     </div>
 
     <div class="small-6 large-4">
       <div class="widget w4">
         <h2>{{ stats.products }}</h2>
-        <i class="fi-foot"> {{ $t('products') }}</i>
+        <i class="fi-foot"> Termék </i>
       </div>
     </div>
   </div>

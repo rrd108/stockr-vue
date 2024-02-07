@@ -10,28 +10,28 @@
     </h1>
     <h2>{{ partner.group.name }} {{ partner.group.percentage }}%</h2>
     <h3>
-      <i class="fi-marker" :title="$t('address')"></i>
+      <i class="fi-marker" :title="Cím"></i>
       <quick-edit
         v-model="partner.zip"
-        :emptyText="$t('zip')"
+        :emptyText="Irsz"
         buttonCancelText="X"
         @input="edit('zip')"
       />
       <quick-edit
         v-model="partner.city"
-        :emptyText="$t('city')"
+        :emptyText="Város"
         buttonCancelText="X"
         @input="edit('city')"
       />
       <quick-edit
         v-model="partner.address"
-        :emptyText="$t('address')"
+        :emptyText="Cím"
         buttonCancelText="X"
         @input="edit('address')"
       />
     </h3>
     <h4>
-      <i class="fi-key" :title="$t('taxnumber')"></i>
+      <i class="fi-key" title="adószám"></i>
       <quick-edit
         v-model="partner.taxnumber"
         buttonCancelText="X"

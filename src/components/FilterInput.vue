@@ -3,7 +3,7 @@
     type="text"
     v-model="rowFilterTerm"
     autocomplete="off"
-    :placeholder="$t(placeholder)"
+    :placeholder="placeholder"
   />
 </template>
 

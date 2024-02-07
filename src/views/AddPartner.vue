@@ -1,46 +1,46 @@
 <template>
   <div class="small-12 large-6 columns content">
-    <h3>{{ $t('add partner') }}</h3>
+    <h3>Új partner</h3>
     <div class="callout success" v-show="isSaved">
-      <h5>{{ name }} {{ $t('saved') }}</h5>
+      <h5>{{ name }} elmentve</h5>
       <p>
         <a @click.prevent="initializeForm"
-          ><i class="fi-plus"> {{ $t('add partner') }}</i></a
+          ><i class="fi-plus"> Új partner </i></a
         >
       </p>
     </div>
     <form @submit.prevent="addPartner" v-show="!isSaved">
       <fieldset>
-        <label for="name">{{ $t('partner') }}</label>
+        <label for="name"> Partner </label>
         <input type="text" v-model="name" required="required" />
 
-        <label for="group">{{ $t('group') }}</label>
+        <label for="group"> Csoport </label>
         <select v-model="group" required="required">
           <option v-for="group in groups" :key="group.id">
             {{ group.name }}
           </option>
         </select>
 
-        <label for="size">{{ $t('zip') }}</label>
+        <label for="size"> Irsz </label>
         <input type="text" v-model="zip" />
 
-        <label for="size">{{ $t('city') }}</label>
+        <label for="size"> Város </label>
         <input type="text" v-model="city" />
 
-        <label for="size">{{ $t('address') }}</label>
+        <label for="size"> Cím </label>
         <input type="text" v-model="address" />
 
-        <label for="taxnumber">{{ $t('tax number') }}</label>
+        <label for="taxnumber">Adószám</label>
         <input type="text" v-model="taxnumber" />
 
-        <label for="size">{{ $t('phone') }}</label>
+        <label for="size"> SzámTelefon </label>
         <input type="text" v-model="phone" />
 
-        <label for="size">{{ $t('email') }}</label>
+        <label for="size"> Email </label>
         <input type="email" v-model="email" />
       </fieldset>
       <button class="button" type="submit">
-        <i class="fi-check"> {{ $t('save') }}</i>
+        <i class="fi-check"> Ment </i>
       </button>
     </form>
   </div>

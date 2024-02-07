@@ -1,57 +1,134 @@
 <template>
-    <header>
-      <nav>
-          <div class="top-bar">
-              <div class="top-bar-left" id="top-bar-left">
-                  <ul class="dropdown menu">
-                      <li><img alt="StokR logo" src="../assets/img/logo.png"></li>
-                      <li><router-link :to="`/${$i18n.locale}/`"><i class="fi-home"><span> Főoldal</span></i></router-link></li>
-                      <li @mouseenter="inInvoicesMenu = true" @mouseleave="inInvoicesMenu = false" class="is-dropdown-submenu-parent">
-                        <router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"><span> {{$t("invoices")}}</span></i></router-link>
-                        <ul class="nested vertical menu" v-show="inInvoicesMenu">
-                          <li><router-link :to="`/${$i18n.locale}/invoices`"><i class="fi-book"> {{$t("invoices")}}</i></router-link></li>
-                          <li><router-link :to="`/${$i18n.locale}/add-invoice`"><i class="fi-plus"> {{$t("new invoice")}}</i></router-link></li>
-                        </ul>
-                      </li>
-                      <li @mouseenter="inStockMenu = true" @mouseleave="inStockMenu = false" class="is-dropdown-submenu-parent">
-                        <router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> <span>{{$t("stock")}}</span></i></router-link>
-                        <ul v-show="inStockMenu" class="nested menu">
-                          <li><router-link :to="`/${$i18n.locale}/stock`"><i class="fi-list-thumbnails"> {{$t("stock")}}</i></router-link></li>
-                          <li><router-link :to="`/${$i18n.locale}/stock@date`"><i class="fi-list-thumbnails"> {{$t("stock at date")}}</i></router-link></li>
-                          <li><router-link :to="`/${$i18n.locale}/stock-rotation`"><i class="fi-list-thumbnails"> {{$t("stock rotation")}}</i></router-link></li>
-                        </ul>
-                      </li>
-                      <li @mouseenter="inMasterDataMenu = true" @mouseleave="inMasterDataMenu = false" class="is-dropdown-submenu-parent">
-                        <a href="#"><i class="fi-widget"> <span>{{$t("master data")}}</span></i></a>
-                        <transition name="reveal-fade">
-                          <ul class="nested vertical menu" v-show="inMasterDataMenu">
-                            <li><router-link :to="`/${$i18n.locale}/add-product`"><i class="fi-foot"> {{$t("add product")}}</i></router-link></li>
-                            <li><router-link :to="`/${$i18n.locale}/add-partner`"><i class="fi-torsos"> {{$t("add partner")}}</i></router-link></li>
-                            <li><router-link :to="`/${$i18n.locale}/partners`"><i class="fi-torsos"> {{$t("partners")}}</i></router-link></li>
-                          </ul>
-                        </transition>
-                      </li>
-                      <li><router-link :to="`/${$i18n.locale}/help`"><i class="fi-info"><span> {{$t("help")}}</span></i></router-link></li>
-                  </ul>
-              </div>
+  <header>
+    <nav>
+      <div class="top-bar">
+        <div class="top-bar-left" id="top-bar-left">
+          <ul class="dropdown menu">
+            <li><img alt="StokR logo" src="../assets/img/logo.png" /></li>
+            <li>
+              <router-link :to="`/`"
+                ><i class="fi-home"><span> Főoldal</span></i></router-link
+              >
+            </li>
+            <li
+              @mouseenter="inInvoicesMenu = true"
+              @mouseleave="inInvoicesMenu = false"
+              class="is-dropdown-submenu-parent"
+            >
+              <router-link :to="`/invoices`"
+                ><i class="fi-book"><span> Számlák</span></i></router-link
+              >
+              <ul class="nested vertical menu" v-show="inInvoicesMenu">
+                <li>
+                  <router-link :to="`/invoices`"
+                    ><i class="fi-book"> Számlák</i></router-link
+                  >
+                </li>
+                <li>
+                  <router-link :to="`/add-invoice`"
+                    ><i class="fi-plus"> Új számla</i></router-link
+                  >
+                </li>
+              </ul>
+            </li>
+            <li
+              @mouseenter="inStockMenu = true"
+              @mouseleave="inStockMenu = false"
+              class="is-dropdown-submenu-parent"
+            >
+              <router-link :to="`/stock`"
+                ><i class="fi-list-thumbnails">
+                  <span>Készlet</span></i
+                ></router-link
+              >
+              <ul v-show="inStockMenu" class="nested menu">
+                <li>
+                  <router-link :to="`/stock`"
+                    ><i class="fi-list-thumbnails"> Készlet</i></router-link
+                  >
+                </li>
+                <li>
+                  <router-link :to="`/stock@date`"
+                    ><i class="fi-list-thumbnails">
+                      Készlet adott napon</i
+                    ></router-link
+                  >
+                </li>
+                <li>
+                  <router-link :to="`/stock-rotation`"
+                    ><i class="fi-list-thumbnails">
+                      Készlet forgás</i
+                    ></router-link
+                  >
+                </li>
+              </ul>
+            </li>
+            <li
+              @mouseenter="inMasterDataMenu = true"
+              @mouseleave="inMasterDataMenu = false"
+              class="is-dropdown-submenu-parent"
+            >
+              <a href="#"
+                ><i class="fi-widget"> <span>Törzsadat</span></i></a
+              >
+              <transition name="reveal-fade">
+                <ul class="nested vertical menu" v-show="inMasterDataMenu">
+                  <li>
+                    <router-link :to="`/add-product`"
+                      ><i class="fi-foot"> Új termék</i></router-link
+                    >
+                  </li>
+                  <li>
+                    <router-link :to="`/add-partner`"
+                      ><i class="fi-torsos"> Új partner</i></router-link
+                    >
+                  </li>
+                  <li>
+                    <router-link :to="`/partners`"
+                      ><i class="fi-torsos"> Partnerek</i></router-link
+                    >
+                  </li>
+                </ul>
+              </transition>
+            </li>
+            <li>
+              <router-link :to="`/help`"
+                ><i class="fi-info"><span> Súgó</span></i></router-link
+              >
+            </li>
+          </ul>
+        </div>
 
-              <div class="top-bar-right" id="top-bar-right">
-                  <ul class="menu">
-                    <li v-if="appCompany"><a href="#" @click.prevent="$store.commit('unsetCompany')">
-                      <i class="fi-torso"><span> {{appCompany}}</span></i></a>
-                    </li>
-                    <li @mouseenter="inUserMenu = true" @mouseleave="inUserMenu = false">
-                      <a href="/" @click.prevent="logout" title="logout"><span>{{this.$store.state.user.email}} </span><i class="fi-power"></i></a>
-                      <ul v-show="inUserMenu" class="nested menu">
-                        <li><a href="/" @click.prevent="logout" title="logout">{{$t("logout")}} <i class="fi-power"></i></a></li>
-                        <!--<li><router-link :to="`/${$i18n.locale}/settings`">{{$t("settings")}} <i class="fi-widget"></i></router-link></li>-->
-                      </ul>
-                    </li>
-                  </ul>
-              </div>
-          </div>
-      </nav>
-    </header>
+        <div class="top-bar-right" id="top-bar-right">
+          <ul class="menu">
+            <li v-if="appCompany">
+              <a href="#" @click.prevent="$store.commit('unsetCompany')">
+                <i class="fi-torso"
+                  ><span> {{ appCompany }}</span></i
+                ></a
+              >
+            </li>
+            <li
+              @mouseenter="inUserMenu = true"
+              @mouseleave="inUserMenu = false"
+            >
+              <a href="/" @click.prevent="logout" title="logout"
+                ><span>{{ this.$store.state.user.email }} </span
+                ><i class="fi-power"></i
+              ></a>
+              <ul v-show="inUserMenu" class="nested menu">
+                <li>
+                  <a href="/" @click.prevent="logout" title="logout"
+                    >Kilép <i class="fi-power"></i
+                  ></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
 </template>
 
 <script>
@@ -60,7 +137,7 @@ export default {
 
   data() {
     return {
-      inMasterDataMenu : false,
+      inMasterDataMenu: false,
       inInvoicesMenu: false,
       inStockMenu: false,
       inUserMenu: false,
@@ -69,17 +146,17 @@ export default {
 
   computed: {
     appCompany() {
-      return this.$store.state.company.name;
-    }
+      return this.$store.state.company.name
+    },
   },
 
   methods: {
     logout() {
-      this.$store.commit('removeUser');
-      localStorage.removeItem('user');
-       this.$router.push('/')
-    }
-  }
+      this.$store.commit('removeUser')
+      localStorage.removeItem('user')
+      this.$router.push('/')
+    },
+  },
 }
 </script>
 
@@ -96,23 +173,24 @@ header a.router-link-exact-active {
   color: #fff;
 }
 
-.top-bar ul, .top-bar {
-    background-color: #fff
+.top-bar ul,
+.top-bar {
+  background-color: #fff;
 }
 
 ul.dropdown li {
-    margin: .2em .2em .2em 0;
+  margin: 0.2em 0.2em 0.2em 0;
 }
 
 .top-bar a:hover {
-    background-color: #2c83b6;
-    color: #fff;
-    transition: background .5s, color .5s;
+  background-color: #2c83b6;
+  color: #fff;
+  transition: background 0.5s, color 0.5s;
 }
 
 .nested {
   position: absolute;
-  border-left: .3em solid #2c83b6;
+  border-left: 0.3em solid #2c83b6;
   z-index: 10;
 }
 .nested li {
@@ -121,10 +199,10 @@ ul.dropdown li {
 }
 
 .reveal-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .reveal-fade-leave-active {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 .reveal-fade-enter {
   opacity: 0;
@@ -136,8 +214,9 @@ ul.dropdown li {
   header span {
     display: none;
   }
-  nav div > ul a, .dropdown.menu > li > a {
-    padding: .5rem;
+  nav div > ul a,
+  .dropdown.menu > li > a {
+    padding: 0.5rem;
   }
   #top-bar-left {
     flex: 1 1 auto;
@@ -147,7 +226,7 @@ ul.dropdown li {
   }
   .router-link-exact-active span {
     display: inline;
-    font-size: .75rem;
+    font-size: 0.75rem;
   }
 }
 </style>

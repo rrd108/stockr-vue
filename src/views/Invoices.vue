@@ -1,7 +1,7 @@
 <template>
   <div class="small-12 columns content">
     <div class="pagerHeader">
-      <h3>{{ $t('invoices') }}</h3>
+      <h3>Bizonylat</h3>
       <ul>
         <li
           v-for="month in months"
@@ -18,6 +18,7 @@
             <option value="2021">2021</option>
             <option value="2022">2022</option>
             <option value="2023">2023</option>
+            <option value="2024">2024</option>
           </select>
         </li>
         <li>
@@ -40,20 +41,20 @@
     </div>
 
     <div class="callout success" v-show="$route.params.newInvoice">
-      <h5>{{ $route.params.newInvoice }} {{ $t('saved') }}</h5>
+      <h5>{{ $route.params.newInvoice }} elmentve</h5>
     </div>
 
     <table cellpadding="0" cellspacing="0">
       <thead>
         <tr>
-          <th scope="col">{{ $t('sale') }}</th>
-          <th scope="col">{{ $t('number') }}</th>
-          <th scope="col">{{ $t('date') }}</th>
-          <th scope="col">{{ $t('partner') }}</th>
-          <th scope="col">{{ $t('storage') }}</th>
-          <th scope="col">{{ $t('invoice type') }}</th>
+          <th scope="col">Eladás</th>
+          <th scope="col">Szám</th>
+          <th scope="col">Dátum</th>
+          <th scope="col">Partner</th>
+          <th scope="col">Raktár</th>
+          <th scope="col">Bizonylat típus</th>
           <th scope="col" class="row">
-            <span class="small-6">{{ $t('amount') }}</span>
+            <span class="small-6"> Összeg </span>
             <span class="small-6 text-right">{{
               toCurrency(
                 invoices.reduce(

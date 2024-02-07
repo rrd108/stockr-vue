@@ -12,13 +12,13 @@
     <table class="vertical-table" :class="{ deleted: invoice.status == 'd' }">
       <tbody>
         <tr>
-          <th scope="row">{{ $t('partner') }}</th>
+          <th scope="row">Partner</th>
           <td>{{ invoice.partner.name }}</td>
-          <th scope="row">{{ $t('storage') }}</th>
+          <th scope="row">Raktár</th>
           <td>{{ invoice.storage.name }}</td>
         </tr>
         <tr>
-          <th scope="row">{{ $t('invoice type') }}</th>
+          <th scope="row">Bizonylat típus</th>
           <td class="pointer">
             <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype">
               {{ invoice.invoicetype.name }}</i
@@ -37,11 +37,11 @@
               </option>
             </select>
           </td>
-          <th scope="row">{{ $t('date') }}</th>
+          <th scope="row">Dátum</th>
           <td>{{ toLocaleDateString(invoice.date) }}</td>
         </tr>
         <tr>
-          <th scope="row">{{ $t('number') }}</th>
+          <th scope="row">Szám</th>
           <td>
             <span
               v-html="$options.filters.invoiceNumber(invoice.number)"
@@ -57,11 +57,11 @@
               Billingo</i
             >
           </td>
-          <th scope="row">{{ $t('type') }}</th>
-          <td>{{ invoice.sale ? $t('sale') : $t('purchase') }}</td>
+          <th scope="row">Típus</th>
+          <td>{{ invoice.sale ? 'Eladás' : 'Beszerzés' }}</td>
         </tr>
         <tr>
-          <th scope="row">{{ $t('currency') }}</th>
+          <th scope="row">Valuta</th>
           <td>{{ invoice.currency }}</td>
           <th scope="row">PDF</th>
           <td>
@@ -78,13 +78,13 @@
     >
       <thead>
         <tr :class="invoice.sale ? 'out' : 'in'">
-          <th class="text-center" scope="col">{{ $t('product') }}</th>
-          <th class="text-center" scope="col">{{ $t('quantity') }}</th>
-          <th class="text-center" scope="col">{{ $t('price') }}</th>
-          <th class="text-center" scope="col">{{ $t('amount') }}</th>
-          <th class="text-center" scope="col">{{ $t('vat') }}</th>
-          <th class="text-center" scope="col">{{ $t('vat') }}</th>
-          <th class="text-center" scope="col">{{ $t('gross amount') }}</th>
+          <th class="text-center" scope="col">Termék</th>
+          <th class="text-center" scope="col">Mennyiség</th>
+          <th class="text-center" scope="col">Ár</th>
+          <th class="text-center" scope="col">Összeg</th>
+          <th class="text-center" scope="col">ÁFA</th>
+          <th class="text-center" scope="col">ÁFA</th>
+          <th class="text-center" scope="col">Bruttó</th>
         </tr>
       </thead>
       <tbody>
@@ -119,7 +119,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td>{{ $t('total') }}</td>
+          <td>Összesen</td>
           <td class="text-right">
             {{
               toNum(

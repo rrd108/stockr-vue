@@ -3,7 +3,7 @@
     <h3>{{ product.name }}</h3>
     <table class="vertical-table" v-if="isLoaded">
       <tr>
-        <th scope="row">{{ $t('product') }}</th>
+        <th scope="row">Termék</th>
         <td>
           <quick-edit
             v-model="product.name"
@@ -18,7 +18,7 @@
             @input="edit('code')"
           />
         </td>
-        <th scope="row">{{ $t('size') }}</th>
+        <th scope="row">Méret</th>
         <td>
           <quick-edit
             v-model="product.size"
@@ -27,7 +27,7 @@
             @input="edit('size')"
           />
         </td>
-        <th scope="row">{{ $t('vat') }}</th>
+        <th scope="row">ÁFA</th>
         <td>
           <quick-edit
             v-model="product.vat"
@@ -39,7 +39,7 @@
         </td>
       </tr>
       <tr>
-        <th scope="row">{{ $t('purchase') }}</th>
+        <th scope="row">Beszerzés</th>
         <td class="text-right">
           {{
             toCurrency(
@@ -53,7 +53,7 @@
             )
           }}
         </td>
-        <th scope="row">{{ $t('sells') }}</th>
+        <th scope="row">Eladás</th>
         <td class="text-right">
           {{
             toCurrency(
@@ -66,7 +66,7 @@
             )
           }}
         </td>
-        <th scope="row">{{ $t('profit') }}</th>
+        <th scope="row">profit</th>
         <td class="text-right">
           {{
             toCurrency(
@@ -86,35 +86,35 @@
       <tr>
         <th></th>
         <td></td>
-        <th scope="row">{{ $t('avarage purchase price') }}</th>
+        <th scope="row">Átlagos beszerzési ár</th>
         <td class="text-right">
           {{ toCurrency(product.avaragePurchasePrice, currency) }}
         </td>
-        <th scope="row">{{ $t('last purchase price') }}</th>
+        <th scope="row">Utolsó beszerzési ár</th>
         <td class="text-right">
           {{ toCurrency(product.lastPurchasePrice, currency) }}
         </td>
       </tr>
       <tr>
-        <th scope="row">{{ $t('stock') }}</th>
+        <th scope="row">Készlet</th>
         <td class="text-right">{{ toNum(stock, 1) }}</td>
-        <th scope="row">{{ $t('stock') }}</th>
+        <th scope="row">Készlet</th>
         <td class="text-right">
           {{ toCurrency(stock * product.avaragePurchasePrice, currency) }}
         </td>
-        <th scope="row">{{ $t('stock') }}</th>
+        <th scope="row">Készlet</th>
         <td class="text-right">
           {{ toCurrency(stock * product.lastPurchasePrice, currency) }}
         </td>
       </tr>
       <tr>
-        <th scope="row">{{ $t('last purchase') }}</th>
+        <th scope="row">Utolsó beszerzés</th>
         <td class="text-right">
           {{ toLocaleDateString(lastPurchase.invoice.date) }}
         </td>
-        <th scope="row">{{ $t('sells') }}</th>
+        <th scope="row">Eladás</th>
         <td class="text-right">{{ toNum(totalSells, 1) }}</td>
-        <th scope="row">{{ $t('runout') }}</th>
+        <th scope="row">Kifutás</th>
         <td class="text-right">{{ toLocaleDateString(runoutDate) }}</td>
       </tr>
     </table>
@@ -122,9 +122,9 @@
     <table>
       <thead>
         <tr>
-          <th>{{ $t('partner') }}</th>
-          <th>{{ $t('turnover') }}</th>
-          <th>{{ $t('amount') }}</th>
+          <th>Partner</th>
+          <th>Forgalom</th>
+          <th>Összeg</th>
         </tr>
       </thead>
       <tbody>
@@ -167,21 +167,21 @@
     <table>
       <thead>
         <tr>
-          <th class="text-center" scope="col">{{ $t('sale') }}</th>
-          <th class="text-center" scope="col">{{ $t('number') }}</th>
-          <th class="text-center" scope="col">{{ $t('date') }}</th>
-          <th class="text-center" scope="col">{{ $t('partner') }}</th>
-          <th class="text-center" scope="col">{{ $t('storage') }}</th>
-          <th class="text-center" scope="col">{{ $t('quantity') }}</th>
-          <th class="text-center" scope="col">{{ $t('price') }}</th>
-          <th class="text-center" scope="col">{{ $t('value') }}</th>
+          <th class="text-center" scope="col">Eladás</th>
+          <th class="text-center" scope="col">Szám</th>
+          <th class="text-center" scope="col">Dátum</th>
+          <th class="text-center" scope="col">Partner</th>
+          <th class="text-center" scope="col">Raktár</th>
+          <th class="text-center" scope="col">Mennyiség</th>
+          <th class="text-center" scope="col">Ár</th>
+          <th class="text-center" scope="col">Érték</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in product.items" :key="item.id">
           <td>
             <!-- TODO create a component for this -->
-            <router-link :to="`/${$i18n.locale}/invoices/${item.invoice.id}`">
+            <router-link :to="`/invoices/${item.invoice.id}`">
               <i v-if="item.invoice.sale" class="fi-arrow-left out"></i>
               <i v-if="!item.invoice.sale" class="fi-arrow-right in"></i>
             </router-link>
