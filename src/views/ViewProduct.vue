@@ -200,7 +200,7 @@
 
 <script>
 import axios from 'axios'
-import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin'
+import InvoiceNumberFilterMixin from '@/mixins/InvoiceNumberFilterMixin.vue'
 import QuickEdit from 'vue-quick-edit'
 
 export default {

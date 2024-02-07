@@ -150,8 +150,8 @@
 </template>
 
 <script>
-import FilterInput from '@/components/FilterInput'
-import FilteredTbody from '@/components/FilteredProductTbody'
+import FilterInput from '@/components/FilterInput.vue'
+import FilteredTbody from '@/components/FilteredProductTbody.vue'
 
 export default {
   name: 'Stock',
