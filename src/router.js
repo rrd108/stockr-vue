@@ -15,66 +15,66 @@ const routes = [
   {
     path: '/help',
     name: 'help',
-    component: () => import('../views/Help.vue'),
+    component: () => import('@/views/Help.vue'),
   },
   {
     path: '/invoices/:id',
     name: 'view-invoice',
-    component: () => import('../views/ViewInvoice.vue'),
+    component: () => import('@/views/ViewInvoice.vue'),
     props: true,
   },
   {
     path: '/invoices',
     name: 'invoices',
-    component: () => import('../views/Invoices.vue'),
+    component: () => import('@/views/Invoices.vue'),
   },
   {
     path: '/add-invoice',
     name: 'add-invoice',
-    component: () => import('../views/AddInvoice.vue'),
+    component: () => import('@/views/AddInvoice.vue'),
   },
   {
     path: '/add-partner',
     name: 'add-partner',
-    component: () => import('../views/AddPartner.vue'),
+    component: () => import('@/views/AddPartner.vue'),
   },
   {
     path: '/add-product',
-    component: () => import('../views/AddProduct.vue'),
+    component: () => import('@/views/AddProduct.vue'),
   },
   {
     path: '/partners/:id',
-    component: () => import('../views/ViewPartner.vue'),
+    component: () => import('@/views/ViewPartner.vue'),
     props: true,
   },
   {
     path: '/partners',
-    component: () => import('../views/Partners.vue'),
+    component: () => import('@/views/Partners.vue'),
     props: true,
   },
   {
     path: '/products/:id',
-    component: () => import('../views/ViewProduct.vue'),
+    component: () => import('@/views/ViewProduct.vue'),
     props: true,
   },
   {
     path: '/settings',
-    component: () => import('../views/Settings.vue'),
+    component: () => import('@/views/Settings.vue'),
   },
   {
     path: '/stock@date',
     name: 'stock@date',
-    component: () => import('../views/StockAtDate.vue'),
+    component: () => import('@/views/StockAtDate.vue'),
   },
   {
     path: '/stock',
     name: 'stock',
-    component: () => import('../views/Stock.vue'),
+    component: () => import('@/views/Stock.vue'),
   },
   {
     path: '/stock-rotation',
     name: 'stock-rotation',
-    component: () => import('../views/StockRotation.vue'),
+    component: () => import('@/views/StockRotation.vue'),
   },
 ]
 
