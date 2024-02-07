@@ -24,7 +24,7 @@ export default {
   created() {
     window.addEventListener('keypress', this.shortCuts)
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener('keypress', this.shortCuts)
   },
   methods: {
