@@ -125,23 +125,13 @@
     }
   }
 
-  /*  const date = ref(new Date().toISOString().split('T')[0])
-  const invoicetype_id = ref(0)
-  const number = ref(0)
-  const partner = ref('')
-
+  /*  
   const sellingPrices = () => {
     let sellingPrices = []
     this.buyerGroups.forEach(group => (sellingPrices[group.id] = this.price * (1 + group.percentage / 100)))
     return sellingPrices
   }
 
-  onCreated(() => {
-    if (!this.$store.products?.length) {
-      this.$store.getBaseData()
-    }
-    this.number = this.setNumber()
-  })
 
   onMounted(() => {
     this.$refs.storage.focus()
@@ -206,7 +196,24 @@
   */
 
   const saveInvoice = () => {
-    console.log('TODO saveInvoice')
+    addItem(false)
+
+    if (!invoice.value.items.length) {
+      return
+    }
+
+    const data = {
+      ...invoice.value,
+      partner_id: invoicePartner.value.id,
+      sale: isSale.value ? 1 : 0,
+      items: invoice.value.items.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    }
+
+    console.log(data)
   }
 </script>
 

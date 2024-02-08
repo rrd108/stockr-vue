@@ -5,7 +5,12 @@ meta {
 }
 
 get {
-  url: https://stockr.1108.cc/api/stats.json?company=1&ApiKey=$2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
+  url: https://stockr.1108.cc/api/stats.json?company=1&ApiKey={{apiKey}}
   body: none
   auth: none
+}
+
+query {
+  company: 1
+  ApiKey: {{apiKey}}
 }
