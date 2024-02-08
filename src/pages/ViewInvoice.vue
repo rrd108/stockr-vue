@@ -193,8 +193,21 @@
     },
   }*/
 
+  // TODO update status data in the store also
+  const deleteInvoice = () =>
+    axios
+      .delete(
+        `${import.meta.env.VITE_API_URL}invoices/delete/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }`
+      )
+      .then(response => {
+        invoice.value.status = 'd'
+        store.invoices.find(inv => inv.id == invoice.value.id).status = 'd'
+      })
+      .catch(error => console.error(error))
+
   const onEdit = ref(false)
-  const deleteInvoice = () => console.log('TODO deleteInvoice')
   const changeInvoicetype = () => console.log('TODO changeInvoicetype')
   const onInvoicing = ref(false)
   const getPdf = () => console.log('TODO getPdf')
