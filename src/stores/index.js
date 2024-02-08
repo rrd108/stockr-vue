@@ -8,7 +8,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
   const invoices = ref([])
   const invoicetypes = []
   const partners = []
-  const products = []
+  const products = ref([])
   const storages = []
   const storageId = 0
   const search = ref({})
@@ -25,6 +25,8 @@ export const useStockrStore = defineStore('stockrStore', () => {
     return user.value.email ? true : false
   })
 
+  const isBaseDataLoaded = ref(false)
+
   const invoiceMonths = () => [...new Set(invoices.value.map(invoice => invoice.date.substr(0, 7)))]
 
   const getBaseData = () => {
@@ -35,6 +37,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
     getPartners()
     getProducts()
     getStorages()
+    isBaseDataLoaded.value = true
   }
 
   const getGroups = () =>
@@ -74,13 +77,13 @@ export const useStockrStore = defineStore('stockrStore', () => {
           '&ApiKey=' +
           user.value.api_token
       )
-      .then(resp => {
-        products.push(
-          ...resp.data.products.map(product => {
-            product.hidden = false
-          })
-        )
-      })
+      .then(
+        resp =>
+          (products.value = resp.data.products.map(product => ({
+            ...product,
+            hidden: false,
+          })))
+      )
       .catch(err => console.error(err))
 
   const getStorages = () =>
@@ -101,6 +104,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
     search,
     user,
     isLoggedIn,
+    isBaseDataLoaded,
     invoiceMonths,
     getBaseData,
   }
