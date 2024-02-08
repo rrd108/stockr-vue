@@ -90,6 +90,11 @@ class ProductsTable extends Table
             ->decimal('vat')
             ->allowEmptyString('vat');
 
+        $validator
+            ->scalar('ean')
+            ->maxLength('ean', 255)
+            ->allowEmptyString('ean');
+
         return $validator;
     }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -10,11 +9,15 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $company_id
  * @property string|null $name
+ * @property string $en_name
+ * @property string|null $code
  * @property string|null $size
  * @property float|null $vat
+ * @property string|null $ean
  *
  * @property \App\Model\Entity\Company $company
  * @property \App\Model\Entity\Item[] $items
+ * @property \App\Model\Entity\GroupsProduct[] $groups_products
  * @property \App\Model\Entity\Group[] $groups
  */
 class Product extends Entity
@@ -35,8 +38,10 @@ class Product extends Entity
         'code' => true,
         'size' => true,
         'vat' => true,
+        'ean' => true,
         'company' => true,
         'items' => true,
-        'groups' => true
+        'groups_products' => true,
+        'groups' => true,
     ];
 }
