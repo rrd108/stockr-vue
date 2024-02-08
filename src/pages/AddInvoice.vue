@@ -1,10 +1,13 @@
 <script setup>
   import { computed, ref } from 'vue'
+  import axios from 'axios'
   import { useStockrStore } from '@/stores'
+  import { useRouter } from 'vue-router'
   import toNum from '@/composables/useToNum'
   import toCurrency from '@/composables/useToCurrency'
 
   const store = useStockrStore()
+  const router = useRouter()
 
   const setNumber = () => {
     let year = new Date().getFullYear()
@@ -146,53 +149,6 @@
     this.setSelectedProduct()
     this.invoice.items = this.invoice.items.filter(invoiceItem => invoiceItem.uuid != uuid)
   }
-
-  const saveInvoice = () => {
-    this.addItem(false)
-    if (this.invoice.items.length) {
-      let data = {
-        storage_id: this.storage_id,
-        invoicetype_id: this.invoicetype_id,
-        partner_id: this.selectedPartner.id,
-        date: this.date,
-        number: this.number,
-        currency: this.currency,
-        sale: this.isSale ? 1 : 0,
-        items: this.invoice.items.map(item => ({
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price: item.price,
-          selling_prices: item.sellingPrices,
-        })),
-      }
-
-      let data4vue = {
-        storage: this.storages.find(storage => storage.id == this.storage_id),
-        invoicetype: invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
-        partner: this.selectedPartner,
-      }
-
-      axios
-        .post(
-          import.meta.env.VITE_API_URL + 'invoices.json?company=' + company.id + '&ApiKey=' + this.$store.user.api_token,
-          data
-        )
-        .then(response => {
-          if (response.data.invoice.id) {
-            this.$store.invoice = {
-              ...response.data.invoice,
-              ...data4vue,
-            }
-            this.$router.push({
-              name: 'invoices',
-              params: { newInvoice: response.data.invoice.number },
-            })
-          }
-        })
-        .catch(error => console.log(error))
-    }
-  }
-
   */
 
   const saveInvoice = () => {
@@ -213,7 +169,21 @@
       })),
     }
 
-    console.log(data)
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + 'invoices.json?company=' + store.company.id + '&ApiKey=' + store.user.api_token,
+        data
+      )
+      .then(response => {
+        store.invoices.unshift({
+          ...response.data.invoice,
+          partner: store.partners.find(partner => partner.id == data.partner_id),
+          invoicetype: store.invoicetypes.find(invoicetype => invoicetype.id == data.invoicetype_id),
+          storage: store.storages.find(storage => storage.id == data.storage_id),
+        })
+        router.push({ name: 'invoices' })
+      })
+      .catch(error => console.error(error))
   }
 </script>
 
