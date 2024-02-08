@@ -52,14 +52,54 @@
     showProductsOnlyInStock.value ? store.products.filter(product => product.stock > 0) : store.products
   )
 
-  const selectedProduct = ref({})
   const item = ref({
     product: '',
     quantity: 0,
     price: 0,
   })
-
   const invoiceItems = ref([])
+
+  const selectedProduct = ref({})
+  const setSelectedProduct = () => {
+    selectedProduct.value = store.products.find(product => {
+      // productName: "product #CODE > 1kg"
+      let chunks = item.value.product.split(/[>#]/)
+      let productName = chunks[0]
+
+      if (chunks.length === 1) {
+        // we have only product name
+        if (product.name.trim() == productName.trim()) {
+          return product
+        }
+      }
+
+      if (chunks.length === 2) {
+        // we have product name AND (size OR code)
+        if (item.value.product.indexOf('#')) {
+          if (product.name.trim() == productName.trim() && product.code.trim() == chunks[1].trim()) {
+            return product
+          }
+        }
+        if (item.value.product.indexOf('>')) {
+          if (product.name.trim() == productName.trim() && product.size.trim() == chunks[1].trim()) {
+            return product
+          }
+        }
+      }
+
+      if (chunks.length === 3) {
+        // we have product name AND size AND code
+        // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
+        if (
+          product.name.trim() == productName.trim() &&
+          product.size.trim() == chunks[1].trim() &&
+          product.code.trim() == chunks[2].trim()
+        ) {
+          return product
+        }
+      }
+    })
+  }
 
   /*  const date = ref(new Date().toISOString().split('T')[0])
   const invoicetype_id = ref(0)
@@ -163,48 +203,7 @@
     }
   }
 
-  const setSelectedProduct = () => {
-    this.selectedProduct = this.products.find(product => {
-      // productName: "product #CODE > 1kg"
-      let chunks = this.product.split(/[>#]/)
-      let productName = chunks[0]
-
-      if (chunks.length === 1) {
-        // we have only product name
-        if (product.name.trim() == productName.trim()) {
-          return product
-        }
-      }
-
-      if (chunks.length === 2) {
-        // we have product name AND (size OR code)
-        if (this.product.indexOf('#')) {
-          if (product.name.trim() == productName.trim() && product.code.trim() == chunks[1].trim()) {
-            return product
-          }
-        }
-        if (this.product.indexOf('>')) {
-          if (product.name.trim() == productName.trim() && product.size.trim() == chunks[1].trim()) {
-            return product
-          }
-        }
-      }
-
-      if (chunks.length === 3) {
-        // we have product name AND size AND code
-        // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
-        if (
-          product.name.trim() == productName.trim() &&
-          product.size.trim() == chunks[1].trim() &&
-          product.code.trim() == chunks[2].trim()
-        ) {
-          return product
-        }
-      }
-    })
-    this.product = this.selectedProduct.name
-    this.price = (this.selectedProduct.lastPurchasePrice * (1 + this.selectedPartner.group.percentage / 100)).toFixed(2)
-  }*/
+  */
 
   const saveInvoice = () => {
     console.log('TODO saveInvoice')
@@ -295,6 +294,7 @@
             <th>-</th>
           </tr>
         </thead>
+
         <tbody>
           <tr>
             <td>
