@@ -99,6 +99,9 @@
         }
       }
     })
+    item.value.price = (selectedProduct.value.lastPurchasePrice * (1 + invoicePartner.value.group.percentage / 100)).toFixed(
+      2
+    )
   }
 
   /*  const date = ref(new Date().toISOString().split('T')[0])
@@ -330,9 +333,9 @@
             </td>
             <td v-show="isSale" class="text-right">
               {{
-                selectedPartner.group
+                invoicePartner.group
                   ? toCurrency(
-                      selectedProduct.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100),
+                      selectedProduct.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100),
                       invoice.currency
                     )
                   : 0
