@@ -35,7 +35,6 @@
   })
   const isSale = computed(() => invoicePartner.value.group.percentage)
 
-  const selectedPartner = ref({})
   const isHeaderReady = computed(
     () =>
       invoice.value.storage_id &&
@@ -52,12 +51,12 @@
     showProductsOnlyInStock.value ? store.products.filter(product => product.stock > 0) : store.products
   )
 
-  const item = ref({
+  const emptyItem = {
     product: '',
     quantity: 0,
     price: 0,
-  })
-  const invoiceItems = ref([])
+  }
+  const item = ref({ ...emptyItem })
 
   const selectedProduct = ref({})
   const setSelectedProduct = () => {
@@ -104,6 +103,28 @@
     )
   }
 
+  const productRef = ref(null)
+  const addItem = (putFocus = true) => {
+    if (!item.value.product || !item.value.quantity || !item.value.price) {
+      return
+    }
+
+    invoice.value.items.unshift({
+      ...selectedProduct.value,
+      uuid: Math.random().toString(36).substring(2, 9),
+      product_id: selectedProduct.value.id,
+      quantity: item.value.quantity,
+      price: item.value.price,
+    })
+
+    selectedProduct.value = {}
+    item.value = { ...emptyItem }
+
+    if (putFocus) {
+      productRef.value.focus()
+    }
+  }
+
   /*  const date = ref(new Date().toISOString().split('T')[0])
   const invoicetype_id = ref(0)
   const number = ref(0)
@@ -126,43 +147,19 @@
     this.$refs.storage.focus()
   })
 
-  const addItem = (putFocus = true) => {
-    if (this.product && this.quantity && this.price) {
-      this.invoiceItems.unshift({
-        uuid: Math.random().toString().substr(2),
-        product_id: this.selectedProduct.id,
-        name: this.selectedProduct.name,
-        size: this.selectedProduct.size,
-        code: this.selectedProduct.code,
-        stock: this.selectedProduct.stock,
-        quantity: this.quantity,
-        avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
-        lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
-        percentage: this.selectedProduct.percentage,
-        price: this.price,
-        vat: this.selectedProduct.vat,
-        sellingPrices: this.sellingPrices,
-      })
-      this.selectedProduct = {}
-      this.product = ''
-      this.quantity = this.price = 0
-      if (putFocus) {
-        this.$refs.product.focus()
-      }
-    }
-  }
+  
   const changeItem = uuid => {
-    let product = this.invoiceItems.find(invoiceItem => invoiceItem.uuid == uuid)
+    let product = this.invoice.items.find(invoiceItem => invoiceItem.uuid == uuid)
     this.product = product.name
     this.price = product.price
     this.quantity = product.quantity
     this.setSelectedProduct()
-    this.invoiceItems = this.invoiceItems.filter(invoiceItem => invoiceItem.uuid != uuid)
+    this.invoice.items = this.invoice.items.filter(invoiceItem => invoiceItem.uuid != uuid)
   }
 
   const saveInvoice = () => {
     this.addItem(false)
-    if (this.invoiceItems.length) {
+    if (this.invoice.items.length) {
       let data = {
         storage_id: this.storage_id,
         invoicetype_id: this.invoicetype_id,
@@ -171,7 +168,7 @@
         number: this.number,
         currency: this.currency,
         sale: this.isSale ? 1 : 0,
-        items: this.invoiceItems.map(item => ({
+        items: this.invoice.items.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
           price: item.price,
@@ -303,8 +300,9 @@
             <td>
               <input
                 type="text"
-                v-model.lazy="item.product"
+                v-model="item.product"
                 @change="setSelectedProduct"
+                ref="productRef"
                 list="products"
                 autocomplete="off"
               />
@@ -365,7 +363,7 @@
               <button @click.prevent="addItem" class="fi-arrow-down"></button>
             </td>
           </tr>
-          <tr v-for="invoiceItem in invoiceItems" :key="invoiceItem.uuid">
+          <tr v-for="invoiceItem in invoice.items" :key="invoiceItem.uuid">
             <td>{{ invoiceItem.name }}</td>
             <td>{{ invoiceItem.size }}</td>
             <td>{{ invoiceItem.code }}</td>
@@ -381,9 +379,7 @@
               </i>
             </td>
             <td v-show="isSale" class="text-right">
-              {{
-                toCurrency(invoiceItem.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100), invoice.currency)
-              }}
+              {{ toCurrency(invoiceItem.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency) }}
             </td>
             <td class="text-right">
               {{ toCurrency(invoiceItem.price, invoice.currency) }}
@@ -419,7 +415,7 @@
             <td></td>
             <td></td>
             <td class="text-right">
-              {{ invoiceItems.reduce((total, item) => total + parseInt(item.quantity), 0) }}
+              {{ invoice.items.reduce((total, item) => total + parseInt(item.quantity), 0) }}
             </td>
             <td v-show="isSale"></td>
             <td v-show="isSale"></td>
@@ -427,7 +423,7 @@
             <td class="text-right">
               {{
                 toCurrency(
-                  invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0),
+                  invoice.items.reduce((total, item) => total + item.quantity * item.price, 0),
                   invoice.currency
                 )
               }}
@@ -436,7 +432,7 @@
             <td class="text-right">
               {{
                 toCurrency(
-                  invoiceItems.reduce((total, item) => total + (item.quantity * item.price * item.vat) / 100, 0),
+                  invoice.items.reduce((total, item) => total + (item.quantity * item.price * item.vat) / 100, 0),
                   invoice.currency
                 )
               }}
@@ -444,7 +440,7 @@
             <td class="text-right">
               {{
                 toCurrency(
-                  invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0),
+                  invoice.items.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0),
                   invoice.currency
                 )
               }}
