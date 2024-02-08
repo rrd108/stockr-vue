@@ -1,5 +1,144 @@
+<script setup>
+  import { ref } from 'vue'
+  import axios from 'axios'
+  import { useRoute } from 'vue-router'
+  import { useStockrStore } from '@/stores'
+
+  import toCurrency from '@/composables/useToCurrency'
+  import toNum from '@/composables/useToNum'
+  import toLocaleDateString from '@/composables/useToLocaleDateString'
+  import invoiceNumber from '@/composables/useInvoiceNumber'
+
+  const store = useStockrStore()
+  const route = useRoute()
+
+  const invoice = ref({})
+
+  const billingo = ref({ fulfillment_date: null, due_date: null, payment_method: null, invoice_comment: null })
+
+  const storedInvoice = store.invoices.find(invoice => invoice.id == route.params.id)
+  if (storedInvoice) {
+    const storage = store.storages.find(storage => storage.id == storedInvoice.storage_id)
+    invoice.value = {
+      ...storedInvoice,
+      storage: {
+        ...storage,
+        company: store.company,
+      },
+      partner: store.partners.find(partner => partner.id == storedInvoice.partner_id),
+      items: [
+        ...storedInvoice.items.map(item => ({
+          ...item,
+          product: store.products.find(product => product.id == item.product_id),
+        })),
+      ],
+    }
+    billingo.value = {
+      fulfillment_date: invoice.value.date.substr(0, 10),
+      due_date: invoice.value.date.substr(0, 10),
+      payment_method: 2,
+      invoice_comment: '#gauranga',
+    }
+  }
+  if (!storedInvoice) {
+    // TODO we can get here only if we visit directly an url - in this case we do not have basedata
+    axios
+      .get(
+        `${import.meta.env.VITE_API_URL}invoices/${route.params.id}.json?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }`
+      )
+      .then(response => {
+        invoice.value = response.data.invoice
+        billingo.value = {
+          fulfillment_date: invoice.value.date.substr(0, 10),
+          due_date: invoice.value.date.substr(0, 10),
+          payment_method: 2,
+          invoice_comment: '#gauranga',
+        }
+      })
+      .catch(error => console.error(error))
+  }
+
+  const deleteInvoice = () =>
+    axios
+      .delete(
+        `${import.meta.env.VITE_API_URL}invoices/delete/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }`
+      )
+      .then(response => {
+        invoice.value.status = 'd'
+        store.invoices.find(inv => inv.id == invoice.value.id).status = 'd'
+      })
+      .catch(error => console.error(error))
+
+  const onEdit = ref(false)
+  const changeInvoicetype = () => {
+    {
+      onEdit.value = !onEdit.value
+      axios
+        .put(
+          `${import.meta.env.VITE_API_URL}invoices/edit/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
+            store.user.api_token
+          }`,
+          {
+            id: invoice.value.id,
+            invoicetype_id: invoice.value.invoicetype_id,
+          }
+        )
+        .then(() => {
+          invoice.value.invoicetype = store.invoicetypes.find(invoicetype => invoicetype.id == invoice.value.invoicetype_id)
+          const storedInvoce = store.invoices.find(inv => inv.id == invoice.value.id)
+          storedInvoce.invoicetype_id = invoice.value.invoicetype_id
+          storedInvoce.invoicetype = invoice.value.invoicetype
+        })
+        .catch(error => console.error(error))
+    }
+  }
+
+  const getPdf = () => {
+    axios
+      .get(
+        `${import.meta.env.VITE_API_URL}invoices/${invoice.value.id}.pdf?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }`,
+        { responseType: 'arraybuffer' }
+      )
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', invoice.value.id + '.pdf')
+        document.body.appendChild(link)
+        link.click()
+      })
+      .catch(error => console.log(error))
+  }
+
+  const onInvoicing = ref(false)
+  const generateInvoice = () => {
+    axios
+      .get(
+        `${import.meta.env.VITE_API_URL}invoices/billingo/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }&due_date=${billingo.due_date}&fulfillment_date=${billingo.fulfillment_date}&payment_method=${
+          billingo.payment_method
+        }&invoice_comment=${billingo.invoice_comment}`
+      )
+      .then(response => {
+        invoice.value.number = response.data.invoice.number
+        onInvoicing.value = false
+      })
+      .catch(error => {
+        console.error(error)
+        onInvoicing.value = false
+      })
+  }
+</script>
+
 <template>
-  <div v-if="isLoaded" class="small-12 columns content">
+  <div v-if="invoice.id" class="small-12 columns content">
     <h3>
       {{ invoice.storage.company.name }}
       <i class="fi-trash" @click="deleteInvoice" v-show="invoice.status != 'd'"></i>
@@ -16,9 +155,9 @@
         <tr>
           <th scope="row">Bizonylat típus</th>
           <td class="pointer">
-            <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype"> {{ invoice.invoicetype.name }}</i>
-            <select v-model="invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
-              <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
+            <i class="fi-pencil" v-show="!onEdit" @click="onEdit = !onEdit"> {{ invoice.invoicetype.name }}</i>
+            <select v-model="invoice.invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
+              <option v-for="invoicetype in store.invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
                 {{ invoicetype.name }}
               </option>
             </select>
@@ -29,14 +168,14 @@
         <tr>
           <th scope="row">Szám</th>
           <td>
-            <span v-html="$options.filters.invoiceNumber(invoice.number)"></span>
+            <span v-html="invoiceNumber(invoice.number)"></span>
             <i
               v-if="invoice.partner.group.id != 4 && invoice.number.indexOf('|') == -1"
               @click="onInvoicing = true"
               class="fi-page-export-pdf pointer"
             >
-              Billingo</i
-            >
+              Billingo
+            </i>
           </td>
           <th scope="row">Típus</th>
           <td>{{ invoice.sale ? 'Eladás' : 'Beszerzés' }}</td>
@@ -70,16 +209,16 @@
             {{ item.product.name }} {{ item.product.size }} {{ item.product.code }} <i>{{ item.product.en_name }}</i>
           </td>
           <td class="text-right">{{ item.quantity }}</td>
-          <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
+          <td class="text-right">{{ toCurrency(item.price, invoice.currency) }}</td>
           <td class="text-right">
-            {{ toCurrency(item.price * item.quantity, currency) }}
+            {{ toCurrency(item.price * item.quantity, invoice.currency) }}
           </td>
           <td class="text-right">{{ item.product.vat }} %</td>
           <td class="text-right">
-            {{ toCurrency((item.product.vat * item.price * item.quantity) / 100, currency) }}
+            {{ toCurrency((item.product.vat * item.price * item.quantity) / 100, invoice.currency) }}
           </td>
           <td class="text-right">
-            {{ toCurrency(item.price * item.quantity * (1 + item.product.vat / 100), currency) }}
+            {{ toCurrency(item.price * item.quantity * (1 + item.product.vat / 100), invoice.currency) }}
           </td>
         </tr>
       </tbody>
@@ -99,7 +238,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + item.price * item.quantity, 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -108,7 +247,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + (item.price * item.quantity * item.product.vat) / 100, 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -116,7 +255,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + item.price * item.quantity * (1 + item.product.vat / 100), 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -128,191 +267,24 @@
       <h2>Billingo számla kiállítás <span @click="onInvoicing = false">x</span></h2>
       <dl>
         <dt>Teljesítés dátuma</dt>
-        <dd><input type="date" v-model="fulfillment_date" /></dd>
+        <dd><input type="date" v-model="billingo.fulfillment_date" /></dd>
         <dt>Fizetési határidő</dt>
-        <dd><input type="date" v-model="due_date" /></dd>
+        <dd><input type="date" v-model="billingo.due_date" /></dd>
         <dt>Fizetési mód</dt>
         <dd>
-          <input type="radio" id="kp" value="1" v-model="payment_method" />
+          <input type="radio" id="kp" value="1" v-model="billingo.payment_method" />
           <label for="kp">Készpénz</label>
           <br />
-          <input type="radio" id="transfer" value="2" v-model="payment_method" />
+          <input type="radio" id="transfer" value="2" v-model="billingo.payment_method" />
           <label for="transfer">Átutalás</label>
         </dd>
         <dt>Megjegyzés a számlára</dt>
-        <dd><input type="text" v-model="invoice_comment" /></dd>
+        <dd><input type="text" v-model="billingo.invoice_comment" /></dd>
       </dl>
       <button class="button" @click="generateInvoice">Számlázás</button>
     </aside>
   </div>
 </template>
-
-<script>
-  import axios from 'axios'
-  import toCurrency from '@/composables/useToCurrency'
-  import toNum from '@/composables/useToNum'
-  import toLocaleDateString from '@/composables/useToLocaleDateString'
-
-  export default {
-    name: 'ViewInvoce',
-
-    data() {
-      return {
-        api: '',
-        currency: this.$store.company.currency,
-        due_date: null,
-        fulfillment_date: null,
-        onEdit: false,
-        onInvoicing: false,
-        invoice: {},
-        invoice_comment: '#gauranga',
-        invoicetype_id: 0,
-        isLoaded: false,
-        payment_method: 2,
-      }
-    },
-
-    computed: {
-      invoicetypes() {
-        return this.$store.invoicetypes
-      },
-    },
-
-    created() {
-      if (Object.keys(this.$store.invoicetypes).length === 0) {
-        this.$store.dispatch('getInvoicetypes')
-      }
-
-      this.api = import.meta.env.VITE_API_URL
-
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'invoices/' +
-            this.$route.params.id +
-            '.json?company=' +
-            this.$store.company.id +
-            '&ApiKey=' +
-            this.$store.user.api_token
-        )
-        .then(response => {
-          this.invoice = response.data.invoice
-          this.fulfillment_date = this.due_date = response.data.invoice.date.substr(0, 10)
-          this.isLoaded = true
-        })
-        .catch(err => console.error(err))
-    },
-
-    filters: {
-      // TODO move out to a mixin as tha same code is used at FilteredInvoiceTbody
-      invoiceNumber(value) {
-        if (value.indexOf('|') != -1) {
-          value = value.split('|')
-          value =
-            value[0] +
-            '<a href="' +
-            value[2] +
-            '">\
-                    <i class="fi-page-pdf"></i> ' +
-            value[1] +
-            '\
-                    </a>'
-        }
-        return value + ' '
-      },
-    },
-
-    methods: {
-      changeInvoicetype() {
-        this.onEdit = !this.onEdit
-        if (this.invoicetype_id) {
-          this.invoice.invoicetype = this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id)
-
-          let data = {
-            id: this.invoice.id,
-            invoicetype_id: this.invoicetype_id,
-          }
-          // TODO axios.put does not work as sends out an OPTIONS request what gets a 302 response
-          axios
-            .post(
-              import.meta.env.VITE_API_URL +
-                'invoices/edit/' +
-                this.invoice.id +
-                '.json?company=' +
-                this.$store.company.id +
-                '&ApiKey=' +
-                this.$store.user.api_token,
-              data
-            )
-            .then(() => {
-              this.$store.commit(
-                'setInvoices',
-                this.$store.invoices.map(invoice => (invoice.id == this.invoice.id ? this.invoice : invoice))
-              )
-            })
-            .catch(error => console.log(error))
-        } else {
-          this.invoicetype_id = this.invoice.invoicetype.id
-        }
-      },
-
-      deleteInvoice() {
-        // TODO update status data in the store also
-        axios
-          .delete(
-            `${import.meta.env.VITE_API_URL}invoices/delete/${this.invoice.id}.json?company=${
-              this.$store.company.id
-            }&ApiKey=${this.$store.user.api_token}`
-          )
-          .then(response => console.log(response))
-          .catch(error => console.error(error))
-      },
-
-      generateInvoice() {
-        axios
-          .get(
-            `${import.meta.env.VITE_API_URL}invoices/billingo/${this.invoice.id}.json?company=${
-              this.$store.company.id
-            }&ApiKey=${this.$store.user.api_token}&due_date=${this.due_date}&fulfillment_date=${
-              this.fulfillment_date
-            }&payment_method=${this.payment_method}&invoice_comment=${this.invoice_comment}`
-          )
-          .then(response => {
-            this.invoice.number = response.data.invoice.number
-            this.onInvoicing = false
-          })
-          .catch(error => {
-            console.log(error)
-            this.onInvoicing = false
-          })
-      },
-
-      getPdf() {
-        axios({
-          method: 'get',
-          url:
-            import.meta.env.VITE_API_URL +
-            'invoices/' +
-            this.invoice.id +
-            '.pdf?company=' +
-            this.$store.company.id +
-            '&ApiKey=' +
-            this.$store.user.api_token,
-          responseType: 'arraybuffer',
-        })
-          .then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]))
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', this.invoice.id + '.pdf')
-            document.body.appendChild(link)
-            link.click()
-          })
-          .catch(error => console.log(error))
-      },
-    },
-  }
-</script>
 
 <style scoped>
   h3 {
