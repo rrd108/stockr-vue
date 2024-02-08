@@ -21,5 +21,3 @@ change `.env`
 ```
 yarn build
 ```
-
-Update to vue3: https://v3-migration.vuejs.org/migration-build.html
