@@ -68,6 +68,9 @@
     text-decoration: line-through;
     color: #aaa;
   }
+  .thin {
+    width: 2em;
+  }
 
   @media screen and (max-width: 40em) {
     th,

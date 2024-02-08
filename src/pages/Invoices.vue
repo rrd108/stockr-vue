@@ -52,6 +52,13 @@
             invoiceProp = invoiceProp.toString()
           }
 
+          if (key == 'sale') {
+            if ((invoiceProp && searchTerms.value.sale == 'b') || (!invoiceProp && searchTerms.value.sale == 'k')) {
+              return true
+            }
+            return false
+          }
+
           if (!invoiceProp.toLowerCase().includes(searchTerms.value[key])) {
             return false
           }
@@ -155,20 +162,20 @@
           <th scope="col">Bizonylat típus</th>
           <th scope="col" class="row">
             <span class="small-6"> Összeg </span>
-            <!--span class="small-6 text-right">
+            <span class="small-6 text-right">
               {{
-              toCurrency(
-                invoices.reduce(
-                  (sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : parseInt(invoice.amount)),
-                  0
+                toCurrency(
+                  invoices.reduce(
+                    (sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : parseInt(invoice.amount)),
+                    0
+                  )
                 )
-              )
-            }}
-            </span-->
+              }}
+            </span>
           </th>
         </tr>
         <tr>
-          <td>{{ searchResultsCount }}</td>
+          <td class="thin"><FilterInput v-model="searchTerms.sale" placeholder="b/k" /></td>
           <td>
             <FilterInput v-model="searchTerms.number" placeholder="szám" />
           </td>
