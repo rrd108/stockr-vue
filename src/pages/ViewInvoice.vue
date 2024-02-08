@@ -103,50 +103,6 @@
     },
 
     methods: {
-      changeInvoicetype() {
-        this.onEdit = !this.onEdit
-        if (this.invoicetype_id) {
-          this.invoice.invoicetype = this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id)
-
-          let data = {
-            id: this.invoice.id,
-            invoicetype_id: this.invoicetype_id,
-          }
-          // TODO axios.put does not work as sends out an OPTIONS request what gets a 302 response
-          axios
-            .post(
-              import.meta.env.VITE_API_URL +
-                'invoices/edit/' +
-                this.invoice.id +
-                '.json?company=' +
-                this.$store.company.id +
-                '&ApiKey=' +
-                this.$store.user.api_token,
-              data
-            )
-            .then(() => {
-              this.$store.commit(
-                'setInvoices',
-                this.$store.invoices.map(invoice => (invoice.id == this.invoice.id ? this.invoice : invoice))
-              )
-            })
-            .catch(error => console.log(error))
-        } else {
-          this.invoicetype_id = this.invoice.invoicetype.id
-        }
-      },
-
-      deleteInvoice() {
-        // TODO update status data in the store also
-        axios
-          .delete(
-            `${import.meta.env.VITE_API_URL}invoices/delete/${this.invoice.id}.json?company=${
-              this.$store.company.id
-            }&ApiKey=${this.$store.user.api_token}`
-          )
-          .then(response => console.log(response))
-          .catch(error => console.error(error))
-      },
 
       generateInvoice() {
         axios
@@ -208,7 +164,29 @@
       .catch(error => console.error(error))
 
   const onEdit = ref(false)
-  const changeInvoicetype = () => console.log('TODO changeInvoicetype')
+  const changeInvoicetype = () => {
+    {
+      onEdit.value = !onEdit.value
+      axios
+        .put(
+          `${import.meta.env.VITE_API_URL}invoices/edit/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
+            store.user.api_token
+          }`,
+          {
+            id: invoice.value.id,
+            invoicetype_id: invoice.value.invoicetype_id,
+          }
+        )
+        .then(() => {
+          invoice.value.invoicetype = store.invoicetypes.find(invoicetype => invoicetype.id == invoice.value.invoicetype_id)
+          const storedInvoce = store.invoices.find(inv => inv.id == invoice.value.id)
+          storedInvoce.invoicetype_id = invoice.value.invoicetype_id
+          storedInvoce.invoicetype = invoice.value.invoicetype
+        })
+        .catch(error => console.error(error))
+    }
+  }
+
   const onInvoicing = ref(false)
   const getPdf = () => console.log('TODO getPdf')
   const billingo = ref({ fulfillment_date: null, due_date: null, payment_method: null, invoice_comment: null })
@@ -233,7 +211,7 @@
         <tr>
           <th scope="row">Bizonylat típus</th>
           <td class="pointer">
-            <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype"> {{ invoice.invoicetype.name }}</i>
+            <i class="fi-pencil" v-show="!onEdit" @click="onEdit = !onEdit"> {{ invoice.invoicetype.name }}</i>
             <select v-model="invoice.invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
               <option v-for="invoicetype in store.invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
                 {{ invoicetype.name }}
