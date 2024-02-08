@@ -265,9 +265,7 @@
       </div>
       <div class="column small-12 large-3">
         <div :class="isSale ? 'sale out' : 'sale in'">
-          <label for="isSale">
-            {{ isSale ? 'Eladás' : 'Beszerzés' }}<input type="checkbox" v-model="invoice.isSale" id="isSale"
-          /></label>
+          <label> {{ isSale ? 'Eladás' : 'Beszerzés' }}</label>
         </div>
       </div>
     </div>
@@ -475,7 +473,7 @@
     background: #bc50b1;
   }
   div.sale label:before {
-    margin-left: 0.3em;
+    margin: 0 0.5em;
     font-family: foundation-icons;
   }
 
