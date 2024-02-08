@@ -27,6 +27,16 @@ export const useStockrStore = defineStore('stockrStore', () => {
 
   const invoiceMonths = () => [...new Set(invoices.value.map(invoice => invoice.date.substr(0, 7)))]
 
+  const getBaseData = () => {
+    if (!user.value.api_token) console.error('No API token')
+    getGroups()
+    getInvoices()
+    getInvoicetypes()
+    getPartners()
+    getProducts()
+    getStorages()
+  }
+
   const getGroups = () =>
     axios
       .get(import.meta.env.VITE_API_URL + 'groups.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
@@ -66,7 +76,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
       )
       .then(resp => {
         products.push(
-          ...resp.data.products.forEach(product => {
+          ...resp.data.products.map(product => {
             product.hidden = false
           })
         )
@@ -92,11 +102,6 @@ export const useStockrStore = defineStore('stockrStore', () => {
     user,
     isLoggedIn,
     invoiceMonths,
-    getGroups,
-    getInvoices,
-    getInvoicetypes,
-    getPartners,
-    getProducts,
-    getStorages,
+    getBaseData,
   }
 })

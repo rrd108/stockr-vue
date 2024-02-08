@@ -11,7 +11,7 @@
   const company = JSON.parse(localStorage.getItem('company'))
   if (company) {
     store.company = company
-    store.getInvoices()
+    store.getBaseData()
   }
 
   axios
@@ -27,7 +27,7 @@
     store.company = appCompany[0]
     localStorage.setItem('company', JSON.stringify(appCompany[0]))
 
-    store.getInvoices()
+    store.getBaseData()
   }
 </script>
 
