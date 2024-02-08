@@ -17,7 +17,6 @@
     return number
   }
 
-  const isSale = ref(true)
   const invoice = ref({
     storage_id: 0,
     invoicetype_id: 0,
@@ -25,9 +24,17 @@
     date: new Date().toISOString().split('T')[0],
     number: setNumber(),
     currency: 'HUF',
-    sale: 0,
     items: [],
   })
+
+  const invoicePartner = computed(() => {
+    if (!invoice.value.partner) {
+      return { group: { percentage: 1 } }
+    }
+    return store.partners.find(partner => partner.name == invoice.value.partner)
+  })
+  const isSale = computed(() => invoicePartner.value.group.percentage)
+
   const selectedPartner = ref({})
   const isHeaderReady = computed(
     () =>
@@ -53,15 +60,6 @@
   })
 
   const invoiceItems = ref([])
-
-  const partnerGroup = computed(() => {
-    if (!invoice.value.partner) {
-      return ''
-    }
-    const partner = store.partners.find(partner => partner.name == invoice.value.partner)
-    console.log(partner)
-    return partner.group.name
-  })
 
   /*  const date = ref(new Date().toISOString().split('T')[0])
   const invoicetype_id = ref(0)
@@ -164,13 +162,6 @@
         .catch(error => console.log(error))
     }
   }
-  const setByPartner = () => {
-    this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
-    this.isSale = this.selectedPartner.group.percentage ? true : false
-    if (this.isSale === false) {
-      this.showProductsOnlyInStock = false
-    }
-  }
 
   const setSelectedProduct = () => {
     this.selectedProduct = this.products.find(product => {
@@ -245,15 +236,8 @@
 
     <div class="row">
       <div class="column small-12 large-6">
-        <label for="partner-id"> <i class="fi-torsos"> Partner </i> / {{ partnerGroup }} </label>
-        <input
-          type="text"
-          @blur="setByPartner"
-          v-model.lazy="invoice.partner"
-          list="partners"
-          id="partner-id"
-          autocomplete="off"
-        />
+        <label for="partner-id"> <i class="fi-torsos"> Partner </i> / {{ invoicePartner.group.name }} </label>
+        <input type="text" v-model.lazy="invoice.partner" list="partners" id="partner-id" autocomplete="off" />
         <datalist id="partners">
           <option v-for="partner in store.partners" :key="partner.id">
             {{ partner.name }}
@@ -276,7 +260,7 @@
         <input type="text" v-model="invoice.currency" />
       </div>
       <div class="column small-12 large-1">
-        <label for="showProductsOnlyInStock"><i class="fi-check"> Készleten</i></label>
+        <label for="showProductsOnlyInStock">Készleten</label>
         <input type="checkbox" v-model="invoice.showProductsOnlyInStock" />
       </div>
       <div class="column small-12 large-3">
