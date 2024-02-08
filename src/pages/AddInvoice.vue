@@ -129,18 +129,18 @@
   }
 
   /*  
+  TODO beszerzés #111
   const sellingPrices = () => {
     let sellingPrices = []
     this.buyerGroups.forEach(group => (sellingPrices[group.id] = this.price * (1 + group.percentage / 100)))
     return sellingPrices
   }
 
-
   onMounted(() => {
     this.$refs.storage.focus()
   })
 
-  
+  TODO javítás #112
   const changeItem = uuid => {
     let product = this.invoice.items.find(invoiceItem => invoiceItem.uuid == uuid)
     this.product = product.name
