@@ -1,0 +1,16 @@
+meta {
+  name: stats
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://stockr.1108.cc/api/stats.json?company=1&ApiKey={{apiKey}}
+  body: none
+  auth: none
+}
+
+query {
+  company: 1
+  ApiKey: {{apiKey}}
+}

@@ -1,3 +1,58 @@
+<script setup>
+  import { ref, computed } from 'vue'
+  import axios from 'axios'
+  import { useStockrStore } from '@/stores'
+
+  const store = useStockrStore()
+
+  const email = ref('')
+  const password = ref('')
+  const rememberme = ref(true)
+  const resetPassSuccess = false
+  const emailError = false
+
+  const hasError = computed(() => email.value && password.value && !store.user)
+
+  const user = JSON.parse(localStorage.getItem('user'))
+  if (user) {
+    store.user = user
+  }
+
+  const login = () =>
+    axios({
+      method: 'post',
+      url: import.meta.env.VITE_API_URL + 'user-get-token.json',
+      data: {
+        email: email.value,
+        password: password.value,
+      },
+    })
+      .then(resp => {
+        if (resp.data.id) {
+          store.user = resp.data
+          if (rememberme.value) {
+            resp.data.lastLogin = Date.now()
+            localStorage.setItem('user', JSON.stringify(resp.data))
+          }
+        }
+      })
+      .catch(err => console.error(err))
+
+  const requestResetPass = () => {
+    if (!email.value) {
+      emailError = true
+      return
+    }
+    axios
+      .post(import.meta.env.VITE_API_URL + 'app-users/request-reset-password.json', 'reference=' + email.value)
+      .then(response => {
+        resetPassSuccess = response
+        emailError = false
+      })
+      .catch(error => console.log(error))
+  }
+</script>
+
 <template>
   <div class="users login form">
     <div class="row align-center">
@@ -6,15 +61,14 @@
     <div class="row align-center">
       <h1>StockR</h1>
     </div>
-    <div class="callout success" v-show="this.resetPassSuccess">
-      A jelszó emlékeztető kiküldött egy emailt a megadott email címre a
-      jelszavad visszaállításához.
+    <div class="callout success" v-show="resetPassSuccess">
+      A jelszó emlékeztető kiküldött egy emailt a megadott email címre a jelszavad visszaállításához.
     </div>
 
-    <form @submit.prevent="login" v-show="!this.resetPassSuccess">
+    <form @submit.prevent="login" v-show="!resetPassSuccess">
       <fieldset>
         <div v-if="hasError" class="callout warning">
-          <legend>{{ $t('login.error') }}</legend>
+          <legend>Hibás email vagy jelszó</legend>
         </div>
         <div class="input email required">
           <label for="email">Email</label>
@@ -24,52 +78,25 @@
             name="email"
             required="required"
             id="email"
-            :class="{ 'callout warning': this.emailError }"
+            :class="{ 'callout warning': emailError }"
           />
-          <div class="callout warning" v-show="this.emailError">
-            Add meg az email címedet
-          </div>
+          <div class="callout warning" v-show="emailError">Add meg az email címedet</div>
         </div>
         <div class="input password required">
-          <label for="password">{{ $t('login.password') }}</label>
-          <input
-            type="password"
-            v-model="password"
-            name="password"
-            required="required"
-            id="password"
-          />
+          <label for="password"> Jelszó </label>
+          <input type="password" v-model="password" name="password" required="required" id="password" />
         </div>
 
         <div class="input checkbox">
           <label for="remember-me">
-            <input
-              type="checkbox"
-              name="remember_me"
-              value="1"
-              :checked="rememberme"
-              id="remember-me"
-            />{{ $t('login.rememberme') }}
+            <input type="checkbox" name="remember_me" value="1" :checked="rememberme" id="remember-me" />
+            Emlékezz rám
           </label>
         </div>
       </fieldset>
 
       <div class="row align-center">
-        <button class="button" type="submit">{{ $t('login.enter') }}</button>
-      </div>
-
-      <div class="row align-center">
-        <div class="locale-changer">
-          <select v-model="$i18n.locale">
-            <option
-              v-for="(lang, i) in $i18n.availableLocales"
-              :key="`Lang${i}`"
-              :value="lang"
-            >
-              {{ lang }}
-            </option>
-          </select>
-        </div>
+        <button class="button" type="submit">Belép</button>
       </div>
 
       <div class="row align-center">
@@ -79,97 +106,16 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios'
-
-export default {
-  name: 'StockRlogin',
-
-  data() {
-    return {
-      email: '',
-      emailError: false,
-      password: '',
-      rememberme: true,
-      resetPassSuccess: false,
-    }
-  },
-
-  // validations: {
-  //   email: { required },
-  //   password: { required },
-  // },
-
-  computed: {
-    hasError() {
-      return this.email && this.password && !this.$store.state.user
-    },
-  },
-
-  created() {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      this.$store.commit('saveUser', user)
-      if (this.$router.history.current.query.redirect) {
-        this.$router.push({ path: this.$router.history.current.query.redirect })
-      }
-    }
-  },
-
-  methods: {
-    async login() {
-      //      this.$v.$touch()
-      //      if (!this.$v.$invalid) {
-      axios({
-        method: 'post',
-        url: import.meta.env.VITE_API_URL + 'user-get-token.json',
-        data: {
-          email: this.email,
-          password: this.password,
-        },
-      })
-        .then((resp) => {
-          this.$store.commit('saveUser', resp.data)
-          if (this.rememberme) {
-            resp.data.lastLogin = Date.now()
-            localStorage.setItem('user', JSON.stringify(resp.data))
-          }
-        })
-        .catch((err) => console.error(err))
-      //      }
-    },
-
-    requestResetPass() {
-      if (!this.email) {
-        this.emailError = true
-        return
-      }
-      axios
-        .post(
-          import.meta.env.VITE_API_URL +
-            'app-users/request-reset-password.json',
-          'reference=' + this.email
-        )
-        .then((response) => {
-          this.resetPassSuccess = response
-          this.emailError = false
-        })
-        .catch((error) => console.log(error))
-    },
-  },
-}
-</script>
-
 <style scoped>
-.login {
-  margin: 3rem auto;
-  width: 20rem;
-  border: thin solid #aaa;
-  padding: 2rem;
-  box-shadow: 5px 10px 8px #aaa;
-}
-.login img {
-  height: 5em;
-  margin-bottom: 1rem;
-}
+  .login {
+    margin: 3rem auto;
+    width: 20rem;
+    border: thin solid #aaa;
+    padding: 2rem;
+    box-shadow: 5px 10px 8px #aaa;
+  }
+  .login img {
+    height: 5em;
+    margin-bottom: 1rem;
+  }
 </style>

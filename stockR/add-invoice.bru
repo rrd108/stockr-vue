@@ -1,0 +1,56 @@
+meta {
+  name: add-invoice
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8084/stockrvue/api/invoices.json?company=1&currency=HUF&ApiKey={{apiKey}}&XDEBUG_SESSION=VSCODE
+  body: json
+  auth: none
+}
+
+query {
+  company: 1
+  currency: HUF
+  ApiKey: {{apiKey}}
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:json {
+  {
+    "number": "2024/3",
+    "partner": "Atmarama",
+    "partner_id": 4,
+    "sale": 1,
+    "storage_id": 5,
+    "currency": "HUF",
+    "date": "2024-02-08",
+    "invoicetype_id": 3,
+    "items": [
+      {
+        "price": "2226.00",
+        "product_id": 1765,
+        "quantity": 2
+      },
+      {
+        "price": "919.50",
+        "product_id": 1842,
+        "quantity": 3
+      }
+    ]
+  }
+}
+
+body:multipart-form {
+  company_id: 1
+  name: teszt termék
+  en_name: test product
+  code: EN1
+  size: 
+  vat: 18
+}

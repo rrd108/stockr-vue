@@ -69,8 +69,6 @@ class InvoicesController extends AppController
             $data = $this->request->getData();
             $invoice = $this->Invoices->patchEntity($invoice, $data);
             if ($this->Invoices->save($invoice)) {
-                //$this->Flash->success(__('The invoice has been saved.'));
-
                 // new selling prices should be saved
                 // TODO if they are not equal with defaults
                 if (!$data['sale']) {
@@ -89,17 +87,8 @@ class InvoicesController extends AppController
                         }
                     }
                 }
-                //return $this->redirect(['action' => 'index']);
             }
-            //$this->Flash->error(__('The invoice could not be saved. Please, try again.'));
         }
-        /*$storages = $this->Invoices->Storages->find('list', ['limit' => 200])->order('name');
-        $invoicetypes = $this->Invoices->Invoicetypes->find('list', ['limit' => 200])->order('name');
-        $partners = $this->Invoices->Partners->find()->contain('Groups')->order('Partners.name');
-        $groups = $this->Invoices->Partners->Groups->find()->where(['percentage']);
-        // TODO handling currencies
-        $products = $this->Invoices->Items->Products->find('purchasePrice', ['currency' => 'HUF'])->order('name');
-        $this->set(compact('invoice', 'storages', 'invoicetypes', 'partners', 'groups', 'products'));*/
         $this->set([
             'invoice' => $invoice,
             '_serialize' => ['invoice']
