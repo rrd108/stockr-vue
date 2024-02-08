@@ -1,3 +1,211 @@
+<script setup>
+  import { computed, ref } from 'vue'
+  import { useStockrStore } from '@/stores'
+  import toNum from '@/composables/useToNum'
+  import toCurrency from '@/composables/useToCurrency'
+
+  const store = useStockrStore()
+
+  const isSale = ref(true)
+  const invoiceData = ref({
+    storage_id: 0,
+    invoicetype_id: 0,
+    partner_id: 0,
+    date: new Date().toISOString().split('T')[0],
+    number: 0,
+    currency: 'HUF',
+    sale: 0,
+    items: [],
+  })
+  const selectedPartner = ref({})
+  const isHeaderReady = computed(
+    () =>
+      invoiceData.storage_id &&
+      invoiceData.invoicetype_id &&
+      invoiceData.selectedPartner.id &&
+      invoiceData.date &&
+      invoiceData.number &&
+      invoiceData.currency
+  )
+  const buyerGroups = () => store.groups.filter(group => group.percentage > 0)
+
+  const showProductsOnlyInStock = ref(true)
+  const productsToShow = () =>
+    showProductsOnlyInStock ? store.products.filter(product => product.stock > 0) : store.products
+
+  const selectedProduct = ref({})
+  const product = ref('')
+  const quantity = ref(0)
+  const price = ref(0)
+
+  const invoiceItems = ref([])
+
+  /*  const date = ref(new Date().toISOString().split('T')[0])
+  const invoicetype_id = ref(0)
+  const number = ref(0)
+  const partner = ref('')
+
+  const isMasterDataLoaded = () =>
+    buyerGroups.length && invoicetypes.length && partners.length && products.length && storages.length
+
+
+  const sellingPrices = () => {
+    let sellingPrices = []
+    this.buyerGroups.forEach(group => (sellingPrices[group.id] = this.price * (1 + group.percentage / 100)))
+    return sellingPrices
+  }
+
+  onCreated(() => {
+    if (!this.$store.products?.length) {
+      this.$store.getBaseData()
+    }
+    this.number = this.setNumber()
+  })
+
+  onMounted(() => {
+    this.$refs.storage.focus()
+  })
+
+  const addItem = (putFocus = true) => {
+    if (this.product && this.quantity && this.price) {
+      this.invoiceItems.unshift({
+        uuid: Math.random().toString().substr(2),
+        product_id: this.selectedProduct.id,
+        name: this.selectedProduct.name,
+        size: this.selectedProduct.size,
+        code: this.selectedProduct.code,
+        stock: this.selectedProduct.stock,
+        quantity: this.quantity,
+        avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
+        lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
+        percentage: this.selectedProduct.percentage,
+        price: this.price,
+        vat: this.selectedProduct.vat,
+        sellingPrices: this.sellingPrices,
+      })
+      this.selectedProduct = {}
+      this.product = ''
+      this.quantity = this.price = 0
+      if (putFocus) {
+        this.$refs.product.focus()
+      }
+    }
+  }
+  const changeItem = uuid => {
+    let product = this.invoiceItems.find(invoiceItem => invoiceItem.uuid == uuid)
+    this.product = product.name
+    this.price = product.price
+    this.quantity = product.quantity
+    this.setSelectedProduct()
+    this.invoiceItems = this.invoiceItems.filter(invoiceItem => invoiceItem.uuid != uuid)
+  }
+
+  const saveInvoice = () => {
+    this.addItem(false)
+    if (this.invoiceItems.length) {
+      let data = {
+        storage_id: this.storage_id,
+        invoicetype_id: this.invoicetype_id,
+        partner_id: this.selectedPartner.id,
+        date: this.date,
+        number: this.number,
+        currency: this.currency,
+        sale: this.isSale ? 1 : 0,
+        items: this.invoiceItems.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.price,
+          selling_prices: item.sellingPrices,
+        })),
+      }
+
+      let data4vue = {
+        storage: this.storages.find(storage => storage.id == this.storage_id),
+        invoicetype: invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
+        partner: this.selectedPartner,
+      }
+
+      axios
+        .post(
+          import.meta.env.VITE_API_URL + 'invoices.json?company=' + company.id + '&ApiKey=' + this.$store.user.api_token,
+          data
+        )
+        .then(response => {
+          if (response.data.invoice.id) {
+            this.$store.invoice = {
+              ...response.data.invoice,
+              ...data4vue,
+            }
+            this.$router.push({
+              name: 'invoices',
+              params: { newInvoice: response.data.invoice.number },
+            })
+          }
+        })
+        .catch(error => console.log(error))
+    }
+  }
+  const setByPartner = () => {
+    this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
+    this.isSale = this.selectedPartner.group.percentage ? true : false
+    if (this.isSale === false) {
+      this.showProductsOnlyInStock = false
+    }
+  }
+  const setNumber = () => {
+    let year = new Date().getFullYear()
+    let lastSellInvoice = this.$store.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
+    let number = year + '/' + 1
+    if (lastSellInvoice) {
+      number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
+      number = year + '/' + number
+    }
+    return number
+  }
+  const setSelectedProduct = () => {
+    this.selectedProduct = this.products.find(product => {
+      // productName: "product #CODE > 1kg"
+      let chunks = this.product.split(/[>#]/)
+      let productName = chunks[0]
+
+      if (chunks.length === 1) {
+        // we have only product name
+        if (product.name.trim() == productName.trim()) {
+          return product
+        }
+      }
+
+      if (chunks.length === 2) {
+        // we have product name AND (size OR code)
+        if (this.product.indexOf('#')) {
+          if (product.name.trim() == productName.trim() && product.code.trim() == chunks[1].trim()) {
+            return product
+          }
+        }
+        if (this.product.indexOf('>')) {
+          if (product.name.trim() == productName.trim() && product.size.trim() == chunks[1].trim()) {
+            return product
+          }
+        }
+      }
+
+      if (chunks.length === 3) {
+        // we have product name AND size AND code
+        // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
+        if (
+          product.name.trim() == productName.trim() &&
+          product.size.trim() == chunks[1].trim() &&
+          product.code.trim() == chunks[2].trim()
+        ) {
+          return product
+        }
+      }
+    })
+    this.product = this.selectedProduct.name
+    this.price = (this.selectedProduct.lastPurchasePrice * (1 + this.selectedPartner.group.percentage / 100)).toFixed(2)
+  }*/
+</script>
+
 <template>
   <form @submit.prevent="saveInvoice">
     <h3 :class="isSale ? 'out' : 'in'"><i class="fi-plus"></i> Új bizonylat</h3>
@@ -5,16 +213,16 @@
     <div class="row">
       <div class="column small-12 large-6">
         <label for="storage-id"><i class="fi-contrast"> Raktár </i></label>
-        <select v-model="storage_id" id="storage-id" ref="storage">
-          <option v-for="storage in storages" :key="storage.id" :value="storage.id">
+        <select v-model="invoiceData.storage_id" id="storage-id" ref="storage">
+          <option v-for="storage in store.storages" :key="storage.id" :value="storage.id">
             {{ storage.name }}
           </option>
         </select>
       </div>
       <div class="column small-12 large-6">
         <label for="invoicetype-id"><i class="fi-shield"> Bizonylat típus </i></label>
-        <select v-model="invoicetype_id" id="invoicetype-id">
-          <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
+        <select v-model="invoiceData.invoicetype_id" id="invoicetype-id">
+          <option v-for="invoicetype in store.invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
             {{ invoicetype.name }}
           </option>
         </select>
@@ -23,39 +231,46 @@
 
     <div class="row">
       <div class="column small-12 large-6">
-        <label for="partner-id"
-          ><i class="fi-torsos"> Partner </i> / {{ selectedPartner.group ? selectedPartner.group.name : '' }}</label
-        >
-        <input type="text" @blur="setByPartner" v-model.lazy="partner" list="partners" id="partner-id" autocomplete="off" />
+        <label for="partner-id">
+          <i class="fi-torsos"> Partner </i> / {{ selectedPartner.group ? selectedPartner.group.name : '' }}
+        </label>
+        <input
+          type="text"
+          @blur="setByPartner"
+          v-model.lazy="invoiceData.partner"
+          list="partners"
+          id="partner-id"
+          autocomplete="off"
+        />
         <datalist id="partners">
-          <option v-for="partner in partners" :key="partner.id">
+          <option v-for="partner in store.partners" :key="partner.id">
             {{ partner.name }}
           </option>
         </datalist>
       </div>
       <div class="column small-12 large-6">
         <label for="date"><i class="fi-calendar"> Dátum </i></label>
-        <input type="date" v-model="date" />
+        <input type="date" v-model="invoiceData.date" />
       </div>
     </div>
 
     <div class="row">
       <div class="column small-12 large-6">
         <label for="number"><i class="fi-ticket"> Szám </i></label>
-        <input type="text" v-model="number" id="number" />
+        <input type="text" v-model="invoiceData.number" id="number" />
       </div>
       <div class="column small-12 large-2">
         <label for="currency"><i class="fi-euro"> Valuta </i></label>
-        <input type="text" v-model="currency" />
+        <input type="text" v-model="invoiceData.currency" />
       </div>
       <div class="column small-12 large-1">
         <label for="showProductsOnlyInStock"><i class="fi-check"> Készleten</i></label>
-        <input type="checkbox" v-model="showProductsOnlyInStock" />
+        <input type="checkbox" v-model="invoiceData.showProductsOnlyInStock" />
       </div>
       <div class="column small-12 large-3">
         <div :class="isSale ? 'sale out' : 'sale in'">
           <label for="isSale">
-            {{ isSale ? 'Eladás' : 'Beszerzés' }}<input type="checkbox" v-model="isSale" id="isSale"
+            {{ isSale ? 'Eladás' : 'Beszerzés' }}<input type="checkbox" v-model="invoiceData.isSale" id="isSale"
           /></label>
         </div>
       </div>
@@ -98,7 +313,7 @@
                 autocomplete="off"
               />
               <datalist id="products">
-                <option v-for="product in products" :key="product.id">
+                <option v-for="product in productsToShow" :key="product.id">
                   {{ product.name }}
                   {{ product.size ? '> ' + product.size : '' }}
                   {{ product.code ? '# ' + product.code : '' }}
@@ -112,18 +327,21 @@
               <input v-model="quantity" type="number" class="quantity" required="required" step="0.01" />
             </td>
             <td v-show="isSale" class="text-right">
-              <i v-show="selectedProduct.avaragePurchasePrice" class="fi-price-tag avg" :title="Átlagos beszerzési ár">
-                {{ toCurrency(selectedProduct.avaragePurchasePrice, currency) }}
+              <i v-show="selectedProduct.avaragePurchasePrice" class="fi-price-tag avg" title="Átlagos beszerzési ár">
+                {{ toCurrency(selectedProduct.avaragePurchasePrice, invoiceData.currency) }}
               </i>
               <br />
-              <i v-show="selectedProduct.lastPurchasePrice" :title="Utolsó beszerzési ár" class="fi-price-tag last">
-                {{ toCurrency(selectedProduct.lastPurchasePrice, currency) }}
+              <i v-show="selectedProduct.lastPurchasePrice" title="Utolsó beszerzési ár" class="fi-price-tag last">
+                {{ toCurrency(selectedProduct.lastPurchasePrice, invoiceData.currency) }}
               </i>
             </td>
             <td v-show="isSale" class="text-right">
               {{
                 selectedPartner.group
-                  ? toCurrency(selectedProduct.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100), currency)
+                  ? toCurrency(
+                      selectedProduct.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100),
+                      invoiceData.currency
+                    )
                   : 0
               }}
             </td>
@@ -133,14 +351,14 @@
               <span class="last">{{ toNum((price / selectedProduct.lastPurchasePrice - 1) * 100) }}%</span>
             </td>
             <td class="text-right">
-              {{ toCurrency(price * quantity, currency) }}
+              {{ toCurrency(price * quantity, invoiceData.currency) }}
             </td>
             <td class="text-right">{{ selectedProduct.vat }} %</td>
             <td class="text-right">
-              {{ toCurrency(price * quantity * (selectedProduct.vat / 100), currency) }}
+              {{ toCurrency(price * quantity * (selectedProduct.vat / 100), invoiceData.currency) }}
             </td>
             <td class="text-right">
-              {{ toCurrency(price * quantity * (1 + selectedProduct.vat / 100), currency) }}
+              {{ toCurrency(price * quantity * (1 + selectedProduct.vat / 100), invoiceData.currency) }}
             </td>
 
             <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale">
@@ -159,32 +377,37 @@
             <td class="text-right">{{ invoiceItem.quantity }}</td>
             <td v-show="isSale" class="text-right">
               <i class="fi-price-tag avg">
-                {{ toCurrency(invoiceItem.avaragePurchasePrice, currency) }}
+                {{ toCurrency(invoiceItem.avaragePurchasePrice, invoiceData.currency) }}
               </i>
               <br />
               <i class="fi-price-tag last">
-                {{ toCurrency(invoiceItem.lastPurchasePrice, currency) }}
+                {{ toCurrency(invoiceItem.lastPurchasePrice, invoiceData.currency) }}
               </i>
             </td>
             <td v-show="isSale" class="text-right">
-              {{ toCurrency(invoiceItem.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100), currency) }}
+              {{
+                toCurrency(
+                  invoiceItem.lastPurchasePrice * (1 + selectedPartner.group.percentage / 100),
+                  invoiceData.currency
+                )
+              }}
             </td>
             <td class="text-right">
-              {{ toCurrency(invoiceItem.price, currency) }}
+              {{ toCurrency(invoiceItem.price, invoiceData.currency) }}
             </td>
             <td class="text-right">
-              {{ toCurrency(invoiceItem.price * invoiceItem.quantity, currency) }}
+              {{ toCurrency(invoiceItem.price * invoiceItem.quantity, invoiceData.currency) }}
             </td>
             <td class="text-right">{{ invoiceItem.vat }} %</td>
             <td class="text-right">
-              {{ toCurrency(invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat / 100), currency) }}
+              {{ toCurrency(invoiceItem.price * invoiceItem.quantity * (invoiceItem.vat / 100), invoiceData.currency) }}
             </td>
             <td class="text-right">
-              {{ toCurrency(invoiceItem.price * invoiceItem.quantity * (1 + invoiceItem.vat / 100), currency) }}
+              {{ toCurrency(invoiceItem.price * invoiceItem.quantity * (1 + invoiceItem.vat / 100), invoiceData.currency) }}
             </td>
 
             <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">
-              {{ toCurrency(invoiceItem.sellingPrices[group.id], currency) }}
+              {{ toCurrency(invoiceItem.sellingPrices[group.id], invoiceData.currency) }}
             </td>
 
             <td class="pointer">
@@ -212,7 +435,7 @@
               {{
                 toCurrency(
                   invoiceItems.reduce((total, item) => total + item.quantity * item.price, 0),
-                  currency
+                  invoiceData.currency
                 )
               }}
             </td>
@@ -221,7 +444,7 @@
               {{
                 toCurrency(
                   invoiceItems.reduce((total, item) => total + (item.quantity * item.price * item.vat) / 100, 0),
-                  currency
+                  invoiceData.currency
                 )
               }}
             </td>
@@ -229,7 +452,7 @@
               {{
                 toCurrency(
                   invoiceItems.reduce((total, item) => total + item.quantity * item.price * (1 + item.vat / 100), 0),
-                  currency
+                  invoiceData.currency
                 )
               }}
             </td>
@@ -243,246 +466,6 @@
     </fieldset>
   </form>
 </template>
-
-<script>
-  import axios from 'axios'
-  import toCurrency from '@/composables/toCurrency'
-  import toNum from '@/composables/toNum'
-
-  export default {
-    name: 'AddInvoice',
-
-    data() {
-      return {
-        currency: this.$store.company.currency,
-        date: new Date().toISOString().split('T')[0],
-        invoicetype_id: 0,
-        invoiceItems: [],
-        isSale: true,
-        number: 0,
-        partner: '',
-        price: 0,
-        product: '',
-        selectedPartner: {},
-        selectedProduct: {},
-        showProductsOnlyInStock: true,
-        quantity: 0,
-      }
-    },
-
-    computed: {
-      buyerGroups() {
-        return this.$store.groups.filter(group => group.percentage > 0)
-      },
-      invoicetypes() {
-        return this.$store.invoicetypes
-      },
-      isHeaderReady() {
-        return this.storage_id && this.invoicetype_id && this.selectedPartner.id && this.date && this.number && this.currency
-      },
-      isMasterDataLoaded() {
-        return (
-          this.buyerGroups.length &&
-          this.invoicetypes.length &&
-          this.partners.length &&
-          this.products.length &&
-          this.storages.length
-        )
-      },
-      partners() {
-        return this.$store.partners
-      },
-      products() {
-        return this.showProductsOnlyInStock
-          ? this.$store.products.filter(product => product.stock > 0)
-          : this.$store.products
-      },
-      storages() {
-        return this.$store.storages
-      },
-      storage_id: {
-        get() {
-          return this.$store.storageId
-        },
-        set(val) {
-          this.$store.commit('setStorageId', val)
-        },
-      },
-      sellingPrices() {
-        let sellingPrices = []
-        this.buyerGroups.forEach(group => (sellingPrices[group.id] = this.price * (1 + group.percentage / 100)))
-        return sellingPrices
-      },
-    },
-
-    created() {
-      if (Object.keys(this.$store.invoicetypes).length === 0) {
-        this.$store.dispatch('getInvoicetypes')
-      }
-      if (Object.keys(this.$store.partners).length === 0) {
-        this.$store.dispatch('getPartners')
-      }
-      if (Object.keys(this.$store.products).length === 0) {
-        this.$store.dispatch('getProducts')
-      }
-      if (Object.keys(this.$store.groups).length === 0) {
-        this.$store.dispatch('getGroups')
-      }
-      if (Object.keys(this.$store.storages).length === 0) {
-        this.$store.dispatch('getStorages')
-      }
-      this.number = this.setNumber()
-    },
-
-    mounted() {
-      this.$refs.storage.focus()
-    },
-
-    methods: {
-      addItem(putFocus = true) {
-        if (this.product && this.quantity && this.price) {
-          this.invoiceItems.unshift({
-            uuid: Math.random().toString().substr(2),
-            product_id: this.selectedProduct.id,
-            name: this.selectedProduct.name,
-            size: this.selectedProduct.size,
-            code: this.selectedProduct.code,
-            stock: this.selectedProduct.stock,
-            quantity: this.quantity,
-            avaragePurchasePrice: this.selectedProduct.avaragePurchasePrice,
-            lastPurchasePrice: this.selectedProduct.lastPurchasePrice,
-            percentage: this.selectedProduct.percentage,
-            price: this.price,
-            vat: this.selectedProduct.vat,
-            sellingPrices: this.sellingPrices,
-          })
-          this.selectedProduct = {}
-          this.product = ''
-          this.quantity = this.price = 0
-          if (putFocus) {
-            this.$refs.product.focus()
-          }
-        }
-      },
-      changeItem(uuid) {
-        let product = this.invoiceItems.find(invoiceItem => invoiceItem.uuid == uuid)
-        this.product = product.name
-        this.price = product.price
-        this.quantity = product.quantity
-        this.setSelectedProduct()
-        this.invoiceItems = this.invoiceItems.filter(invoiceItem => invoiceItem.uuid != uuid)
-      },
-      saveInvoice() {
-        this.addItem(false)
-        if (this.invoiceItems.length) {
-          let data = {
-            storage_id: this.storage_id,
-            invoicetype_id: this.invoicetype_id,
-            partner_id: this.selectedPartner.id,
-            date: this.date,
-            number: this.number,
-            currency: this.currency,
-            sale: this.isSale ? 1 : 0,
-            items: this.invoiceItems.map(item => ({
-              product_id: item.product_id,
-              quantity: item.quantity,
-              price: item.price,
-              selling_prices: item.sellingPrices,
-            })),
-          }
-
-          let data4vue = {
-            storage: this.storages.find(storage => storage.id == this.storage_id),
-            invoicetype: this.invoicetypes.find(invoicetype => invoicetype.id == this.invoicetype_id),
-            partner: this.selectedPartner,
-          }
-
-          axios
-            .post(
-              import.meta.env.VITE_API_URL +
-                'invoices.json?company=' +
-                this.$store.company.id +
-                '&ApiKey=' +
-                this.$store.user.api_token,
-              data
-            )
-            .then(response => {
-              if (response.data.invoice.id) {
-                this.$store.commit('addInvoice', {
-                  ...response.data.invoice,
-                  ...data4vue,
-                })
-                this.$router.push({
-                  name: 'invoices',
-                  params: { newInvoice: response.data.invoice.number },
-                })
-              }
-            })
-            .catch(error => console.log(error))
-        }
-      },
-      setByPartner() {
-        this.selectedPartner = this.partners.find(partner => partner.name == this.partner)
-        this.isSale = this.selectedPartner.group.percentage ? true : false
-        if (this.isSale === false) {
-          this.showProductsOnlyInStock = false
-        }
-      },
-      setNumber() {
-        let year = new Date().getFullYear()
-        let lastSellInvoice = this.$store.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
-        let number = year + '/' + 1
-        if (lastSellInvoice) {
-          number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
-          number = year + '/' + number
-        }
-        return number
-      },
-      setSelectedProduct() {
-        this.selectedProduct = this.products.find(product => {
-          // productName: "product #CODE > 1kg"
-          let chunks = this.product.split(/[>#]/)
-          let productName = chunks[0]
-
-          if (chunks.length === 1) {
-            // we have only product name
-            if (product.name.trim() == productName.trim()) {
-              return product
-            }
-          }
-
-          if (chunks.length === 2) {
-            // we have product name AND (size OR code)
-            if (this.product.indexOf('#')) {
-              if (product.name.trim() == productName.trim() && product.code.trim() == chunks[1].trim()) {
-                return product
-              }
-            }
-            if (this.product.indexOf('>')) {
-              if (product.name.trim() == productName.trim() && product.size.trim() == chunks[1].trim()) {
-                return product
-              }
-            }
-          }
-
-          if (chunks.length === 3) {
-            // we have product name AND size AND code
-            // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
-            if (
-              product.name.trim() == productName.trim() &&
-              product.size.trim() == chunks[1].trim() &&
-              product.code.trim() == chunks[2].trim()
-            ) {
-              return product
-            }
-          }
-        })
-        this.product = this.selectedProduct.name
-        this.price = (this.selectedProduct.lastPurchasePrice * (1 + this.selectedPartner.group.percentage / 100)).toFixed(2)
-      },
-    },
-  }
-</script>
 
 <style scoped>
   h3 {
