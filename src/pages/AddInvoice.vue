@@ -6,13 +6,24 @@
 
   const store = useStockrStore()
 
+  const setNumber = () => {
+    let year = new Date().getFullYear()
+    let lastSellInvoice = store.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
+    let number = year + '/' + 1
+    if (lastSellInvoice) {
+      number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
+      number = year + '/' + number
+    }
+    return number
+  }
+
   const isSale = ref(true)
   const invoiceData = ref({
     storage_id: 0,
     invoicetype_id: 0,
     partner_id: 0,
     date: new Date().toISOString().split('T')[0],
-    number: 0,
+    number: setNumber(),
     currency: 'HUF',
     sale: 0,
     items: [],
@@ -152,16 +163,7 @@
       this.showProductsOnlyInStock = false
     }
   }
-  const setNumber = () => {
-    let year = new Date().getFullYear()
-    let lastSellInvoice = this.$store.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
-    let number = year + '/' + 1
-    if (lastSellInvoice) {
-      number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
-      number = year + '/' + number
-    }
-    return number
-  }
+
   const setSelectedProduct = () => {
     this.selectedProduct = this.products.find(product => {
       // productName: "product #CODE > 1kg"
