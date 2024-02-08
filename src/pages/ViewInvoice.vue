@@ -123,29 +123,6 @@
           })
       },
 
-      getPdf() {
-        axios({
-          method: 'get',
-          url:
-            import.meta.env.VITE_API_URL +
-            'invoices/' +
-            this.invoice.id +
-            '.pdf?company=' +
-            this.$store.company.id +
-            '&ApiKey=' +
-            this.$store.user.api_token,
-          responseType: 'arraybuffer',
-        })
-          .then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]))
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', this.invoice.id + '.pdf')
-            document.body.appendChild(link)
-            link.click()
-          })
-          .catch(error => console.log(error))
-      },
     },
   }*/
 
@@ -187,8 +164,26 @@
     }
   }
 
+  const getPdf = () => {
+    axios
+      .get(
+        `${import.meta.env.VITE_API_URL}invoices/${invoice.value.id}.pdf?company=${store.company.id}&ApiKey=${
+          store.user.api_token
+        }`,
+        { responseType: 'arraybuffer' }
+      )
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', invoice.value.id + '.pdf')
+        document.body.appendChild(link)
+        link.click()
+      })
+      .catch(error => console.log(error))
+  }
+
   const onInvoicing = ref(false)
-  const getPdf = () => console.log('TODO getPdf')
   const billingo = ref({ fulfillment_date: null, due_date: null, payment_method: null, invoice_comment: null })
   const generateInvoice = () => console.log('TODO generateInvoice')
 </script>
