@@ -192,6 +192,14 @@
       },
     },
   }*/
+
+  const onEdit = ref(false)
+  const deleteInvoice = () => console.log('TODO deleteInvoice')
+  const changeInvoicetype = () => console.log('TODO changeInvoicetype')
+  const onInvoicing = ref(false)
+  const getPdf = () => console.log('TODO getPdf')
+  const billingo = ref({ fulfillment_date: null, due_date: null, payment_method: null, invoice_comment: null })
+  const generateInvoice = () => console.log('TODO generateInvoice')
 </script>
 
 <template>
@@ -213,8 +221,8 @@
           <th scope="row">Bizonylat típus</th>
           <td class="pointer">
             <i class="fi-pencil" v-show="!onEdit" @click="changeInvoicetype"> {{ invoice.invoicetype.name }}</i>
-            <select v-model="invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
-              <option v-for="invoicetype in invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
+            <select v-model="invoice.invoicetype_id" v-show="onEdit" @change="changeInvoicetype">
+              <option v-for="invoicetype in store.invoicetypes" :key="invoicetype.id" :value="invoicetype.id">
                 {{ invoicetype.name }}
               </option>
             </select>
@@ -231,8 +239,8 @@
               @click="onInvoicing = true"
               class="fi-page-export-pdf pointer"
             >
-              Billingo</i
-            >
+              Billingo
+            </i>
           </td>
           <th scope="row">Típus</th>
           <td>{{ invoice.sale ? 'Eladás' : 'Beszerzés' }}</td>
@@ -266,16 +274,16 @@
             {{ item.product.name }} {{ item.product.size }} {{ item.product.code }} <i>{{ item.product.en_name }}</i>
           </td>
           <td class="text-right">{{ item.quantity }}</td>
-          <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
+          <td class="text-right">{{ toCurrency(item.price, invoice.currency) }}</td>
           <td class="text-right">
-            {{ toCurrency(item.price * item.quantity, currency) }}
+            {{ toCurrency(item.price * item.quantity, invoice.currency) }}
           </td>
           <td class="text-right">{{ item.product.vat }} %</td>
           <td class="text-right">
-            {{ toCurrency((item.product.vat * item.price * item.quantity) / 100, currency) }}
+            {{ toCurrency((item.product.vat * item.price * item.quantity) / 100, invoice.currency) }}
           </td>
           <td class="text-right">
-            {{ toCurrency(item.price * item.quantity * (1 + item.product.vat / 100), currency) }}
+            {{ toCurrency(item.price * item.quantity * (1 + item.product.vat / 100), invoice.currency) }}
           </td>
         </tr>
       </tbody>
@@ -295,7 +303,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + item.price * item.quantity, 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -304,7 +312,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + (item.price * item.quantity * item.product.vat) / 100, 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -312,7 +320,7 @@
             {{
               toCurrency(
                 invoice.items.reduce((total, item) => total + item.price * item.quantity * (1 + item.product.vat / 100), 0),
-                currency
+                invoice.currency
               )
             }}
           </td>
@@ -324,19 +332,19 @@
       <h2>Billingo számla kiállítás <span @click="onInvoicing = false">x</span></h2>
       <dl>
         <dt>Teljesítés dátuma</dt>
-        <dd><input type="date" v-model="fulfillment_date" /></dd>
+        <dd><input type="date" v-model="billingo.fulfillment_date" /></dd>
         <dt>Fizetési határidő</dt>
-        <dd><input type="date" v-model="due_date" /></dd>
+        <dd><input type="date" v-model="billingo.due_date" /></dd>
         <dt>Fizetési mód</dt>
         <dd>
-          <input type="radio" id="kp" value="1" v-model="payment_method" />
+          <input type="radio" id="kp" value="1" v-model="billingo.payment_method" />
           <label for="kp">Készpénz</label>
           <br />
-          <input type="radio" id="transfer" value="2" v-model="payment_method" />
+          <input type="radio" id="transfer" value="2" v-model="billingo.payment_method" />
           <label for="transfer">Átutalás</label>
         </dd>
         <dt>Megjegyzés a számlára</dt>
-        <dd><input type="text" v-model="invoice_comment" /></dd>
+        <dd><input type="text" v-model="billingo.invoice_comment" /></dd>
       </dl>
       <button class="button" @click="generateInvoice">Számlázás</button>
     </aside>
