@@ -70,13 +70,8 @@ class Application extends BaseApplication
         // Load more plugins here
         $this->addPlugin('CakePdf', ['bootstrap' => true]);
 
-        $this->addPlugin('Datalist');
-
         $this->addPlugin(\CakeDC\Users\Plugin::class);
         Configure::write('Users.config', ['users']);
-
-        $this->addPlugin('MenuLink');
-        $this->addPlugin('Datalist');
 
         Configure::load('cors', 'default', false);
         $this->addPlugin('Cors');
