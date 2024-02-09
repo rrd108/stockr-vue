@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -11,23 +14,22 @@
  * @since     3.0.0
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\View;
 
-use Cake\Core\Configure;
-use Cake\I18n\Number;
 use Cake\View\View;
-use NumberFormatter;
+use Cake\I18n\Number;
+use Cake\Core\Configure;
 
 /**
  * Application View
  *
  * Your application's default view class
  *
- * @link https://book.cakephp.org/3.0/en/views.html#the-app-view
+ * @link https://book.cakephp.org/4/en/views.html#the-app-view
  */
 class AppView extends View
 {
-
     /**
      * Initialization hook method.
      *
@@ -37,21 +39,10 @@ class AppView extends View
      *
      * @return void
      */
-    public function initialize()
+    public function initialize(): void
     {
-        parent::initialize();
-        $this->addHelper('Form', [
-        'templates' => 'Datalist.form-templates',
-        'widgets' => [
-            'datalistJs' => ['Datalist\View\Widget\DatalistJsWidget']
-        ]
-        ]);
-        $this->addHelper('Paginator', ['templates' => 'paginator-templates']);
-        $this->addHelper('MenuLink.MenuLink');
-        $this->addHelper('CakeDC/Users.User');
-
         if (Configure::read('company_id')) {
-            Number::defaultCurrency($this->getRequest()->getSession()->read('company')->currency);
+            Number::setDefaultCurrency($this->getRequest()->getSession()->read('company')->currency);
             $this->precision = Configure::read('precisions.' . $this->getRequest()->getSession()->read('company')->currency);
         }
     }
