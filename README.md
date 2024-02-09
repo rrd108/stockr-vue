@@ -21,3 +21,14 @@ change `.env`
 ```
 yarn build
 ```
+
+# API update
+
+```
+Package ozee31/cakephp-cors is abandoned, you should avoid using it. No replacement was suggested.
+Package zendframework/zend-diactoros is abandoned, you should avoid using it. Use laminas/laminas-diactoros instead.
+Package aptoma/twig-markdown is abandoned, you should avoid using it. No replacement was suggested.
+Package asm89/twig-cache-extension is abandoned, you should avoid using it. Use twig/cache-extension instead.
+Package phpunit/php-token-stream is abandoned, you should avoid using it. No replacement was suggested.
+Package phpunit/phpunit-mock-objects is abandoned, you should avoid using it. No replacement was suggested.
+```
