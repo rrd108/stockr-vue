@@ -22,13 +22,15 @@ change `.env`
 yarn build
 ```
 
-# API update
+# Removed packages
 
 ```
-Package ozee31/cakephp-cors is abandoned, you should avoid using it. No replacement was suggested.
-Package zendframework/zend-diactoros is abandoned, you should avoid using it. Use laminas/laminas-diactoros instead.
-Package aptoma/twig-markdown is abandoned, you should avoid using it. No replacement was suggested.
-Package asm89/twig-cache-extension is abandoned, you should avoid using it. Use twig/cache-extension instead.
-Package phpunit/php-token-stream is abandoned, you should avoid using it. No replacement was suggested.
-Package phpunit/phpunit-mock-objects is abandoned, you should avoid using it. No replacement was suggested.
+"rrd108/cakephp-datalist": "^1.1",
+"rrd108/cakephp-menulink": "^1.2",
+```
+
+Updated by
+
+```
+composer require --update-with-dependencies "cakephp/cakephp:^4.0" "cakedc/users:^9.0" "friendsofcake/cakepdf:^4.0" "ozee31/cakephp-cors:^2" "cakephp/bake ~2.0" "cakephp/debug_kit:^4.0" "phpunit/phpunit:^8.0" "cakephp/migrations:^3.0"
 ```
