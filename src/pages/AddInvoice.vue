@@ -5,6 +5,7 @@
   import { useRouter } from 'vue-router'
   import toNum from '@/composables/useToNum'
   import toCurrency from '@/composables/useToCurrency'
+  import useProductNameProps from '@/composables/useProductNameProps'
 
   const store = useStockrStore()
   const router = useRouter()
@@ -63,54 +64,42 @@
 
   const selectedProduct = ref({})
   const setSelectedProduct = () => {
-    selectedProduct.value = store.products.find(product => {
-      // productName: "product #CODE > 1kg"
-      let chunks = item.value.product.split(/[>#]/)
-      let productName = chunks[0]
-
-      if (chunks.length === 1) {
-        // we have only product name
-        if (product.name.trim() == productName.trim()) {
-          return product
-        }
-      }
-
-      if (chunks.length === 2) {
-        // we have product name AND (size OR code)
-        if (item.value.product.indexOf('#')) {
-          if (product.name.trim() == productName.trim() && product.code.trim() == chunks[1].trim()) {
-            return product
-          }
-        }
-        if (item.value.product.indexOf('>')) {
-          if (product.name.trim() == productName.trim() && product.size.trim() == chunks[1].trim()) {
-            return product
-          }
-        }
-      }
-
-      if (chunks.length === 3) {
-        // we have product name AND size AND code
-        // ['Festett hármas ételhordó ', ' 3 tier ', ' FÉ3']
-        if (
-          product.name.trim() == productName.trim() &&
-          product.size.trim() == chunks[1].trim() &&
-          product.code.trim() == chunks[2].trim()
-        ) {
-          return product
-        }
-      }
-    })
+    let _product = store.products.find(product => product.name == item.value.product)
+    let autoAddItem = false
+    if (!_product) {
+      _product = store.products.find(
+        product => product.ean == item.value.product || product.name.includes(item.value.product)
+      )
+      autoAddItem = true
+    }
+    // TODO
+    item.value.product = _product.name
+    const productProps = useProductNameProps(item.value.product)
+    selectedProduct.value = {
+      ..._product,
+      code: productProps.code,
+      size: productProps.size,
+      ean: productProps.ean,
+    }
     item.value.price = (selectedProduct.value.lastPurchasePrice * (1 + invoicePartner.value.group.percentage / 100)).toFixed(
       2
     )
+
+    if (autoAddItem) {
+      item.value.quantity = 1
+      addItem()
+    }
   }
 
   const productRef = ref(null)
+  const quantityRef = ref(null)
+
   const addItem = (putFocus = true) => {
     if (!item.value.product || !item.value.quantity || !item.value.price) {
       return
     }
+
+    // TODO if we aready have the product in the list we should increase the quantity
 
     invoice.value.items.unshift({
       ...selectedProduct.value,
@@ -128,7 +117,7 @@
     }
   }
 
-  /*  
+  /*
   TODO beszerzés #111
   const sellingPrices = () => {
     let sellingPrices = []
@@ -288,6 +277,7 @@
                   {{ product.name }}
                   {{ product.size ? '> ' + product.size : '' }}
                   {{ product.code ? '# ' + product.code : '' }}
+                  {{ product.ean ? '< ' + product.ean : '' }}
                 </option>
               </datalist>
             </td>
@@ -295,7 +285,14 @@
             <td class="text-right">{{ selectedProduct.code }}</td>
             <td class="text-right">{{ toNum(selectedProduct.stock, 1) }}</td>
             <td class="text-right">
-              <input v-model="item.quantity" type="number" class="quantity" required="required" step="0.01" />
+              <input
+                ref="quantityRef"
+                v-model="item.quantity"
+                type="number"
+                class="quantity"
+                required="required"
+                step="0.01"
+              />
             </td>
             <td v-show="isSale" class="text-right">
               <i v-show="selectedProduct.avaragePurchasePrice" class="fi-price-tag avg" title="Átlagos beszerzési ár">
