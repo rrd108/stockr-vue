@@ -1,17 +1,13 @@
 meta {
   name: get-token
   type: http
-  seq: 4
+  seq: 1
 }
 
 post {
-  url: http://localhost:8084/stockrvue/api/user-get-token.json
+  url: http://localhost/~rrd/stockrvue/api/user-get-token.json
   body: multipartForm
   auth: none
-}
-
-query {
-  XDEBUG_SESSION: VSCODE
 }
 
 headers {

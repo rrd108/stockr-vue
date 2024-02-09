@@ -1,15 +1,16 @@
 meta {
   name: invoices
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
-  url: http://localhost:8084/stockrvue/api/invoices.json?company=1&ApiKey=$2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
+  url: http://localhost/~rrd/stockrvue/api/invoices.json?company=1&ApiKey=$2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
   body: none
   auth: none
 }
 
 query {
-  XDEBUG_SESSION: VSCODE
+  company: 1
+  ApiKey: $2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
 }

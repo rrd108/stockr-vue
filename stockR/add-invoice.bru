@@ -1,11 +1,11 @@
 meta {
   name: add-invoice
   type: http
-  seq: 6
+  seq: 5
 }
 
 post {
-  url: http://localhost:8084/stockrvue/api/invoices.json?company=1&currency=HUF&ApiKey={{apiKey}}&XDEBUG_SESSION=VSCODE
+  url: http://localhost/~rrd/stockrvue/api/invoices.json?company=1&currency=HUF&ApiKey={{apiKey}}&XDEBUG_SESSION=VSCODE
   body: json
   auth: none
 }
