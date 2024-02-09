@@ -16,9 +16,10 @@
 
 namespace App\Controller;
 
-use Cake\Controller\Controller;
-use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\View\JsonView;
+use Cake\Core\Configure;
+use Cake\Controller\Controller;
 
 /**
  * Application Controller
@@ -48,12 +49,6 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
-
-        /*
-         * Enable the following component for recommended CakePHP security settings.
-         * see https://book.cakephp.org/3.0/en/controllers/components/security.html
-         */
-        //$this->loadComponent('Security');
 
         $this->loadComponent('CakeDC/Users.UsersAuth');
 
@@ -96,5 +91,10 @@ class AppController extends Controller
         ) {
             $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
         }
+    }
+
+    public function viewClasses(): array
+    {
+        return [JsonView::class];
     }
 }

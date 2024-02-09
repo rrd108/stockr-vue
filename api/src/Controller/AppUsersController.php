@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Model\Table\AppUsersTable;
@@ -17,39 +18,30 @@ class AppUsersController extends CakeDCAppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->Auth->allow(['getToken', 'requestResetPassword']);
-    }
-
-    public function beforeFilter(\Cake\Event\EventInterface $event)
-    {
-        $this->getEventManager()->off($this->Csrf);
-        $this->Security->setConfig('unlockedActions', ['getToken', 'requestResetPassword']);
+        $this->Authentication->allowUnauthenticated(['login', 'getToken', 'requestResetPassword']);
     }
 
     public function getToken()
     {
-        $user = $this->Auth->identify();
-         // TODO get the token $user = ['token' => $user['api_key']];
+        $user = $this->Authentication->identify();
+        // TODO get the token $user = ['token' => $user['api_key']];
         $this->set(compact('user'));
-        $this->set('_serialize', 'user');
+        $this->viewBuilder()->setOption('serialize', ['user']);
     }
 
     public function requestResetPassword()
     {
         $reference = $this->request->getData('reference');
         $user = $this->getUsersTable()->resetToken($reference, [
-                'expiration' => Configure::read('Users.Token.expiration'),
-                'checkActive' => false,
-                'sendEmail' => true,
-                'ensureActive' => Configure::read('Users.Registration.ensureActive'),
-                'type' => 'password'
-            ]);
+            'expiration' => Configure::read('Users.Token.expiration'),
+            'checkActive' => false,
+            'sendEmail' => true,
+            'ensureActive' => Configure::read('Users.Registration.ensureActive'),
+            'type' => 'password'
+        ]);
         if ($user) {
-            $this->set([
-                'user' => true,
-                '_serialize' => ['user']
-            ]);
+            $this->set(compact('user'));
+            $this->viewBuilder()->setOption('serialize', ['user']);
         }
-
     }
 }

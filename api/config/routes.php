@@ -64,6 +64,8 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/pages/*', 'Pages::display');
 
+        $builder->setExtensions(['json']);
+
         $builder->connect('user-get-token', ['plugin' => null, 'controller' => 'AppUsers', 'action' => 'getToken']);
 
         $builder->resources('Groups');
