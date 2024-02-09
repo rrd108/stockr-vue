@@ -79,10 +79,10 @@ class AppController extends Controller
         ]);
 
         if ($this->request->getHeaderLine('ApiKey') || $this->request->getQuery('ApiKey')) {
-            $this->Auth->config('storage', 'Memory');
-            $this->Auth->config('unauthorizedRedirect', false);
-            $this->Auth->config('checkAuthIn', 'Controller.initialize');
-            $this->Auth->config('loginAction', false);
+            $this->Auth->setConfig('storage', 'Memory');
+            $this->Auth->setConfig('unauthorizedRedirect', false);
+            $this->Auth->setConfig('checkAuthIn', 'Controller.initialize');
+            $this->Auth->setConfig('loginAction', false);
         }
     }
 
