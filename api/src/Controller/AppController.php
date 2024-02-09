@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -12,6 +13,7 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
@@ -55,15 +57,15 @@ class AppController extends Controller
 
         $this->loadComponent('CakeDC/Users.UsersAuth');
 
-        $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->query('company');
-        if(!$companyId && $this->getRequest()->getSession()->read('company')) {
+        $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->getQuery('company');
+        if (!$companyId && $this->getRequest()->getSession()->read('company')) {
             $companyId = $this->getRequest()->getSession()->read('company')->id;
         }
         if ($companyId) {
             Configure::write('company_id', $companyId);
         }
 
-        $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->query('currency');
+        $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->getQuery('currency');
         Configure::write('currency', $currency ? $currency : 'HUF');
 
         Configure::write('CakePdf', [
@@ -87,9 +89,11 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        if (!Configure::read('company_id')
+        if (
+            !Configure::read('company_id')
             && $this->Auth->user('id')
-            && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')) {
+            && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')
+        ) {
             $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
         }
     }
