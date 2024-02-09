@@ -40,15 +40,15 @@ class AppView extends View
     public function initialize()
     {
         parent::initialize();
-        $this->loadHelper('Form', [
+        $this->addHelper('Form', [
         'templates' => 'Datalist.form-templates',
         'widgets' => [
             'datalistJs' => ['Datalist\View\Widget\DatalistJsWidget']
         ]
         ]);
-        $this->loadHelper('Paginator', ['templates' => 'paginator-templates']);
-        $this->loadHelper('MenuLink.MenuLink');
-        $this->loadHelper('CakeDC/Users.User');
+        $this->addHelper('Paginator', ['templates' => 'paginator-templates']);
+        $this->addHelper('MenuLink.MenuLink');
+        $this->addHelper('CakeDC/Users.User');
 
         if (Configure::read('company_id')) {
             Number::defaultCurrency($this->getRequest()->getSession()->read('company')->currency);
