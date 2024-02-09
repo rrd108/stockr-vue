@@ -1,6 +1,6 @@
 <script setup>
   import { onUnmounted, onMounted } from 'vue'
-  import StockRheader from '@/components/StockRheader.vue'
+  import AppHeader from '@/components/AppHeader.vue'
   import StockRcompany from '@/components/StockRcompany.vue'
   import { useStockrStore } from '@/stores'
 
@@ -24,7 +24,7 @@
 
 <template>
   <div id="app">
-    <StockRheader v-if="store.isLoggedIn" />
+    <AppHeader v-if="store.isLoggedIn" />
     <StockRcompany v-if="store.isLoggedIn && !store.company.id" />
     <router-view />
   </div>

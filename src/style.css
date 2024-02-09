@@ -1,0 +1,12 @@
+dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+dt,
+dd {
+  padding: 0.5em 1em;
+}
+dt:nth-child(4n + 1),
+dd:nth-child(4n + 2) {
+  background-color: #f2f2f2;
+}

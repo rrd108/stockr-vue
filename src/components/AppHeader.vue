@@ -73,6 +73,9 @@
                     <router-link to="/add-product"><i class="fi-foot"> Új termék</i></router-link>
                   </li>
                   <li>
+                    <router-link to="/edit-product"><i class="fi-foot"> Vonalkód felvitel</i></router-link>
+                  </li>
+                  <li>
                     <router-link to="/add-partner"><i class="fi-torsos"> Új partner</i></router-link>
                   </li>
                   <li>

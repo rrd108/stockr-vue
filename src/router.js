@@ -39,6 +39,10 @@ const routes = [
     component: () => import('@/pages/AddProduct.vue'),
   },
   {
+    path: '/edit-product',
+    component: () => import('@/pages/EditProduct.vue'),
+  },
+  {
     path: '/partners/:id',
     component: () => import('@/pages/ViewPartner.vue'),
     props: true,
