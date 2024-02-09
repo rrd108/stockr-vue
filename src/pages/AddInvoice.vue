@@ -72,7 +72,7 @@
       )
       autoAddItem = true
     }
-    // TODO
+
     item.value.product = _product.name
     const productProps = useProductNameProps(item.value.product)
     selectedProduct.value = {
@@ -99,15 +99,22 @@
       return
     }
 
-    // TODO if we aready have the product in the list we should increase the quantity
+    // if we aready have the product in invoice items we should increase the quantity
+    const existingItem = invoice.value.items.find(item => item.product_id == selectedProduct.value.id)
+    if (existingItem) {
+      existingItem.quantity += item.value.quantity
+      item.value = { ...emptyItem }
+    }
 
-    invoice.value.items.unshift({
-      ...selectedProduct.value,
-      uuid: Math.random().toString(36).substring(2, 9),
-      product_id: selectedProduct.value.id,
-      quantity: item.value.quantity,
-      price: item.value.price,
-    })
+    if (!existingItem) {
+      invoice.value.items.unshift({
+        ...selectedProduct.value,
+        uuid: Math.random().toString(36).substring(2, 9),
+        product_id: selectedProduct.value.id,
+        quantity: item.value.quantity,
+        price: item.value.price,
+      })
+    }
 
     selectedProduct.value = {}
     item.value = { ...emptyItem }
