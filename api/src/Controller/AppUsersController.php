@@ -14,13 +14,13 @@ class AppUsersController extends CakeDCAppController
     use LoginTrait;
     use RegisterTrait;
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->Auth->allow(['getToken', 'requestResetPassword']);
     }
 
-    public function beforeFilter(Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         $this->getEventManager()->off($this->Csrf);
         $this->Security->setConfig('unlockedActions', ['getToken', 'requestResetPassword']);

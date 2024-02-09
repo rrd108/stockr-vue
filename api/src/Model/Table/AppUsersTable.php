@@ -9,13 +9,13 @@ use CakeDC\Users\Model\Table\UsersTable as CakeDCUsersTable;
 
 class AppUsersTable extends CakeDCUsersTable{
 
-	public function initialize(array $config)
+	public function initialize(array $config): void
 	{
 		parent::initialize($config);
 		$this->setDisplayField('email');
 	}
 
-	public function validationDefault(Validator $validator)
+	public function validationDefault(Validator $validator): \Cake\Validation\Validator
 	{
 		$validator = parent::validationDefault($validator);
 		$username = Configure::read('Auth.authenticate.Form.fields.username');
@@ -26,7 +26,7 @@ class AppUsersTable extends CakeDCUsersTable{
 		return $validator;
 	}
 
-	public function beforeSave(Event $event)
+	public function beforeSave(\Cake\Event\EventInterface $event)
     {
         $entity = $event->getData('entity');
 

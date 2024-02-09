@@ -32,7 +32,7 @@ class GroupsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -56,7 +56,7 @@ class GroupsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->nonNegativeInteger('id')
@@ -74,7 +74,7 @@ class GroupsTable extends Table
         return $validator;
     }
 
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)
+    public function beforeFind(\Cake\Event\EventInterface $event, Query $query, ArrayObject $options, $primary)
     {
         $query->where(['Groups.company_id IN' => [0, Configure::read('company_id')]]);
     }
