@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -21,10 +22,8 @@ class GroupsController extends AppController
     {
         $groups = $this->Groups->find();
 
-        $this->set([
-            'groups' => $groups,
-            '_serialize' => ['groups']
-        ]);
+        $this->set(compact('groups'));
+        $this->viewBuilder()->setOption('serialize', ['groups']);
     }
 
     /**
@@ -40,7 +39,8 @@ class GroupsController extends AppController
             'contain' => ['Partners']
         ]);
 
-        $this->set('group', $group);
+        $this->set(compact('group'));
+        $this->viewBuilder()->setOption('serialize', ['group']);
     }
 
     /**
@@ -61,6 +61,7 @@ class GroupsController extends AppController
             $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
         $this->set(compact('group'));
+        $this->viewBuilder()->setOption('serialize', ['group']);
     }
 
     /**
@@ -85,6 +86,7 @@ class GroupsController extends AppController
             $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
         $this->set(compact('group'));
+        $this->viewBuilder()->setOption('serialize', ['group']);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -23,10 +24,8 @@ class ProductsController extends AppController
     {
         $products = $this->Products->find('purchasePrice', ['currency' => Configure::read('currency')]);
 
-        $this->set([
-            'products' => $products,
-            '_serialize' => ['products']
-        ]);
+        $this->set(compact('products'));
+        $this->viewBuilder()->setOption('serialize', ['products']);
     }
 
     /**
@@ -41,17 +40,16 @@ class ProductsController extends AppController
         $product = $this->Products->get($id, [
             'contain' => [
                 'Companies',
-                'Items.Invoices' => ['Partners', 'Storages']]
+                'Items.Invoices' => ['Partners', 'Storages']
+            ]
         ]);
 
         $product = $this->Products->find('purchasePrice', ['currency' => Configure::read('currency')])
             ->where(['Products.id' => $id])
-            ->contain(['Companies','Items.Invoices' => ['Partners', 'Storages']])
+            ->contain(['Companies', 'Items.Invoices' => ['Partners', 'Storages']])
             ->first();
-        $this->set([
-            'product' => $product,
-            '_serialize' => ['product']
-        ]);
+        $this->set(compact('product'));
+        $this->viewBuilder()->setOption('serialize', ['product']);
     }
 
     /**
@@ -66,10 +64,8 @@ class ProductsController extends AppController
             $product = $this->Products->patchEntity($product, $this->request->getData());
             $this->Products->save($product);
         }
-        $this->set([
-            'product' => $product,
-            '_serialize' => ['product']
-        ]);
+        $this->set(compact('product'));
+        $this->viewBuilder()->setOption('serialize', ['product']);
     }
 
     /**
@@ -86,10 +82,8 @@ class ProductsController extends AppController
             $product = $this->Products->patchEntity($product, $this->request->getData());
             $this->Products->save($product);
         }
-        $this->set([
-            'product' => $product,
-            '_serialize' => ['product']
-        ]);
+        $this->set(compact('product'));
+        $this->viewBuilder()->setOption('serialize', ['product']);
     }
 
     /**
@@ -122,10 +116,8 @@ class ProductsController extends AppController
             //->find('lastSellPrice');  TODO
             ->order('Products.name');
 
-        $this->set([
-            'products' => $products,
-            '_serialize' => ['products']
-        ]);
+        $this->set(compact('product'));
+        $this->viewBuilder()->setOption('serialize', ['product']);
     }
 
     public function stockRotation()
@@ -154,9 +146,7 @@ class ProductsController extends AppController
                 ['lastYear' => $lastYear],
                 ['lastYear.Products__id = stock.Products__id']
             );
-        $this->set([
-            'rotation' => $rotation,
-            '_serialize' => ['rotation']
-        ]);
+        $this->set(compact('product'));
+        $this->viewBuilder()->setOption('serialize', ['product']);
     }
 }

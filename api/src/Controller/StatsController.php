@@ -49,7 +49,7 @@ class StatsController extends AppController
             'totals' => $totals
         ];
 
-        $this->set(compact('invoices', 'partners', 'products', 'totals', 'stats'));
-        $this->set('_serialize', 'stats');
+        $this->set(compact('stats'));
+        $this->viewBuilder()->setOption('serialize', ['stats']);
     }
 }

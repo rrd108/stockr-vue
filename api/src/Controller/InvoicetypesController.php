@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -22,10 +23,8 @@ class InvoicetypesController extends AppController
         $invoicetypes = $this->Invoicetypes->find()
             ->order('Invoicetypes.name');
 
-        $this->set([
-            'invoicetypes' => $invoicetypes,
-            '_serialize' => ['invoicetypes']
-        ]);
+        $this->set(compact('invoicetypes'));
+        $this->viewBuilder()->setOption('serialize', ['invoicetypes']);
     }
 
     /**
@@ -41,7 +40,8 @@ class InvoicetypesController extends AppController
             'contain' => ['Invoices']
         ]);
 
-        $this->set('invoicetype', $invoicetype);
+        $this->set(compact('invoicetype'));
+        $this->viewBuilder()->setOption('serialize', ['invoicetype']);
     }
 
     /**
@@ -62,6 +62,7 @@ class InvoicetypesController extends AppController
             $this->Flash->error(__('The invoicetype could not be saved. Please, try again.'));
         }
         $this->set(compact('invoicetype'));
+        $this->viewBuilder()->setOption('serialize', ['invoicetype']);
     }
 
     /**
@@ -86,6 +87,7 @@ class InvoicetypesController extends AppController
             $this->Flash->error(__('The invoicetype could not be saved. Please, try again.'));
         }
         $this->set(compact('invoicetype'));
+        $this->viewBuilder()->setOption('serialize', ['invoicetype']);
     }
 
     /**

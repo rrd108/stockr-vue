@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -24,11 +25,8 @@ class PartnersController extends AppController
             ->contain('Groups')
             ->order('Partners.name');
 
-        $this->set([
-            'partners' => $partners,
-            '_serialize' => ['partners']
-        ]);
-
+        $this->set(compact('partners'));
+        $this->viewBuilder()->setOption('serialize', ['partners']);
     }
 
     /**
@@ -43,8 +41,8 @@ class PartnersController extends AppController
         $partner = $this->Partners->get($id, [
             'contain' => ['Groups', /*'Invoices.Invoicetypes', 'Invoices.Items'*/]
         ]);
-        $this->set('partner', $partner);
-        $this->set(['_serialize' => ['partner']]);
+        $this->set(compact('partner'));
+        $this->viewBuilder()->setOption('serialize', ['partner']);
     }
 
     /**
@@ -61,10 +59,8 @@ class PartnersController extends AppController
         }
         $companies = $this->Partners->Companies->find('list', ['limit' => 200]);
         $groups = $this->Partners->Groups->find('list', ['limit' => 200]);
-        $this->set([
-            'partner' => $partner,
-            '_serialize' => ['partner']
-        ]);
+        $this->set(compact('partner'));
+        $this->viewBuilder()->setOption('serialize', ['partner']);
     }
 
     /**
@@ -84,10 +80,8 @@ class PartnersController extends AppController
             $this->Partners->save($partner);
         }
         $this->set(compact('partner'));
-        $this->set([
-            'partner' => $partner,
-            '_serialize' => ['partner']
-        ]);
+        $this->set(compact('partner'));
+        $this->viewBuilder()->setOption('serialize', ['partner']);
     }
 
     /**

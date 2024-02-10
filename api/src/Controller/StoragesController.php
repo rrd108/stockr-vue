@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -22,10 +23,8 @@ class StoragesController extends AppController
         $storages = $this->Storages->find()
             ->order('Storages.name');
 
-        $this->set([
-            'storages' => $storages,
-            '_serialize' => ['storages']
-        ]);
+        $this->set(compact('storages'));
+        $this->viewBuilder()->setOption('serialize', ['storages']);
     }
 
     /**
@@ -41,7 +40,8 @@ class StoragesController extends AppController
             'contain' => ['Companies', 'Products']
         ]);
 
-        $this->set('storage', $storage);
+        $this->set(compact('storage'));
+        $this->viewBuilder()->setOption('serialize', ['storage']);
     }
 
     /**
@@ -62,7 +62,8 @@ class StoragesController extends AppController
             $this->Flash->error(__('The storage could not be saved. Please, try again.'));
         }
         $companies = $this->Storages->Companies->find('list', ['limit' => 200]);
-        $this->set(compact('storage', 'companies'));
+        $this->set(compact('storage'));
+        $this->viewBuilder()->setOption('serialize', ['storage']);
     }
 
     /**
@@ -87,7 +88,8 @@ class StoragesController extends AppController
             $this->Flash->error(__('The storage could not be saved. Please, try again.'));
         }
         $companies = $this->Storages->Companies->find('list', ['limit' => 200]);
-        $this->set(compact('storage', 'companies'));
+        $this->set(compact('storage'));
+        $this->viewBuilder()->setOption('serialize', ['storage']);
     }
 
     /**

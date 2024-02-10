@@ -34,10 +34,8 @@ class InvoicesController extends AppController
             $invoices->where(['MONTH(Invoices.date)' => $this->request->getParam('month')]);
         }
 
-        $this->set([
-            'invoices' => $invoices,
-            '_serialize' => ['invoices']
-        ]);
+        $this->set(compact('invoices'));
+        $this->viewBuilder()->setOption('serialize', ['invoices']);
     }
 
     /**
@@ -53,8 +51,8 @@ class InvoicesController extends AppController
             'contain' => ['Storages.Companies', 'Invoicetypes', 'Partners.Groups', 'Items.Products']
         ]);
 
-        $this->set('invoice', $invoice);
-        $this->set(['_serialize' => ['invoice']]);
+        $this->set(compact('invoice'));
+        $this->viewBuilder()->setOption('serialize', ['invoice']);
     }
 
     /**
@@ -89,10 +87,8 @@ class InvoicesController extends AppController
                 }
             }
         }
-        $this->set([
-            'invoice' => $invoice,
-            '_serialize' => ['invoice']
-        ]);
+        $this->set(compact('invoice'));
+        $this->viewBuilder()->setOption('serialize', ['invoice']);
     }
 
     /**
@@ -115,7 +111,8 @@ class InvoicesController extends AppController
         $invoicetypes = $this->Invoices->Invoicetypes->find('list', ['limit' => 200]);
         $partners = $this->Invoices->Partners->find('list', ['limit' => 200]);
         $this->set(compact('invoice', 'storages', 'invoicetypes', 'partners'));
-        $this->set(['_serialize' => ['invoice']]);
+        $this->set(compact('invoice'));
+        $this->viewBuilder()->setOption('serialize', ['invoice']);
     }
 
     /**
@@ -132,7 +129,8 @@ class InvoicesController extends AppController
         $invoice->status = 'd';
         $this->Invoices->save($invoice);
         $this->set(compact('invoice'));
-        $this->set(['_serialize' => ['invoice']]);
+        $this->set(compact('invoice'));
+        $this->viewBuilder()->setOption('serialize', ['invoice']);
     }
 
     public function billingo(int $id)
@@ -202,10 +200,8 @@ class InvoicesController extends AppController
             . '|' . $billingoInvoice['attributes']['invoice_no']
             . '|' . $downloadLink;
         $this->Invoices->save($invoice);
-        $this->set([
-            'invoice' => $invoice,
-            '_serialize' => ['invoice']
-        ]);
+        $this->set(compact('invoice'));
+        $this->viewBuilder()->setOption('serialize', ['invoice']);
     }
 
     public function import()
