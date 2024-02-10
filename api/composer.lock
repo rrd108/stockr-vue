@@ -4,160 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4add8f6e572f391f643de688e58cbf62",
+    "content-hash": "82c52eafd5ee8c4411eb2d350b6a622f",
     "packages": [
-        {
-            "name": "cakedc/auth",
-            "version": "6.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CakeDC/auth.git",
-                "reference": "59aaa717fea6ee11393065cc0885b7e799dd6360"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CakeDC/auth/zipball/59aaa717fea6ee11393065cc0885b7e799dd6360",
-                "reference": "59aaa717fea6ee11393065cc0885b7e799dd6360",
-                "shasum": ""
-            },
-            "require": {
-                "cakephp/cakephp": "^4.0",
-                "php": ">=7.2.0"
-            },
-            "require-dev": {
-                "cakephp/authentication": "^2.0",
-                "cakephp/authorization": "^2.0",
-                "cakephp/cakephp-codesniffer": "^4.0",
-                "google/recaptcha": "@stable",
-                "league/oauth1-client": "^1.7",
-                "league/oauth2-facebook": "@stable",
-                "league/oauth2-google": "@stable",
-                "league/oauth2-instagram": "@stable",
-                "league/oauth2-linkedin": "@stable",
-                "luchianenco/oauth2-amazon": "^1.1",
-                "php-coveralls/php-coveralls": "^2.4",
-                "phpunit/phpunit": "^8.0",
-                "robthree/twofactorauth": "^1.6",
-                "yubico/u2flib-server": "^1.0"
-            },
-            "type": "cakephp-plugin",
-            "autoload": {
-                "psr-4": {
-                    "CakeDC\\Auth\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "CakeDC",
-                    "homepage": "https://www.cakedc.com",
-                    "role": "Author"
-                },
-                {
-                    "name": "Others",
-                    "homepage": "https://github.com/CakeDC/auth/graphs/contributors"
-                }
-            ],
-            "description": "Auth objects for CakePHP",
-            "homepage": "https://github.com/CakeDC/auth",
-            "keywords": [
-                "Authentication",
-                "auth",
-                "cakedc",
-                "cakephp"
-            ],
-            "support": {
-                "issues": "https://github.com/CakeDC/auth/issues",
-                "source": "https://github.com/CakeDC/auth"
-            },
-            "time": "2022-06-30T13:18:11+00:00"
-        },
-        {
-            "name": "cakedc/users",
-            "version": "9.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CakeDC/users.git",
-                "reference": "2cab61dab8af11dc2750e814d7281864018bd3a0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CakeDC/users/zipball/2cab61dab8af11dc2750e814d7281864018bd3a0",
-                "reference": "2cab61dab8af11dc2750e814d7281864018bd3a0",
-                "shasum": ""
-            },
-            "require": {
-                "cakedc/auth": "^6.0.0",
-                "cakephp/authentication": "^2.0.0",
-                "cakephp/authorization": "^2.0.0",
-                "cakephp/cakephp": "^4.0",
-                "php": ">=7.2.0"
-            },
-            "require-dev": {
-                "cakephp/cakephp-codesniffer": "^4.0",
-                "google/recaptcha": "@stable",
-                "league/oauth1-client": "^1.7",
-                "league/oauth2-facebook": "@stable",
-                "league/oauth2-google": "@stable",
-                "league/oauth2-instagram": "@stable",
-                "league/oauth2-linkedin": "@stable",
-                "luchianenco/oauth2-amazon": "^1.1",
-                "php-coveralls/php-coveralls": "^2.1",
-                "phpunit/phpunit": "^8.0",
-                "robthree/twofactorauth": "^1.6",
-                "web-auth/webauthn-lib": "v3.3.x-dev",
-                "yubico/u2flib-server": "^1.0"
-            },
-            "suggest": {
-                "cakephp/authorization": "Provide authorization for users",
-                "google/recaptcha": "Provides reCAPTCHA validation for registration form",
-                "league/oauth1-client": "Provides Social Authentication with Twitter",
-                "league/oauth2-facebook": "Provides Social Authentication with Facebook",
-                "league/oauth2-google": "Provides Social Authentication with Google+",
-                "league/oauth2-instagram": "Provides Social Authentication with Instagram",
-                "league/oauth2-linkedin": "Provides Social Authentication with LinkedIn",
-                "luchianenco/oauth2-amazon": "Provides Social Authentication with Amazon",
-                "robthree/twofactorauth": "Provides Google Authenticator functionality"
-            },
-            "type": "cakephp-plugin",
-            "autoload": {
-                "psr-4": {
-                    "CakeDC\\Users\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "CakeDC",
-                    "homepage": "http://www.cakedc.com",
-                    "role": "Author"
-                },
-                {
-                    "name": "Others",
-                    "homepage": "https://github.com/CakeDC/users/graphs/contributors"
-                }
-            ],
-            "description": "Users Plugin for CakePHP",
-            "homepage": "https://github.com/CakeDC/users",
-            "keywords": [
-                "Authentication",
-                "auth",
-                "cakedc",
-                "cakephp",
-                "oauth2"
-            ],
-            "support": {
-                "issues": "https://github.com/CakeDC/users/issues",
-                "source": "https://github.com/CakeDC/users"
-            },
-            "time": "2022-08-10T20:51:17+00:00"
-        },
         {
             "name": "cakephp/authentication",
             "version": "2.10.2",
@@ -1585,45 +1433,6 @@
             "time": "2023-03-08T13:26:56+00:00"
         },
         {
-            "name": "ozee31/cakephp-cors",
-            "version": "v2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ozee31/cakephp-cors.git",
-                "reference": "fc45012d85972b8b2a4e9af7aef57fef033d16f9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ozee31/cakephp-cors/zipball/fc45012d85972b8b2a4e9af7aef57fef033d16f9",
-                "reference": "fc45012d85972b8b2a4e9af7aef57fef033d16f9",
-                "shasum": ""
-            },
-            "require": {
-                "cakephp/cakephp": "^4.0",
-                "php": ">=7.2.0",
-                "psr/http-server-handler": "^1.0",
-                "psr/http-server-middleware": "^1.0"
-            },
-            "require-dev": {
-                "cakephp/cakephp-codesniffer": "^4.0",
-                "phpunit/phpunit": "~8.5.0"
-            },
-            "type": "cakephp-plugin",
-            "autoload": {
-                "psr-4": {
-                    "Cors\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "A CakePHP (3.3.x) plugin for activate cors domain in your application",
-            "support": {
-                "issues": "https://github.com/ozee31/cakephp-cors/issues",
-                "source": "https://github.com/ozee31/cakephp-cors/tree/v2.0.0"
-            },
-            "abandoned": true,
-            "time": "2020-05-14T16:20:43+00:00"
-        },
-        {
             "name": "paragonie/random_compat",
             "version": "v9.99.100",
             "source": {
@@ -2101,6 +1910,43 @@
             "time": "2017-10-23T01:57:42+00:00"
         },
         {
+            "name": "rabp99/cakephp-cors",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rabp99/cakephp-cors.git",
+                "reference": "18bb7b3cc27dd48bfafdb65df924bfb5a9b039a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rabp99/cakephp-cors/zipball/18bb7b3cc27dd48bfafdb65df924bfb5a9b039a8",
+                "reference": "18bb7b3cc27dd48bfafdb65df924bfb5a9b039a8",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": "^4.0",
+                "php": ">=7.2.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "cakephp/cakephp-codesniffer": "^4.0",
+                "phpunit/phpunit": "~8.5.0"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Cors\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "A CakePHP 4 plugin for activate cors domain in your application",
+            "support": {
+                "source": "https://github.com/rabp99/cakephp-cors/tree/v3.0.2"
+            },
+            "time": "2022-02-27T23:19:32+00:00"
+        },
+        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -2229,6 +2075,53 @@
                 "source": "https://github.com/cakephp/phinx/tree/0.13.4"
             },
             "time": "2023-01-07T00:42:55+00:00"
+        },
+        {
+            "name": "rrd108/api-token-authenticator",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rrd108/api-token-authenticator.git",
+                "reference": "d3a44711c7f8d5dba98d3211359762fcee266df3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rrd108/api-token-authenticator/zipball/d3a44711c7f8d5dba98d3211359762fcee266df3",
+                "reference": "d3a44711c7f8d5dba98d3211359762fcee266df3",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/authentication": "^2.0"
+            },
+            "require-dev": {
+                "cakephp/cakephp": "^4.4",
+                "phpunit/phpunit": "^8.5"
+            },
+            "suggest": {
+                "rrd108/cakephp-json-api-exception": "Make your CakePHP 4 JSON REST API response more descriptive on errors"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "ApiTokenAuthenticator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "rrd",
+                    "email": "rrd@1108.cc"
+                }
+            ],
+            "description": "A Simple Token Authentication Plugin for CakePHP 4 REST API-s",
+            "support": {
+                "issues": "https://github.com/rrd108/api-token-authenticator/issues",
+                "source": "https://github.com/rrd108/api-token-authenticator/tree/0.4.0"
+            },
+            "time": "2023-07-22T13:02:26+00:00"
         },
         {
             "name": "setasign/fpdi",

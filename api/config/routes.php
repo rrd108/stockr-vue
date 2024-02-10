@@ -52,26 +52,16 @@ return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder): void {
-        /*
-         * Here, we are connecting '/' (base path) to a controller called 'Pages',
-         * its action called 'display', and we pass a param to select the view file
-         * to use (in this case, templates/Pages/home.php)...
-         */
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
-
-        /*
-         * ...and connect the rest of 'Pages' controller's URLs.
-         */
-        $builder->connect('/pages/*', 'Pages::display');
-
         $builder->setExtensions(['json']);
 
-        $builder->connect('user-get-token', ['plugin' => null, 'controller' => 'AppUsers', 'action' => 'getToken']);
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        $builder->connect('/pages/*', 'Pages::display');
 
         $builder->resources('Groups');
         $builder->resources('Invoices');
         $builder->resources('Partners');
         $builder->resources('Products');
+        $builder->resources('Users');
 
         $builder->fallbacks();
     });

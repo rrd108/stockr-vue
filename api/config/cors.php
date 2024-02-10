@@ -3,9 +3,7 @@ return [
   'Cors' => [
     'AllowOrigin' => ['http://localhost:5173', 'https://stockr.1108.cc'],
     'AllowMethods' => ['GET', 'POST', 'PATCH', 'OPTIONS', 'DELETE', 'PUT'],
-    //'AllowCredentials' => true,                                 // TODO do we need this?
-    'AllowHeaders' => ['ApiKey', 'Content-Type'],
-    //'ExposeHeaders' => ['Link'],                              // TODO do we need this?
+    'AllowHeaders' => ['Token', 'Content-Type'],
     'MaxAge' => 300,
   ]
 ];

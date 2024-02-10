@@ -16,7 +16,6 @@
 
 namespace App\Controller;
 
-use Cake\Event\Event;
 use Cake\View\JsonView;
 use Cake\Core\Configure;
 use Cake\Controller\Controller;
@@ -45,13 +44,14 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler', [
-            'enableBeforeRedirect' => false,
-        ]);
-        $this->loadComponent('Flash');
+        $this->loadComponent('RequestHandler');
 
-        $this->loadComponent('CakeDC/Users.UsersAuth');
+        $this->loadComponent('Authentication.Authentication');
+        $this->loadComponent('Authorization.Authorization');
 
+        $this->permissions = ['role' => isset($this->Authentication->getIdentity()->role) ? $this->Authentication->getIdentity()->role : null];
+
+        /*TODO
         $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->getQuery('company');
         if (!$companyId && $this->getRequest()->getSession()->read('company')) {
             $companyId = $this->getRequest()->getSession()->read('company')->id;
@@ -62,6 +62,7 @@ class AppController extends Controller
 
         $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->getQuery('currency');
         Configure::write('currency', $currency ? $currency : 'HUF');
+        */
 
         Configure::write('CakePdf', [
             'engine' => 'CakePdf.Mpdf',
@@ -72,25 +73,18 @@ class AppController extends Controller
                 'top' => 45
             ],
         ]);
-
-        if ($this->request->getHeaderLine('ApiKey') || $this->request->getQuery('ApiKey')) {
-            $this->Auth->setConfig('storage', 'Memory');
-            $this->Auth->setConfig('unauthorizedRedirect', false);
-            $this->Auth->setConfig('checkAuthIn', 'Controller.initialize');
-            $this->Auth->setConfig('loginAction', false);
-        }
     }
 
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
-        if (
-            !Configure::read('company_id')
-            && $this->Auth->user('id')
-            && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')
-        ) {
-            $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
-        }
+        // if (
+        //     !Configure::read('company_id')
+        //     && $this->Authentication->getIdentity()
+        //     && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')
+        // ) {
+        //     $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
+        // }
     }
 
     public function viewClasses(): array
