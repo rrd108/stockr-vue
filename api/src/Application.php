@@ -19,15 +19,24 @@ declare(strict_types=1);
 namespace App;
 
 use Cake\Core\Configure;
-use Cake\Core\ContainerInterface;
-use Cake\Datasource\FactoryLocator;
-use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Http\ServerRequest;
+use App\Policy\RequestPolicy;
 use Cake\Http\BaseApplication;
-use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\MiddlewareQueue;
+use Cake\Core\ContainerInterface;
 use Cake\ORM\Locator\TableLocator;
+use Cake\Datasource\FactoryLocator;
+use Authorization\Policy\MapResolver;
+use Authorization\AuthorizationService;
 use Cake\Routing\Middleware\AssetMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
+use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Authorization\AuthorizationServiceInterface;
+use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\RequestAuthorizationMiddleware;
 
 /**
  * Application setup class.
@@ -35,7 +44,7 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your application.
  */
-class Application extends BaseApplication
+class Application extends BaseApplication implements AuthorizationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -67,34 +76,14 @@ class Application extends BaseApplication
         Configure::load('precisions', 'default', false);
 
         // Load more plugins here
-        $this->addPlugin('CakePdf', ['bootstrap' => true]);
-
-        $this->addPlugin(\CakeDC\Users\Plugin::class);
-        Configure::write('Users.config', ['users']);
-
         Configure::load('cors', 'default', false);
         $this->addPlugin('Cors');
-    }
 
-    public function pluginBootstrap(): void
-    {
-        parent::pluginBootstrap();
+        $this->addPlugin('ApiTokenAuthenticator');
+        $this->addPlugin('Authorization');
+        //$this->addPlugin('JsonApiException');
 
-        Configure::write('Auth.authenticate', [
-            'all' => [
-                'finder' => 'auth',
-                'userModel' => Configure::read('Users.table')
-            ],
-            'Form'  => [
-                'fields' => ['username' => 'email']
-            ],
-            'CakeDC/Auth.ApiKey' => [
-                // TODO 'type' => 'header',
-                'require_ssl' => false,
-                'name' => 'ApiKey'
-            ],
-            'CakeDC/Auth.RememberMe' => [],
-        ]);
+        $this->addPlugin('CakePdf', ['bootstrap' => true]);
     }
 
     /**
@@ -124,7 +113,10 @@ class Application extends BaseApplication
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
-            ->add(new BodyParserMiddleware());
+            ->add(new BodyParserMiddleware())
+
+            ->add(new AuthorizationMiddleware($this))
+            ->add(new RequestAuthorizationMiddleware());
 
         return $middlewareQueue;
     }
@@ -154,5 +146,13 @@ class Application extends BaseApplication
         $this->addPlugin('Migrations');
 
         // Load more plugins here
+    }
+
+    public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+    {
+        $mapResolver = new MapResolver();
+        $mapResolver->map(ServerRequest::class, RequestPolicy::class);
+
+        return new AuthorizationService($mapResolver);
     }
 }

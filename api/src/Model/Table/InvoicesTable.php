@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use ArrayObject;
@@ -41,14 +42,6 @@ class InvoicesTable extends Table
         $this->setTable('invoices');
         $this->setDisplayField('number');
         $this->setPrimaryKey('id');
-
-        $this->addBehavior(
-            'Datalist.Datalist',
-            [
-                'Partners' => 'name',
-                'Products' => 'name'
-            ]
-        );
 
         $this->belongsTo('Storages', [
             'foreignKey' => 'storage_id',
