@@ -15,7 +15,7 @@
   }
 
   axios
-    .get(import.meta.env.VITE_API_URL + 'companies/accessible.json?company=999&ApiKey=' + store.user.api_token)
+    .get(import.meta.env.VITE_API_URL + 'companies/accessible.json?company=999', store.tokenHeader)
     .then(response => (companies.value = response.data))
     .catch(err => console.error(err))
 

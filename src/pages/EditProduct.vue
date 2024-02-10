@@ -41,9 +41,8 @@
   const updateProduct = () => {
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}products/${product.value.id}.json?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }`,
+        `${import.meta.env.VITE_API_URL}products/${product.value.id}.json?company=${store.company.id}`,
+        store.tokenHeader,
         { ean: barcode.value }
       )
       .then(res => {

@@ -152,10 +152,9 @@
               this.$store.company.id +
               '&currency=' +
               this.$store.company.currency +
-              '&ApiKey=' +
-              this.$store.user.api_token +
               '&stockDate=' +
-              this.stockDate
+              this.stockDate,
+            store.tokenHeader
           )
           .then(resp => {
             products = resp.data.products

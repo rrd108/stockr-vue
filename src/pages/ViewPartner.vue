@@ -36,9 +36,8 @@
         partner[property] = this.partner[property]
         axios
           .put(
-            `${import.meta.env.VITE_API_URL}partners/${this.partner.id}.json?company=${this.$store.company.id}&ApiKey=${
-              this.$store.user.api_token
-            }`,
+            `${import.meta.env.VITE_API_URL}partners/${this.partner.id}.json?company=${this.$store.company.id}`,
+            store.tokenHeader,
             partner
           )
           .then(response =>

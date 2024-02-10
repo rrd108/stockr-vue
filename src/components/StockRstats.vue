@@ -1,3 +1,31 @@
+<script setup>
+  import axios from 'axios'
+  import toCurrency from '@/composables/useToCurrency'
+  import toNumFormat from '@/composables/useToNumFormat'
+  import { useStockrStore } from '@/stores'
+  import { ref } from 'vue'
+
+  const store = useStockrStore()
+  const currency = store.company.currency
+  const stats = ref({
+    totals: {
+      sells: 0,
+      purchases: 0,
+      stock: 0,
+    },
+    partners: 0,
+    invoices: 0,
+    products: 0,
+  })
+
+  axios
+    .get(`${import.meta.env.VITE_API_URL}stats.json?company=${store.company.id}`, store.tokenHeader)
+    .then(response => {
+      stats.value = response.data
+    })
+    .catch(err => console.error(err))
+</script>
+
 <template>
   <div class="cards">
     <div class="small-6 large-4">
@@ -43,54 +71,6 @@
     </div>
   </div>
 </template>
-
-<script>
-  import axios from 'axios'
-  import toCurrency from '@/composables/useToCurrency'
-  import toNumFormat from '@/composables/useToNumFormat'
-  import { useStockrStore } from '@/stores'
-
-  export default {
-    name: 'stats',
-
-    data() {
-      return {
-        store: useStockrStore(),
-        currency: useStockrStore().company.currency,
-        stats: {
-          totals: {
-            sells: 0,
-            purchases: 0,
-            stock: 0,
-          },
-          partners: 0,
-          invoices: 0,
-          products: 0,
-        },
-      }
-    },
-
-    methods: {
-      toCurrency,
-      toNumFormat,
-    },
-
-    created() {
-      axios
-        .get(
-          import.meta.env.VITE_API_URL +
-            'stats.json?company=' +
-            this.store.company.id +
-            '&ApiKey=' +
-            this.store.user.api_token
-        )
-        .then(response => {
-          this.stats = response.data
-        })
-        .catch(err => console.error(err))
-    },
-  }
-</script>
 
 <style scoped>
   .cards {

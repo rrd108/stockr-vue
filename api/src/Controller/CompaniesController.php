@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -29,17 +30,16 @@ class CompaniesController extends AppController
     public function accessible()
     {
         $companies = $this->Companies->find()
-            ->where(['Companies.id IN' => $this->Auth->user('additional_data')]);
+            ->where(['Companies.id IN' => json_decode($this->Authentication->getIdentity()->additional_data)]);
 
         $this->set(compact('companies'));
-        $this->set('_serialize', 'companies');
+        $this->viewBuilder()->setOption('serialize', ['companies']);
     }
 
     public function setDefault()
     {
         if (!$this->request->getData('company')) {
             $companies = $this->Companies->find('list');
-                //->where(['id IN' => $this->Auth->user('additional_data')]);
             $this->set(compact('companies'));
             return;
         }

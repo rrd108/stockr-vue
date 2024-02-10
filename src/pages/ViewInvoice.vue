@@ -43,11 +43,7 @@
   if (!storedInvoice) {
     // TODO we can get here only if we visit directly an url - in this case we do not have basedata
     axios
-      .get(
-        `${import.meta.env.VITE_API_URL}invoices/${route.params.id}.json?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }`
-      )
+      .get(`${import.meta.env.VITE_API_URL}invoices/${route.params.id}.json?company=${store.company.id}`, store.tokenHeader)
       .then(response => {
         invoice.value = response.data.invoice
         billingo.value = {
@@ -63,9 +59,8 @@
   const deleteInvoice = () =>
     axios
       .delete(
-        `${import.meta.env.VITE_API_URL}invoices/delete/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }`
+        `${import.meta.env.VITE_API_URL}invoices/delete/${invoice.value.id}.json?company=${store.company.id}`,
+        store.tokenHeader
       )
       .then(response => {
         invoice.value.status = 'd'
@@ -79,9 +74,8 @@
       onEdit.value = !onEdit.value
       axios
         .put(
-          `${import.meta.env.VITE_API_URL}invoices/edit/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
-            store.user.api_token
-          }`,
+          `${import.meta.env.VITE_API_URL}invoices/edit/${invoice.value.id}.json?company=${store.company.id}`,
+          store.tokenHeader,
           {
             id: invoice.value.id,
             invoicetype_id: invoice.value.invoicetype_id,
@@ -100,9 +94,8 @@
   const getPdf = () => {
     axios
       .get(
-        `${import.meta.env.VITE_API_URL}invoices/${invoice.value.id}.pdf?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }`,
+        `${import.meta.env.VITE_API_URL}invoices/${invoice.value.id}.pdf?company=${store.company.id}`,
+        store.tokenHeader,
         { responseType: 'arraybuffer' }
       )
       .then(response => {
@@ -120,9 +113,9 @@
   const generateInvoice = () => {
     axios
       .get(
-        `${import.meta.env.VITE_API_URL}invoices/billingo/${invoice.value.id}.json?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }&due_date=${billingo.due_date}&fulfillment_date=${billingo.fulfillment_date}&payment_method=${
+        `${import.meta.env.VITE_API_URL}invoices/billingo/${invoice.value.id}.json?company=${
+          store.company.id
+        }&,store.tokenHeaderdue_date=${billingo.due_date}&fulfillment_date=${billingo.fulfillment_date}&payment_method=${
           billingo.payment_method
         }&invoice_comment=${billingo.invoice_comment}`
       )

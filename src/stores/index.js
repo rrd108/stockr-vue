@@ -20,9 +20,10 @@ export const useStockrStore = defineStore('stockrStore', () => {
     let now = new Date().getTime()
     let expired = 7 * 24 * 60 * 60 * 1000
     if (now - user.value.lastLogin > expired) {
+      user.value = {}
       return false
     }
-    return user.value.email ? true : false
+    return true
   })
 
   const isBaseDataLoaded = ref(false)
@@ -40,29 +41,29 @@ export const useStockrStore = defineStore('stockrStore', () => {
     isBaseDataLoaded.value = true
   }
 
+  const tokenHeader = computed(() => ({ headers: { Token: user.value.token } }))
+
   const getGroups = () =>
     axios
-      .get(import.meta.env.VITE_API_URL + 'groups.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
+      .get(import.meta.env.VITE_API_URL + 'groups.json?company=' + company.value.id, tokenHeader.value)
       .then(response => groups.push(...response.data.groups))
       .catch(err => console.error(err))
 
   const getInvoices = () =>
     axios
-      .get(import.meta.env.VITE_API_URL + 'invoices.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
+      .get(import.meta.env.VITE_API_URL + 'invoices.json?company=' + company.value.id, tokenHeader.value)
       .then(response => (invoices.value = response.data.invoices))
       .catch(err => console.error(err))
 
   const getInvoicetypes = () =>
     axios
-      .get(
-        import.meta.env.VITE_API_URL + 'invoicetypes.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token
-      )
+      .get(import.meta.env.VITE_API_URL + 'invoicetypes.json?company=' + company.value.id, tokenHeader.value)
       .then(response => invoicetypes.push(...response.data.invoicetypes))
       .catch(err => console.error(err))
 
   const getPartners = () =>
     axios
-      .get(import.meta.env.VITE_API_URL + 'partners.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
+      .get(import.meta.env.VITE_API_URL + 'partners.json?company=' + company.value.id, tokenHeader.value)
       .then(response => partners.push(...response.data.partners))
       .catch(err => console.error(err))
 
@@ -73,9 +74,8 @@ export const useStockrStore = defineStore('stockrStore', () => {
           'products/stock.json?company=' +
           company.value.id +
           '&currency=' +
-          company.value.currency +
-          '&ApiKey=' +
-          user.value.api_token
+          company.value.currency,
+        tokenHeader.value
       )
       .then(
         resp =>
@@ -88,7 +88,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
 
   const getStorages = () =>
     axios
-      .get(import.meta.env.VITE_API_URL + 'storages.json?company=' + company.value.id + '&ApiKey=' + user.value.api_token)
+      .get(import.meta.env.VITE_API_URL + 'storages.json?company=' + company.value.id, tokenHeader.value)
       .then(response => storages.push(...response.data.storages))
       .catch(err => console.error(err))
 
@@ -105,6 +105,7 @@ export const useStockrStore = defineStore('stockrStore', () => {
     user,
     isLoggedIn,
     isBaseDataLoaded,
+    tokenHeader,
     invoiceMonths,
     getBaseData,
   }

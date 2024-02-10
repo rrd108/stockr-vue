@@ -166,10 +166,7 @@
     }
 
     axios
-      .post(
-        import.meta.env.VITE_API_URL + 'invoices.json?company=' + store.company.id + '&ApiKey=' + store.user.api_token,
-        data
-      )
+      .post(import.meta.env.VITE_API_URL + 'invoices.json?company=' + store.company.id, store.tokenHeader, data)
       .then(response => {
         store.invoices.unshift({
           ...response.data.invoice,

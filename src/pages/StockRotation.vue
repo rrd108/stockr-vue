@@ -90,9 +90,8 @@
     created() {
       axios
         .get(
-          `${import.meta.env.VITE_API_URL}products/stock-rotation.json?company=${this.$store.company.id}&ApiKey=${
-            this.$store.user.api_token
-          }`
+          `${import.meta.env.VITE_API_URL}products/stock-rotation.json?company=${this.$store.company.id}`,
+          store.tokenHeader
         )
         .then(response => (this.products = response.data.rotation))
         .catch(err => console.error(err))

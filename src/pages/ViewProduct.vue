@@ -215,13 +215,8 @@
     created() {
       axios
         .get(
-          import.meta.env.VITE_API_URL +
-            'products/' +
-            this.$route.params.id +
-            '.json?company=' +
-            this.$store.company.id +
-            '&ApiKey=' +
-            this.$store.user.api_token
+          import.meta.env.VITE_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.company.id,
+          store.tokenHeader
         )
         .then(response => {
           this.isLoaded = true
@@ -238,9 +233,8 @@
         product[property] = this.product[property]
         axios
           .patch(
-            `${import.meta.env.VITE_API_URL}/products/${this.$route.params.id}.json?company=${
-              this.$store.company.id
-            }&ApiKey=${this.$store.user.api_token}`,
+            `${import.meta.env.VITE_API_URL}/products/${this.$route.params.id}.json?company=${this.$store.company.id}`,
+            store.tokenHeader,
             product
           )
           .then(response =>

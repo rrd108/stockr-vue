@@ -96,9 +96,8 @@
   const getInvoices = month => {
     axios
       .get(
-        `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&ApiKey=${
-          store.user.api_token
-        }&year=${year}&month=${month}`
+        `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year}&month=${month}`,
+        store.tokenHeader
       )
       .then(response => store.addInvoices(response.data.invoices))
       .catch(err => console.error(err))

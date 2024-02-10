@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
@@ -108,7 +109,7 @@ class CompaniesController extends AppController
     {
         if (!$this->request->getData('company')) {
             $companies = $this->Companies->find('list')
-                ->where(['id IN' => $this->Auth->user('additional_data')]);
+                ->where(['id IN' => json_decode($this->Authentication->getIdentity()->additional_data)]);
             $this->set(compact('companies'));
             return;
         }

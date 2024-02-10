@@ -21,15 +21,15 @@
   const login = () =>
     axios({
       method: 'post',
-      url: import.meta.env.VITE_API_URL + 'user-get-token.json',
+      url: import.meta.env.VITE_API_URL + 'users/login.json',
       data: {
         email: email.value,
         password: password.value,
       },
     })
       .then(resp => {
-        if (resp.data.id) {
-          store.user = resp.data
+        if (resp.data.user.id) {
+          store.user = resp.data.user
           if (rememberme.value) {
             resp.data.lastLogin = Date.now()
             localStorage.setItem('user', JSON.stringify(resp.data))
@@ -44,7 +44,7 @@
       return
     }
     axios
-      .post(import.meta.env.VITE_API_URL + 'app-users/request-reset-password.json', 'reference=' + email.value)
+      .post(import.meta.env.VITE_API_URL + 'users/request-reset-password.json', 'reference=' + email.value)
       .then(response => {
         resetPassSuccess = response
         emailError = false

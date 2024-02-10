@@ -84,9 +84,8 @@
               'products.json?company=' +
               this.$store.company.id +
               '&currency=' +
-              this.$store.company.currency +
-              '&ApiKey=' +
-              this.$store.user.api_token,
+              this.$store.company.currency,
+            store.tokenHeader,
             data
           )
           .then(response => {
