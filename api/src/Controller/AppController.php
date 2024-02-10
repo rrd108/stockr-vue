@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -12,11 +13,12 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
-use Cake\Controller\Controller;
+use Cake\View\JsonView;
 use Cake\Core\Configure;
-use Cake\Event\Event;
+use Cake\Controller\Controller;
 
 /**
  * Application Controller
@@ -38,32 +40,26 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler', [
-            'enableBeforeRedirect' => false,
-        ]);
-        $this->loadComponent('Flash');
+        $this->loadComponent('RequestHandler');
 
-        /*
-         * Enable the following component for recommended CakePHP security settings.
-         * see https://book.cakephp.org/3.0/en/controllers/components/security.html
-         */
-        //$this->loadComponent('Security');
+        $this->loadComponent('Authentication.Authentication');
+        $this->loadComponent('Authorization.Authorization');
 
-        $this->loadComponent('CakeDC/Users.UsersAuth');
+        $this->permissions = ['role' => isset($this->Authentication->getIdentity()->role) ? $this->Authentication->getIdentity()->role : null];
 
-        $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->query('company');
-        if(!$companyId && $this->getRequest()->getSession()->read('company')) {
+        $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->getQuery('company');
+        if (!$companyId && $this->getRequest()->getSession()->read('company')) {
             $companyId = $this->getRequest()->getSession()->read('company')->id;
         }
         if ($companyId) {
             Configure::write('company_id', $companyId);
         }
 
-        $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->query('currency');
+        $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->getQuery('currency');
         Configure::write('currency', $currency ? $currency : 'HUF');
 
         Configure::write('CakePdf', [
@@ -75,22 +71,10 @@ class AppController extends Controller
                 'top' => 45
             ],
         ]);
-
-        if ($this->request->getHeaderLine('ApiKey') || $this->request->getQuery('ApiKey')) {
-            $this->Auth->config('storage', 'Memory');
-            $this->Auth->config('unauthorizedRedirect', false);
-            $this->Auth->config('checkAuthIn', 'Controller.initialize');
-            $this->Auth->config('loginAction', false);
-        }
     }
 
-    public function beforeFilter(Event $event)
+    public function viewClasses(): array
     {
-        parent::beforeFilter($event);
-        if (!Configure::read('company_id')
-            && $this->Auth->user('id')
-            && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')) {
-            $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
-        }
+        return [JsonView::class];
     }
 }

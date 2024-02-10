@@ -1,16 +1,20 @@
 meta {
   name: stats
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: https://stockr.1108.cc/api/stats.json?company=1&ApiKey={{apiKey}}
+  url: http://localhost:8084/stockrvue/api/stats.json?company=1&XDEBUG_SESSION=VSCODE
   body: none
   auth: none
 }
 
 query {
   company: 1
-  ApiKey: {{apiKey}}
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Token: {{token}}
 }

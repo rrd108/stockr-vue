@@ -1,18 +1,25 @@
 meta {
   name: login
   type: http
-  seq: 5
+  seq: 1
 }
 
 post {
-  url: http://localhost:8084/stockrvue/api/user-get-token.json
-  body: json
+  url: http://localhost:8084/stockrvue/api/users/login.json?XDEBUG_SESSION=VSCODE
+  body: multipartForm
   auth: none
 }
 
-body:json {
-  {
-    "email": "rrd@krisna.hu",
-    "password": "s6radhESyama"
-  }
+query {
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Content-Type: multipart/form-data
+  Accept: application/json
+}
+
+body:multipart-form {
+  email: rrd@krisna.hu
+  password: s6radhESyama
 }

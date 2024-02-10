@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use ArrayObject;
@@ -34,21 +35,13 @@ class InvoicesTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
         $this->setTable('invoices');
         $this->setDisplayField('number');
         $this->setPrimaryKey('id');
-
-        $this->addBehavior(
-            'Datalist.Datalist',
-            [
-                'Partners' => 'name',
-                'Products' => 'name'
-            ]
-        );
 
         $this->belongsTo('Storages', [
             'foreignKey' => 'storage_id',
@@ -73,7 +66,7 @@ class InvoicesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->nonNegativeInteger('id')
@@ -105,7 +98,7 @@ class InvoicesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['storage_id'], 'Storages'));
         $rules->add($rules->existsIn(['invoicetype_id'], 'Invoicetypes'));
@@ -114,7 +107,7 @@ class InvoicesTable extends Table
         return $rules;
     }
 
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)
+    public function beforeFind(\Cake\Event\EventInterface $event, Query $query, ArrayObject $options, $primary)
     {
         $query->leftJoinWith('Storages', function ($q) {
             return $q->where(['Storages.company_id' => Configure::read('company_id')]);

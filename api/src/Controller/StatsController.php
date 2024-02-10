@@ -1,41 +1,46 @@
 <?php
+
 namespace App\Controller;
 
-use App\Controller\AppController;
-use App\Model\Entity\Invoice;
 use Cake\Core\Configure;
+use App\Controller\AppController;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 class StatsController extends AppController
 {
+    use LocatorAwareTrait;
+
     public function index()
     {
-        $this->loadModel('Invoices');
-        $this->loadModel('Partners');
-        $this->loadModel('Products');
+        $invoicesTable = $this->fetchTable('Invoices');
+        $partnersTable = $this->fetchTable('Partners');
+        $productsTable = $this->fetchTable('Products');
 
         $totals = [
             'sells' => collection(
-                $this->Invoices->find('withTotal')
+                $invoicesTable->find('withTotal')
                     ->where([
-                        'sale' => true, 'Storages.company_id' => Configure::read('company_id'),
+                        'sale' => true,
+                        'Storages.company_id' => Configure::read('company_id'),
                         'YEAR(Invoices.date)' => date('Y')
-                        ])
-                )->sumOf('total'),
+                    ])
+            )->sumOf('total'),
             'purchases' => collection(
-                $this->Invoices->find('withTotal')
+                $invoicesTable->find('withTotal')
                     ->where([
-                        'sale' => false, 'Storages.company_id' => Configure::read('company_id'),
+                        'sale' => false,
+                        'Storages.company_id' => Configure::read('company_id'),
                         'YEAR(Invoices.date)' => date('Y')
-                        ])
-                )->sumOf('total'),
-            'stock' => $this->Products->find('stock')->sumOf('stock'),
+                    ])
+            )->sumOf('total'),
+            'stock' => $productsTable->find('stock')->sumOf('stock'),
         ];
-        $invoices = $this->Invoices->find()->where([
+        $invoices = $invoicesTable->find()->where([
             'Storages.company_id' => Configure::read('company_id'),
             'YEAR(Invoices.date)' => date('Y')
-            ])->count();
-        $partners = $this->Partners->find()->count();
-        $products = $this->Products->find()->count();
+        ])->count();
+        $partners = $partnersTable->find()->count();
+        $products = $productsTable->find()->count();
 
         $stats = [
             'invoices' => $invoices,
