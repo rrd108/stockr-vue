@@ -5,12 +5,16 @@ meta {
 }
 
 get {
-  url: http://localhos:8084/stockrvue/api/stats.json?company=1&ApiKey={{apiKey}}
+  url: http://localhost:8084/stockrvue/api/stats.json?company=1&XDEBUG_SESSION=VSCODE
   body: none
   auth: none
 }
 
 query {
   company: 1
-  ApiKey: {{apiKey}}
+  XDEBUG_SESSION: VSCODE
+}
+
+headers {
+  Token: {{token}}
 }

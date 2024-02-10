@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:8084/stockrvue/api/products.json?company=1&currency=HUF&ApiKey=$2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
+  url: http://localhost:8084/stockrvue/api/products.json?company=1&currency=HUF&XDEBUG_SESSION=VSCODE
   body: multipartForm
   auth: none
 }
@@ -13,11 +13,12 @@ post {
 query {
   company: 1
   currency: HUF
-  ApiKey: $2y$10$5wpnW/cvYGaiM0kaHG8Sj.9lGduCTs32UaosWwvhsIQX0wqUFuE5C
+  XDEBUG_SESSION: VSCODE
 }
 
 headers {
   Content-Type: multipart/form-data
+  Token: {{token}}
 }
 
 body:multipart-form {
