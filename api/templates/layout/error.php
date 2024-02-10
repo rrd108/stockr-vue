@@ -11,14 +11,31 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @var \App\View\AppView $this
  */
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE html>
 <html>
 <head>
-    <title><?= $this->fetch('title') ?></title>
+    <?= $this->Html->charset() ?>
+    <title>
+        <?= $this->fetch('title') ?>
+    </title>
+    <?= $this->Html->meta('icon') ?>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
+
+    <?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?>
+
+    <?= $this->fetch('meta') ?>
+    <?= $this->fetch('css') ?>
+    <?= $this->fetch('script') ?>
 </head>
 <body>
-    <?= $this->fetch('content') ?>
+    <div class="error-container">
+        <?= $this->Flash->render() ?>
+        <?= $this->fetch('content') ?>
+        <?= $this->Html->link(__('Back'), 'javascript:history.back()') ?>
+    </div>
 </body>
 </html>
