@@ -51,7 +51,6 @@ class AppController extends Controller
 
         $this->permissions = ['role' => isset($this->Authentication->getIdentity()->role) ? $this->Authentication->getIdentity()->role : null];
 
-        /*TODO
         $companyId = $this->request->getData('company') ? $this->request->getData('company') : $this->request->getQuery('company');
         if (!$companyId && $this->getRequest()->getSession()->read('company')) {
             $companyId = $this->getRequest()->getSession()->read('company')->id;
@@ -62,7 +61,6 @@ class AppController extends Controller
 
         $currency = $this->request->getData('currency') ? $this->request->getData('currency') : $this->request->getQuery('currency');
         Configure::write('currency', $currency ? $currency : 'HUF');
-        */
 
         Configure::write('CakePdf', [
             'engine' => 'CakePdf.Mpdf',
@@ -73,18 +71,6 @@ class AppController extends Controller
                 'top' => 45
             ],
         ]);
-    }
-
-    public function beforeFilter(\Cake\Event\EventInterface $event)
-    {
-        parent::beforeFilter($event);
-        // if (
-        //     !Configure::read('company_id')
-        //     && $this->Authentication->getIdentity()
-        //     && ($this->name != 'Companies' || $this->request->getParam('action') != 'setDefault')
-        // ) {
-        //     $this->redirect(['plugin' => false, 'controller' => 'Companies', 'action' => 'setDefault']);
-        // }
     }
 
     public function viewClasses(): array
