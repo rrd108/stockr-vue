@@ -33,9 +33,7 @@ class InvoicetypesController extends AppController
      */
     public function view($id = null)
     {
-        $invoicetype = $this->Invoicetypes->get($id, [
-            'contain' => ['Invoices']
-        ]);
+        $invoicetype = $this->Invoicetypes->get($id, contain: ['Invoices']);
 
         $this->set('invoicetype', $invoicetype);
     }
@@ -69,9 +67,7 @@ class InvoicetypesController extends AppController
      */
     public function edit($id = null)
     {
-        $invoicetype = $this->Invoicetypes->get($id, [
-            'contain' => []
-        ]);
+        $invoicetype = $this->Invoicetypes->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $invoicetype = $this->Invoicetypes->patchEntity($invoicetype, $this->request->getData());
             if ($this->Invoicetypes->save($invoicetype)) {

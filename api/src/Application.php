@@ -77,9 +77,9 @@ class Application extends BaseApplication implements AuthorizationServiceProvide
 
         // Load more plugins here
         Configure::load('cors', 'default', false);
-        $this->addPlugin('Cors');
+        $this->addPlugin(\Rrd108\Cors\CorsPlugin::class);
 
-        $this->addPlugin('ApiTokenAuthenticator');
+        $this->addPlugin(\ApiTokenAuthenticator\ApiTokenAuthenticatorPlugin::class);
         $this->addPlugin('Authorization');
         //$this->addPlugin('JsonApiException');
 

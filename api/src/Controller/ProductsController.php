@@ -22,7 +22,7 @@ class ProductsController extends AppController
      */
     public function index()
     {
-        $products = $this->Products->find('purchasePrice', ['currency' => Configure::read('currency')]);
+        $products = $this->Products->find('purchasePrice', currency: Configure::read('currency'));
 
         $this->set(compact('products'));
         $this->viewBuilder()->setOption('serialize', ['products']);
@@ -37,14 +37,12 @@ class ProductsController extends AppController
      */
     public function view($id = null)
     {
-        $product = $this->Products->get($id, [
-            'contain' => [
-                'Companies',
-                'Items.Invoices' => ['Partners', 'Storages']
-            ]
+        $product = $this->Products->get($id, contain: [
+            'Companies',
+            'Items.Invoices' => ['Partners', 'Storages']
         ]);
 
-        $product = $this->Products->find('purchasePrice', ['currency' => Configure::read('currency')])
+        $product = $this->Products->find('purchasePrice', currency: Configure::read('currency'))
             ->where(['Products.id' => $id])
             ->contain(['Companies', 'Items.Invoices' => ['Partners', 'Storages']])
             ->first();
@@ -109,12 +107,12 @@ class ProductsController extends AppController
     public function stock()
     {
         // TODO sells should only show for this year ?
-        $products = $this->Products->find('purchasePrice', ['currency' => Configure::read('currency')])
+        $products = $this->Products->find('purchasePrice', currency: Configure::read('currency'))
             // TODO stock calculation will become slower and slower each year
-            ->find('stock', ['stockDate' => $this->request->getQuery('stockDate')])
-            ->find('sells', ['stockDate' => $this->request->getQuery('stockDate')])
+            ->find('stock', stockDate: $this->request->getQuery('stockDate'))
+            ->find('sells', stockDate: $this->request->getQuery('stockDate'))
             //->find('lastSellPrice');  TODO
-            ->order('Products.name');
+            ->orderBy('Products.name');
 
         $this->set(compact('product'));
         $this->viewBuilder()->setOption('serialize', ['product']);
@@ -123,10 +121,10 @@ class ProductsController extends AppController
     public function stockRotation()
     {
         $lastYear = $this->Products
-            ->find('lastPurchases', ['startDate' => date('Y-m-d', strtotime('-1 year'))])
-            ->find('lastSells', ['startDate' => date('Y-m-d', strtotime('-1 year'))]);
+            ->find('lastPurchases', startDate: date('Y-m-d', strtotime('-1 year')))
+            ->find('lastSells', startDate: date('Y-m-d', strtotime('-1 year')));
         $stock = $this->Products
-            ->find('stock', ['stockDate' => $this->request->getQuery('stockDate')]);
+            ->find('stock', stockDate: $this->request->getQuery('stockDate'));
 
         $rotation = $this->Products->find()
             ->select([

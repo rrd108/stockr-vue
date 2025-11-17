@@ -23,7 +23,7 @@ class PartnersController extends AppController
 
         $partners = $this->Partners->find()
             ->contain('Groups')
-            ->order('Partners.name');
+            ->orderBy('Partners.name');
 
         $this->set(compact('partners'));
         $this->viewBuilder()->setOption('serialize', ['partners']);
@@ -38,9 +38,7 @@ class PartnersController extends AppController
      */
     public function view($id = null)
     {
-        $partner = $this->Partners->get($id, [
-            'contain' => ['Groups', /*'Invoices.Invoicetypes', 'Invoices.Items'*/]
-        ]);
+        $partner = $this->Partners->get($id, contain: ['Groups', /*'Invoices.Invoicetypes', 'Invoices.Items'*/]);
         $this->set(compact('partner'));
         $this->viewBuilder()->setOption('serialize', ['partner']);
     }
@@ -72,9 +70,7 @@ class PartnersController extends AppController
      */
     public function edit($id = null)
     {
-        $partner = $this->Partners->get($id, [
-            'contain' => []
-        ]);
+        $partner = $this->Partners->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $partner = $this->Partners->patchEntity($partner, $this->request->getData());
             $this->Partners->save($partner);

@@ -139,7 +139,7 @@ class ProductsTable extends Table
                 ];
             })
             ->enableAutoFields(true)
-            ->group('Products.id')
+            ->groupBy('Products.id')
             ->leftJoinWith('Items.Invoices');
     }
 
@@ -153,7 +153,7 @@ class ProductsTable extends Table
                 'OR' => ['Invoices.date <=' => $stockDate, 'Invoices.date IS NULL']
             ])
             ->enableAutoFields(true)
-            ->group('Products.id')
+            ->groupBy('Products.id')
             ->leftJoinWith('Items.Invoices');
     }
 
@@ -169,7 +169,7 @@ class ProductsTable extends Table
                 'OR' => ['Invoices.date >=' => $options['startDate'], 'Invoices.date IS NULL']
             ])
             ->enableAutoFields(true)
-            ->group('Products.id')
+            ->groupBy('Products.id')
             ->leftJoinWith('Items.Invoices');
     }
 
@@ -185,7 +185,7 @@ class ProductsTable extends Table
                 'OR' => ['Invoices.date >=' => $options['startDate'], 'Invoices.date IS NULL']
             ])
             ->enableAutoFields(true)
-            ->group('Products.id')
+            ->groupBy('Products.id')
             ->leftJoinWith('Items.Invoices');
     }
 
@@ -224,6 +224,7 @@ class ProductsTable extends Table
         //select invoices where sale = 0, get the price from their items
         $invoiceIds = $this->getAssociation('Items')->getAssociation('Invoices')->find()
             ->where(['Invoices.sale' => false])
+            ->all()
             ->extract('id')
             ->toArray();
 
@@ -252,7 +253,7 @@ class ProductsTable extends Table
         $latestItems = $this->getAssociation('Items')->find()
             ->where(['Items.invoice_id IN' => $invoiceIds]);
         $latestItems = $latestItems->select(['maxId' => $latestItems->func()->max('Items.id')])
-            ->group('Items.product_id');
+            ->groupBy('Items.product_id');
 
         return $query->select(
             [
@@ -288,7 +289,7 @@ class ProductsTable extends Table
                         ]
                     );
                 }
-            )->group('Items.product_id');
+            )->groupBy('Items.product_id');
     }
 
     public function findLastSellPrice(Query $query, array $options)

@@ -13,7 +13,7 @@
         <input type="text" v-model="name" required="required" id="name" />
 
         <label for="name"> Termék EN</label>
-        <input type="text" v-model="en_name" required="required" id="en_name" />
+        <input type="text" v-model="en_name" id="en_name" />
 
         <label for="code"> Kód </label>
         <input type="text" v-model="code" id="code" />
@@ -22,7 +22,7 @@
         <input type="text" v-model="size" id="size" />
 
         <label for="vat">ÁFA %</label>
-        <select v-model="vat" required="required" id="vat">
+        <select v-model="vat" id="vat">
           <option :value="undefined">---</option>
           <option v-for="vat in vats" :key="vat">{{ vat }}</option>
         </select>

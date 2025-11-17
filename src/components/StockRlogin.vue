@@ -31,8 +31,8 @@
         if (resp.data.user.id) {
           store.user = resp.data.user
           if (rememberme.value) {
-            resp.data.lastLogin = Date.now()
-            localStorage.setItem('user', JSON.stringify(resp.data))
+            store.user.lastLogin = Date.now()
+            localStorage.setItem('user', JSON.stringify(store.user))
           }
         }
       })

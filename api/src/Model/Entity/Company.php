@@ -23,7 +23,7 @@ class Company extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'name' => true,
         'taxnumber' => true,
         'currency' => true,

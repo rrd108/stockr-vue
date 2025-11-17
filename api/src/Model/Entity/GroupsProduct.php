@@ -25,7 +25,7 @@ class GroupsProduct extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'product_id' => true,
         'group_id' => true,
         'price' => true,

@@ -26,7 +26,7 @@ class Item extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'invoice_id' => true,
         'product_id' => true,
         'quantity' => true,

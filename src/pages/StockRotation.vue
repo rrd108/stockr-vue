@@ -55,8 +55,8 @@
 
 <script>
   import axios from 'axios'
-  import FilterInput from '@/components/FilterInput'
-  import FilteredTbody from '@/components/FilteredProductTbody'
+  import FilterInput from '@/components/FilterInput.vue'
+  import FilteredTbody from '@/components/FilteredProductTbody.vue'
   import toNum from '@/composables/useToNum'
 
   export default {

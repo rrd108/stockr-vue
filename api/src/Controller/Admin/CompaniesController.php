@@ -34,9 +34,7 @@ class CompaniesController extends AppController
      */
     public function view($id = null)
     {
-        $company = $this->Companies->get($id, [
-            'contain' => ['Storages']
-        ]);
+        $company = $this->Companies->get($id, contain: ['Storages']);
 
         $this->set('company', $company);
     }
@@ -70,9 +68,7 @@ class CompaniesController extends AppController
      */
     public function edit($id = null)
     {
-        $company = $this->Companies->get($id, [
-            'contain' => []
-        ]);
+        $company = $this->Companies->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $company = $this->Companies->patchEntity($company, $this->request->getData());
             if ($this->Companies->save($company)) {

@@ -17,17 +17,17 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
  * @property string|null $first_name
  * @property string|null $last_name
  * @property string|null $token
- * @property \Cake\I18n\FrozenTime|null $token_expires
+ * @property \Cake\I18n\DateTime|null $token_expires
  * @property string|null $api_token
- * @property \Cake\I18n\FrozenTime|null $activation_date
+ * @property \Cake\I18n\DateTime|null $activation_date
  * @property string|null $secret
  * @property bool|null $secret_verified
- * @property \Cake\I18n\FrozenTime|null $tos_date
+ * @property \Cake\I18n\DateTime|null $tos_date
  * @property bool $active
  * @property bool $is_superuser
  * @property string|null $role
- * @property \Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\FrozenTime $modified
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property string|null $additional_data
  *
  * @property \App\Model\Entity\SocialAccount[] $social_accounts
@@ -43,7 +43,7 @@ class User extends Entity
      *
      * @var array<string, bool>
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'username' => true,
         'email' => true,
         'password' => true,
@@ -70,7 +70,7 @@ class User extends Entity
      *
      * @var array<string>
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'password',
         'token',
     ];

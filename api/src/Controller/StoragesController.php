@@ -21,7 +21,7 @@ class StoragesController extends AppController
     public function index()
     {
         $storages = $this->Storages->find()
-            ->order('Storages.name');
+            ->orderBy('Storages.name');
 
         $this->set(compact('storages'));
         $this->viewBuilder()->setOption('serialize', ['storages']);
@@ -36,9 +36,7 @@ class StoragesController extends AppController
      */
     public function view($id = null)
     {
-        $storage = $this->Storages->get($id, [
-            'contain' => ['Companies', 'Products']
-        ]);
+        $storage = $this->Storages->get($id, contain: ['Companies', 'Products']);
 
         $this->set(compact('storage'));
         $this->viewBuilder()->setOption('serialize', ['storage']);
@@ -75,9 +73,7 @@ class StoragesController extends AppController
      */
     public function edit($id = null)
     {
-        $storage = $this->Storages->get($id, [
-            'contain' => []
-        ]);
+        $storage = $this->Storages->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $storage = $this->Storages->patchEntity($storage, $this->request->getData());
             if ($this->Storages->save($storage)) {

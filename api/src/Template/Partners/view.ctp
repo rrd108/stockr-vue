@@ -55,7 +55,7 @@
                 <td><?= h($invoice->invoicetype->name) ?></td>
                 <td>
                     <?= $this->Number->format(
-                        collection($invoice->items)->sumOf(function ($item) {
+                        (new \Cake\Collection\Collection($invoice->items))->sumOf(function ($item) {
                             return $item->quantity * $item->price;
                         }),
                         ['precision' => 2]) ?>

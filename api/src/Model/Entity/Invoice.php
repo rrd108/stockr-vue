@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  * @property int $storage_id
  * @property int $invoicetype_id
  * @property int $partner_id
- * @property \Cake\I18n\FrozenDate|null $date
+ * @property \Cake\I18n\Date|null $date
  * @property string $currency
  * @property bool|null $sale
  * @property string $number
@@ -31,7 +31,7 @@ class Invoice extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'storage_id' => true,
         'invoicetype_id' => true,
         'partner_id' => true,

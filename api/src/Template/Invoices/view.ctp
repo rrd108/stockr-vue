@@ -66,16 +66,16 @@
             <tfoot>
                 <tr>
                     <td><?= __('Total') ?></td>
-                    <td class="text-right"><?= collection($invoice->items)->sumOf('quantity') ?></td>
+                    <td class="text-right"><?= (new \Cake\Collection\Collection($invoice->items))->sumOf('quantity') ?></td>
                     <td></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
+                    <td class="text-right"><?= $this->Number->format((new \Cake\Collection\Collection($invoice->items))->sumOf(function ($item) {
     return $item->price * $item->quantity;
 }), ['precision' => 2]) ?></td>
                     <td></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
+                    <td class="text-right"><?= $this->Number->format((new \Cake\Collection\Collection($invoice->items))->sumOf(function ($item) {
     return $item->price * $item->quantity * $item->product->vat / 100;
 }), ['precision' => 2]) ?></td>
-                    <td class="text-right"><?= $this->Number->format(collection($invoice->items)->sumOf(function ($item) {
+                    <td class="text-right"><?= $this->Number->format((new \Cake\Collection\Collection($invoice->items))->sumOf(function ($item) {
     return $item->price * $item->quantity * (1 + $item->product->vat / 100);
 }), ['precision' => 2]) ?></td>
                 </tr>

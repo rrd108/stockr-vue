@@ -21,7 +21,7 @@ if (Configure::read('debug')) :
 <?php if (!empty($error->queryString)) : ?>
     <p class="notice">
         <strong>SQL Query: </strong>
-        <?= h($error->queryString) ?>
+        <?= htmlspecialchars($error->queryString, ENT_QUOTES, 'UTF-8') ?>
     </p>
 <?php endif; ?>
 <?php if (!empty($error->params)) : ?>
@@ -34,8 +34,8 @@ if (Configure::read('debug')) :
 $this->end();
 endif;
 ?>
-<h2><?= h($message) ?></h2>
+<h2><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></h2>
 <p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= __d('cake', 'The requested address {0} was not found on this server.', "<strong>'{$url}'</strong>") ?>
+    <strong>Error: </strong>
+    <?= sprintf('The requested address %s was not found on this server.', '<strong>\'' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '\'</strong>') ?>
 </p>

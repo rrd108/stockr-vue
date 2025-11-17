@@ -24,7 +24,7 @@ class Storage extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'company_id' => true,
         'name' => true,
         'company' => true,

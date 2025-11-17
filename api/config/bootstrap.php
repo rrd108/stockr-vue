@@ -151,11 +151,11 @@ if (!$fullBaseUrl) {
     $trustProxy = false;
 
     $s = null;
-    if (env('HTTPS') || ($trustProxy && env('HTTP_X_FORWARDED_PROTO') === 'https')) {
+    if (!empty($_SERVER['HTTPS']) || ($trustProxy && !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
         $s = 's';
     }
 
-    $httpHost = env('HTTP_HOST');
+    $httpHost = $_SERVER['HTTP_HOST'] ?? null;
     if (isset($httpHost)) {
         $fullBaseUrl = 'http' . $s . '://' . $httpHost;
     }

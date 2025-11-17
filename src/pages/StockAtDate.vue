@@ -12,7 +12,7 @@
           @click="column.show = !column.show"
           :class="{ inactive: !column.show }"
         >
-          <i class="fi-eye"></i> {{ column.name) }}
+          <i class="fi-eye"></i> {{ column.name }}
         </li>
 
         <li

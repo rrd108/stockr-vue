@@ -9,15 +9,15 @@
   const store = useStockrStore()
 
   const months = [...Array(new Date().getMonth() + 1).keys()].reverse()
-  const past = new Date().getMonth() + 1
-  const searchResultsCount = 0
+  const past = ref(new Date().getMonth() + 1)
+  const searchResultsCount = ref(0)
   const searchTerms = ref({})
-  const selectedMonth = new Date().getMonth()
-  const year = new Date().getFullYear()
+  const selectedMonth = ref(new Date().getMonth())
+  const year = ref(new Date().getFullYear())
 
   const getSelectedMonth = computed(() => {
-    const leadingZero = selectedMonth < 9 ? '0' : ''
-    return `-${leadingZero}${selectedMonth + 1}-`
+    const leadingZero = selectedMonth.value < 9 ? '0' : ''
+    return `-${leadingZero}${selectedMonth.value + 1}-`
   })
 
   const invoices = store.invoices.map(invoice => ({
@@ -72,22 +72,22 @@
 
   const loadInvoices = () => {
     if (invoices.length > 10) {
-      selectMonth(selectedMonth - 1)
+      selectMonth(selectedMonth.value - 1)
     }
   }
 
   const monthName = month => {
-    let firstDay = new Date(year, month, 1)
+    let firstDay = new Date(year.value, month, 1)
     return firstDay.toLocaleString('default', { month: 'long' })
   }
 
   const setCount = count => {
-    searchResultsCount = count
+    searchResultsCount.value = count
   }
 
   const selectMonth = month => {
-    selectedMonth = month
-    if (store.invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year}${getSelectedMonth}`.slice(0, -1)) == -1) {
+    selectedMonth.value = month
+    if (store.invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1) {
       // the selected month is not yet in the store, get it from the API
       getInvoices(month + 1)
     }
@@ -96,7 +96,7 @@
   const getInvoices = month => {
     axios
       .get(
-        `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year}&month=${month}`,
+        `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year.value}&month=${month}`,
         store.tokenHeader
       )
       .then(response => store.addInvoices(response.data.invoices))
@@ -105,7 +105,7 @@
 
   const getPast = () => {
     store.invoices = []
-    getInvoices(past)
+    getInvoices(past.value)
   }
 </script>
 
@@ -114,7 +114,7 @@
     <div class="pagerHeader">
       <h3>Bizonylat</h3>
       <ul>
-        <li v-for="month in months" :key="month" @click="selectMonth(month)" :class="{ active: selectedMonth == month }">
+        <li v-for="month in months" :key="month" @click="selectMonth(month)" :class="{ active: selectedMonth.value == month }">
           {{ monthName(month) }}
         </li>
         <li>

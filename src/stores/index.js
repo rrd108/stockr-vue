@@ -31,7 +31,10 @@ export const useStockrStore = defineStore('stockrStore', () => {
   const invoiceMonths = () => [...new Set(invoices.value.map(invoice => invoice.date.substr(0, 7)))]
 
   const getBaseData = () => {
-    if (!user.value.api_token) console.error('No API token')
+    if (!user.value.token) {
+      console.error('No API token')
+      return
+    }
     getGroups()
     getInvoices()
     getInvoicetypes()

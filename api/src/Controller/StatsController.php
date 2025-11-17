@@ -5,6 +5,7 @@ namespace App\Controller;
 use Cake\Core\Configure;
 use App\Controller\AppController;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\Collection\Collection;
 
 class StatsController extends AppController
 {
@@ -17,22 +18,22 @@ class StatsController extends AppController
         $productsTable = $this->fetchTable('Products');
 
         $totals = [
-            'sells' => collection(
+            'sells' => (new Collection(
                 $invoicesTable->find('withTotal')
                     ->where([
                         'sale' => true,
                         'Storages.company_id' => Configure::read('company_id'),
                         'YEAR(Invoices.date)' => date('Y')
                     ])
-            )->sumOf('total'),
-            'purchases' => collection(
+            ))->sumOf('total'),
+            'purchases' => (new Collection(
                 $invoicesTable->find('withTotal')
                     ->where([
                         'sale' => false,
                         'Storages.company_id' => Configure::read('company_id'),
                         'YEAR(Invoices.date)' => date('Y')
                     ])
-            )->sumOf('total'),
+            ))->sumOf('total'),
             'stock' => $productsTable->find('stock')->sumOf('stock'),
         ];
         $invoices = $invoicesTable->find()->where([

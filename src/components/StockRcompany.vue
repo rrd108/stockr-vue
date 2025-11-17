@@ -9,14 +9,14 @@
   const selectedCompany = ref(0)
 
   const company = JSON.parse(localStorage.getItem('company'))
-  if (company) {
+  if (company && store.user.token) {
     store.company = company
     store.getBaseData()
   }
 
   axios
     .get(import.meta.env.VITE_API_URL + 'companies/accessible.json?company=999', store.tokenHeader)
-    .then(response => (companies.value = response.data))
+    .then(response => (companies.value = response.data.companies || response.data))
     .catch(err => console.error(err))
 
   const setAppCompany = () => {

@@ -21,7 +21,7 @@ class InvoicetypesController extends AppController
     public function index()
     {
         $invoicetypes = $this->Invoicetypes->find()
-            ->order('Invoicetypes.name');
+            ->orderBy('Invoicetypes.name');
 
         $this->set(compact('invoicetypes'));
         $this->viewBuilder()->setOption('serialize', ['invoicetypes']);
@@ -36,9 +36,7 @@ class InvoicetypesController extends AppController
      */
     public function view($id = null)
     {
-        $invoicetype = $this->Invoicetypes->get($id, [
-            'contain' => ['Invoices']
-        ]);
+        $invoicetype = $this->Invoicetypes->get($id, contain: ['Invoices']);
 
         $this->set(compact('invoicetype'));
         $this->viewBuilder()->setOption('serialize', ['invoicetype']);
@@ -74,9 +72,7 @@ class InvoicetypesController extends AppController
      */
     public function edit($id = null)
     {
-        $invoicetype = $this->Invoicetypes->get($id, [
-            'contain' => []
-        ]);
+        $invoicetype = $this->Invoicetypes->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $invoicetype = $this->Invoicetypes->patchEntity($invoicetype, $this->request->getData());
             if ($this->Invoicetypes->save($invoicetype)) {

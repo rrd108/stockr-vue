@@ -6,6 +6,8 @@ use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
 use Cake\Http\Exception\ForbiddenException;
 use Authorization\Policy\RequestPolicyInterface;
+use Authorization\IdentityInterface;
+use Authorization\Policy\ResultInterface;
 
 class RequestPolicy implements RequestPolicyInterface
 {
@@ -14,9 +16,9 @@ class RequestPolicy implements RequestPolicyInterface
      *
      * @param \Authorization\IdentityInterface|null $identity Identity
      * @param \Cake\Http\ServerRequest $request Server Request
-     * @return bool
+     * @return \Authorization\Policy\ResultInterface|bool
      */
-    public function canAccess($identity, ServerRequest $request)
+    public function canAccess(?IdentityInterface $identity, ServerRequest $request): ResultInterface|bool
     {
         if (!$identity) {
             Configure::load('permissions', 'default', false);

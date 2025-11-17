@@ -6,6 +6,7 @@ use SplFileObject;
 use Cake\Core\Configure;
 use App\Controller\AppController;
 use Billingo\API\Connector\HTTP\Request;
+use Cake\Collection\Collection;
 
 /**
  * Invoices Controller
@@ -28,7 +29,7 @@ class InvoicesController extends AppController
         $invoices = $this->Invoices->find()
             ->contain(['Storages', 'Invoicetypes', 'Partners', 'Items'])
             ->where(['YEAR(Invoices.date)' => $year])
-            ->order(['Invoices.date' => 'DESC', 'Invoices.id' => 'DESC']);
+            ->orderBy(['Invoices.date' => 'DESC', 'Invoices.id' => 'DESC']);
 
         if (!empty($this->request->getParam('month'))) {
             $invoices->where(['MONTH(Invoices.date)' => $this->request->getParam('month')]);
@@ -47,9 +48,7 @@ class InvoicesController extends AppController
      */
     public function view($id = null)
     {
-        $invoice = $this->Invoices->get($id, [
-            'contain' => ['Storages.Companies', 'Invoicetypes', 'Partners.Groups', 'Items.Products']
-        ]);
+        $invoice = $this->Invoices->get($id, contain: ['Storages.Companies', 'Invoicetypes', 'Partners.Groups', 'Items.Products']);
 
         $this->set(compact('invoice'));
         $this->viewBuilder()->setOption('serialize', ['invoice']);
@@ -100,9 +99,7 @@ class InvoicesController extends AppController
      */
     public function edit($id = null)
     {
-        $invoice = $this->Invoices->get($id, [
-            'contain' => []
-        ]);
+        $invoice = $this->Invoices->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $invoice = $this->Invoices->patchEntity($invoice, $this->request->getData());
             $this->Invoices->save($invoice);
@@ -142,7 +139,7 @@ class InvoicesController extends AppController
             'private_key' => $billing->Billingo->private_key
         ]);
 
-        $invoice = $this->Invoices->get($id, ['contain' => ['Partners', 'Items.Products']]);
+        $invoice = $this->Invoices->get($id, contain: ['Partners', 'Items.Products']);
 
         $clientData = [
             'name' => $invoice->partner->name,
@@ -222,7 +219,7 @@ class InvoicesController extends AppController
                         |  SplFileObject::READ_AHEAD | SplFileObject::DROP_NEW_LINE
                 );
                 $file->setCsvControl(';');
-                $this->getRequest()->getSession()->write('productImportFile', collection($file));
+                $this->getRequest()->getSession()->write('productImportFile', new Collection($file));
                 $columns = $file->current();
 
                 $this->set(compact('columns'));

@@ -24,11 +24,11 @@ $this->assign('title', __('Login'));
     <fieldset>
         <div class="callout warning">
             <legend>
-                <?= __d('CakeDC/Users', 'Please enter your email and password') ?>
+                <?= __('Please enter your email and password') ?>
             </legend>
         </div>
-        <?= $this->Form->control('email', ['label' => __d('CakeDC/Users', 'Email'), 'required' => true]) ?>
-        <?= $this->Form->control('password', ['label' => __d('CakeDC/Users', 'Password'), 'required' => true]) ?>
+        <?= $this->Form->control('email', ['label' => __('Email'), 'required' => true]) ?>
+        <?= $this->Form->control('password', ['label' => __('Password'), 'required' => true]) ?>
         <?php
         if (Configure::read('Users.reCaptcha.login')) {
             echo $this->User->addReCaptcha();
@@ -36,7 +36,7 @@ $this->assign('title', __('Login'));
         if (Configure::read('Users.RememberMe.active')) {
             echo $this->Form->control(Configure::read('Users.Key.Data.rememberMe'), [
                 'type' => 'checkbox',
-                'label' => __d('CakeDC/Users', 'Remember me'),
+                'label' => __('Remember me'),
                 'checked' => Configure::read('Users.RememberMe.checked')
             ]);
         }
@@ -44,7 +44,7 @@ $this->assign('title', __('Login'));
     </fieldset>
     <?= implode(' ', $this->User->socialLoginList()); ?>
     <div class="row align-center">
-        <?= $this->Form->button(__d('CakeDC/Users', 'Login'), ['class' => 'button']) ?>
+        <?= $this->Form->button(__('Login'), ['class' => 'button']) ?>
     </div>
     <?= $this->Form->end() ?>
     <div class="row align-center">
@@ -52,7 +52,7 @@ $this->assign('title', __('Login'));
         $registrationActive = Configure::read('Users.Registration.active');
         if ($registrationActive) {
             echo $this->Html->link(
-                __d('CakeDC/Users', 'Register'),
+                __('Register'),
                 ['action' => 'register'],
                 ['class' => 'column align-self-middle']
             );
@@ -62,7 +62,7 @@ $this->assign('title', __('Login'));
                 //echo ' | ';
             }
             echo $this->Html->link(
-                __d('CakeDC/Users', 'Reset Password'),
+                __('Reset Password'),
                 ['action' => 'requestResetPassword'],
                 ['class' => 'column align-self-middle']
             );

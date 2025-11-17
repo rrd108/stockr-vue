@@ -17,24 +17,24 @@ use Cake\Core\Configure;
         <legend><?= __('Register') ?></legend>
         <div class="row align-center"><?= $this->Html->image('logo.png') ?></div>
         <?php
-        echo $this->Form->control('email', ['label' => __d('CakeDC/Users', 'Email')]);
-        echo $this->Form->control('password', ['label' => __d('CakeDC/Users', 'Password')]);
+        echo $this->Form->control('email', ['label' => __('Email')]);
+        echo $this->Form->control('password', ['label' => __('Password')]);
         echo $this->Form->control('password_confirm', [
             'type' => 'password',
-            'label' => __d('CakeDC/Users', 'Confirm password')
+            'label' => __('Confirm password')
         ]);
-        echo $this->Form->control('first_name', ['label' => __d('CakeDC/Users', 'First name')]);
-        echo $this->Form->control('last_name', ['label' => __d('CakeDC/Users', 'Last name')]);
+        echo $this->Form->control('first_name', ['label' => __('First name')]);
+        echo $this->Form->control('last_name', ['label' => __('Last name')]);
         echo $this->Form->control('phone', ['label' => __('Phone')]);
         //echo $this->Form->control('address', ['label' => __('Address')]);
         if (Configure::read('Users.Tos.required')) {
-            echo $this->Form->control('tos', ['type' => 'checkbox', 'label' => __d('CakeDC/Users', 'Accept TOS conditions?'), 'required' => true]);
+            echo $this->Form->control('tos', ['type' => 'checkbox', 'label' => __('Accept TOS conditions?'), 'required' => true]);
         }
         if (Configure::read('Users.reCaptcha.registration')) {
             echo $this->User->addReCaptcha();
         }
         ?>
     </fieldset>
-    <?= $this->Form->button(__d('CakeDC/Users', 'Submit'),['is' => 'submit', 'class' => 'button small']) ?>
+    <?= $this->Form->button(__('Submit'),['is' => 'submit', 'class' => 'button small']) ?>
     <?= $this->Form->end() ?>
 </div>

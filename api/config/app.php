@@ -16,7 +16,7 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
+    'debug' => filter_var(getenv('DEBUG') ?: false, FILTER_VALIDATE_BOOLEAN),
 
     /*
      * Configure basic information about the application.
@@ -48,14 +48,14 @@ return [
      */
     'App' => [
         'namespace' => 'App',
-        'encoding' => env('APP_ENCODING', 'UTF-8'),
-        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
-        'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
+        'encoding' => getenv('APP_ENCODING') ?: 'UTF-8',
+        'defaultLocale' => getenv('APP_DEFAULT_LOCALE') ?: 'en_US',
+        'defaultTimezone' => getenv('APP_DEFAULT_TIMEZONE') ?: 'UTC',
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
         'wwwRoot' => WWW_ROOT,
-        //'baseUrl' => env('SCRIPT_NAME'),
+        //'baseUrl' => getenv('SCRIPT_NAME'),
         'fullBaseUrl' => false,
         'imageBaseUrl' => 'img/',
         'cssBaseUrl' => 'css/',
@@ -75,7 +75,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT'),
+        'salt' => getenv('SECURITY_SALT') ?: '',
     ],
 
     /*
@@ -98,7 +98,7 @@ return [
         'default' => [
             'className' => FileEngine::class,
             'path' => CACHE,
-            'url' => env('CACHE_DEFAULT_URL', null),
+            'url' => getenv('CACHE_DEFAULT_URL') ?: null,
         ],
 
         /*
@@ -113,7 +113,7 @@ return [
             'path' => CACHE . 'persistent' . DS,
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKECORE_URL', null),
+            'url' => getenv('CACHE_CAKECORE_URL') ?: null,
         ],
 
         /*
@@ -128,7 +128,7 @@ return [
             'path' => CACHE . 'models' . DS,
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKEMODEL_URL', null),
+            'url' => getenv('CACHE_CAKEMODEL_URL') ?: null,
         ],
 
         /*
@@ -142,7 +142,7 @@ return [
             'path' => CACHE,
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKEROUTES_URL', null),
+            'url' => getenv('CACHE_CAKEROUTES_URL') ?: null,
         ],
     ],
 
@@ -243,7 +243,7 @@ return [
             //'password' => null,
             'client' => null,
             'tls' => false,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'url' => getenv('EMAIL_TRANSPORT_DEFAULT_URL') ?: null,
         ],
     ],
 
@@ -357,16 +357,16 @@ return [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'debug',
-            'url' => env('LOG_DEBUG_URL', null),
-            'scopes' => false,
+            'url' => getenv('LOG_DEBUG_URL') ?: null,
+            'scopes' => null,
             'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'error',
-            'url' => env('LOG_ERROR_URL', null),
-            'scopes' => false,
+            'url' => getenv('LOG_ERROR_URL') ?: null,
+            'scopes' => null,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
@@ -374,7 +374,7 @@ return [
             'className' => FileLog::class,
             'path' => LOGS,
             'file' => 'queries',
-            'url' => env('LOG_QUERIES_URL', null),
+            'url' => getenv('LOG_QUERIES_URL') ?: null,
             'scopes' => ['queriesLog'],
         ],
     ],

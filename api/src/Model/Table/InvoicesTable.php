@@ -120,6 +120,6 @@ class InvoicesTable extends Table
             ->select(['total' => $query->func()->sum('Items.price * Items.quantity')])
             ->enableAutoFields(true)
             ->innerJoinWith('Items')
-            ->group('Invoices.id');
+            ->groupBy('Invoices.id');
     }
 }

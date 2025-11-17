@@ -21,7 +21,7 @@ if (Configure::read('debug')) :
 <?php if (!empty($error->queryString)) : ?>
     <p class="notice">
         <strong>SQL Query: </strong>
-        <?= h($error->queryString) ?>
+        <?= htmlspecialchars($error->queryString, ENT_QUOTES, 'UTF-8') ?>
     </p>
 <?php endif; ?>
 <?php if (!empty($error->params)) : ?>
@@ -38,8 +38,8 @@ if (Configure::read('debug')) :
     $this->end();
 endif;
 ?>
-<h2><?= __d('cake', 'An Internal Error Has Occurred.') ?></h2>
+<h2>An Internal Error Has Occurred.</h2>
 <p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= h($message) ?>
+    <strong>Error: </strong>
+    <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?>
 </p>
