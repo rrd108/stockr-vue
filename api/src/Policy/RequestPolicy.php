@@ -37,15 +37,22 @@ class RequestPolicy implements RequestPolicyInterface
         }
     }
 
-    private function checkPermission(array $permissions, ServerRequest $request)
+    private function checkPermission(?array $permissions, ServerRequest $request)
     {
+        if (!$permissions || !is_array($permissions)) {
+            throw new ForbiddenException('Authorization error');
+        }
+
+        $controllerParam = $request->getParam('controller') ?? '';
+        $controller = ucfirst($controllerParam);
+        $action = $request->getParam('action') ?? '';
+
         if (
-            isset($permissions[$request->getParam('controller')])
-            && in_array($request->getParam('action'), $permissions[$request->getParam('controller')])
+            isset($permissions[$controller])
+            && in_array($action, $permissions[$controller])
         ) {
             return true;
         }
         throw new ForbiddenException('Authorization error');
-        return false;
     }
 }

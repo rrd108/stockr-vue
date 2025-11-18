@@ -145,7 +145,10 @@ class Application extends BaseApplication implements AuthorizationServiceProvide
 
         $this->addPlugin('Migrations');
 
-        // Load more plugins here
+        // Load REPL plugin for interactive console (dev only)
+        if (Configure::read('debug')) {
+            $this->addOptionalPlugin('Cake/Repl');
+        }
     }
 
     public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface

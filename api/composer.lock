@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eed617381ba98f949c31bc26c7336338",
+    "content-hash": "96c95551376e0dda2e6e32f4883b3656",
     "packages": [
         {
             "name": "cakephp/authentication",
@@ -3602,6 +3602,63 @@
                 "source": "https://github.com/cakephp/debug_kit"
             },
             "time": "2025-11-03T19:50:10+00:00"
+        },
+        {
+            "name": "cakephp/repl",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/repl.git",
+                "reference": "bd0797743b703d885ec9b71dfa69f64ac81ed53e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/repl/zipball/bd0797743b703d885ec9b71dfa69f64ac81ed53e",
+                "reference": "bd0797743b703d885ec9b71dfa69f64ac81ed53e",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": "^5.0",
+                "php": ">=8.1",
+                "psy/psysh": "@stable"
+            },
+            "require-dev": {
+                "cakephp/cakephp-codesniffer": "^5.0",
+                "phpunit/phpunit": "^10.1.0"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Cake\\Repl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CakePHP Community",
+                    "homepage": "https://github.com/cakephp/repl/graphs/contributors"
+                }
+            ],
+            "description": "REPL plugin for CakePHP",
+            "homepage": "https://github.com/cakephp/repl",
+            "keywords": [
+                "REPL",
+                "cakephp"
+            ],
+            "support": {
+                "forum": "https://discourse.cakephp.org/",
+                "irc": "irc://irc.freenode.org/cakephp",
+                "issues": "https://github.com/cakephp/repl/issues",
+                "slack": "https://cakesf.herokuapp.com/",
+                "source": "https://github.com/cakephp/repl/tree/2.0.1"
+            },
+            "time": "2023-09-10T04:20:15+00:00"
         },
         {
             "name": "cakephp/twig-view",

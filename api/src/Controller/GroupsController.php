@@ -48,7 +48,7 @@ class GroupsController extends AppController
      */
     public function add()
     {
-        $group = $this->Groups->newEntity();
+        $group = $this->Groups->newEntity([]);
         if ($this->request->is('post')) {
             $group = $this->Groups->patchEntity($group, $this->request->getData());
             if ($this->Groups->save($group)) {

@@ -48,7 +48,7 @@ class ItemsController extends AppController
      */
     public function add()
     {
-        $item = $this->Items->newEntity();
+        $item = $this->Items->newEntity([]);
         if ($this->request->is('post')) {
             $item = $this->Items->patchEntity($item, $this->request->getData());
             if ($this->Items->save($item)) {

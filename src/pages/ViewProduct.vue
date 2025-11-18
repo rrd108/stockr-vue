@@ -42,10 +42,7 @@
         <td class="text-right">
           {{
             toCurrency(
-              product.items.reduce(
-                (total, item) => total + (item.invoice.sale ? item.price * item.quantity : -1 * item.price * item.quantity),
-                0
-              ),
+              product.items.reduce((total, item) => total + (item.invoice.sale ? item.price * item.quantity : -1 * item.price * item.quantity), 0),
               currency
             )
           }}
@@ -141,7 +138,7 @@
               <i v-if="!item.invoice.sale" class="fi-arrow-right in"></i>
             </router-link>
           </td>
-          <td v-html="$options.filters.invoiceNumber(item.invoice.number)"></td>
+          <td v-html="invoiceNumber(item.invoice.number)"></td>
           <td>{{ toLocaleDateString(item.invoice.date) }}</td>
           <td>{{ item.invoice.partner.name }}</td>
           <td>{{ item.invoice.storage.name }}</td>
@@ -150,11 +147,7 @@
           </td>
           <td class="text-right">{{ toCurrency(item.price, currency) }}</td>
           <td class="text-right">
-            {{
-              item.invoice.sale
-                ? toCurrency(item.price * item.quantity, currency)
-                : toCurrency(-1 * item.price * item.quantity, currency)
-            }}
+            {{ item.invoice.sale ? toCurrency(item.price * item.quantity, currency) : toCurrency(-1 * item.price * item.quantity, currency) }}
           </td>
         </tr>
       </tbody>
@@ -165,10 +158,11 @@
 <script>
   import axios from 'axios'
   import invoiceNumber from '@/composables/useInvoiceNumber'
-  import QuickEdit from 'vue-quick-edit'
+  import QuickEdit from '@/components/QuickEdit.vue'
   import toCurrency from '@/composables/useToCurrency'
   import toNum from '@/composables/useToNum'
   import toLocaleDateString from '@/composables/useToLocaleDateString'
+  import { useStockrStore } from '@/stores'
 
   export default {
     name: 'ViewProduct',
@@ -177,72 +171,99 @@
 
     data() {
       return {
-        currency: this.$store.company.currency,
+        store: null,
         editProductProperty: '',
         isLoaded: false,
-        product: {},
+        product: {
+          name: '',
+          code: '',
+          size: '',
+          vat: null,
+          items: [],
+        },
       }
     },
 
     computed: {
+      currency() {
+        return this.store?.company?.currency || 'HUF'
+      },
       lastPurchase() {
+        if (!this.product.items || !Array.isArray(this.product.items)) {
+          return {}
+        }
         return this.product.items
           .filter(item => item.invoice.sale == false)
           .reduce((prev, current) => (prev.invoice.date < current.invoice.date ? current : prev))
       },
       customers() {
-        return [
-          ...new Set(this.product.items.filter(item => item.Partners.group_id != 4).map(item => item.Partners.id)),
-        ].sort()
+        if (!this.product.items || !Array.isArray(this.product.items)) {
+          return []
+        }
+        return [...new Set(this.product.items.filter(item => item.Partners.group_id != 4).map(item => item.Partners.id))].sort()
       },
       stock() {
-        return this.product.items.reduce(
-          (total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity),
-          0
-        )
+        if (!this.product.items || !Array.isArray(this.product.items)) {
+          return 0
+        }
+        return this.product.items.reduce((total, item) => total + (item.invoice.sale ? -1 * item.quantity : item.quantity), 0)
       },
       runoutDate() {
+        if (!this.lastPurchase || !this.lastPurchase.invoice) {
+          return new Date()
+        }
         const lastPurchaseDate = new Date(this.lastPurchase.invoice.date)
         const daysSinceLastPurchase = (new Date() - lastPurchaseDate) / (1000 * 60 * 60 * 24)
         let runoutDays = this.lastPurchase.quantity / (this.totalSells / daysSinceLastPurchase)
         return lastPurchaseDate.setDate(lastPurchaseDate.getDate() + runoutDays)
       },
       totalSells() {
+        if (!this.product.items || !Array.isArray(this.product.items)) {
+          return 0
+        }
         return this.product.items.reduce((total, item) => total + (item.invoice.sale ? item.quantity : 0), 0)
       },
     },
 
     created() {
+      this.store = useStockrStore()
+      if (!this.store.company || !this.store.company.id) {
+        console.error('Company not loaded')
+        return
+      }
       axios
-        .get(
-          import.meta.env.VITE_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.$store.company.id,
-          store.tokenHeader
-        )
+        .get(import.meta.env.VITE_API_URL + 'products/' + this.$route.params.id + '.json?company=' + this.store.company.id, this.store.tokenHeader)
         .then(response => {
+          // Merge the response data into the existing product object to maintain reactivity
+          Object.assign(this.product, response.data.product)
+          // Ensure items array exists
+          if (!this.product.items) {
+            this.product.items = []
+          }
           this.isLoaded = true
-          this.product = response.data.product
         })
         .catch(err => console.error(err))
     },
 
     methods: {
       invoiceNumber,
+      toCurrency,
+      toNum,
+      toLocaleDateString,
       edit(property) {
         this.editProductProperty = false
         let product = {}
         product[property] = this.product[property]
         axios
-          .patch(
-            `${import.meta.env.VITE_API_URL}/products/${this.$route.params.id}.json?company=${this.$store.company.id}`,
-            store.tokenHeader,
-            product
-          )
-          .then(response =>
-            this.$store.commit('updateProduct', {
-              property: property,
-              product: response.data.product,
-            })
-          )
+          .patch(`${import.meta.env.VITE_API_URL}/products/${this.$route.params.id}.json?company=${this.store.company.id}`, product, this.store.tokenHeader)
+          .then(response => {
+            // Update the product in the store
+            if (this.store.products && Array.isArray(this.store.products)) {
+              this.store.products = this.store.products.map(p => (p.id == response.data.product.id ? response.data.product : p))
+            }
+            // Update local product
+            this.product[property] = response.data.product[property]
+          })
           .catch(err => console.error(err))
       },
     },

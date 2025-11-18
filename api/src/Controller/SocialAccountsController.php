@@ -50,7 +50,7 @@ class SocialAccountsController extends AppController
      */
     public function add()
     {
-        $socialAccount = $this->SocialAccounts->newEntity();
+        $socialAccount = $this->SocialAccounts->newEntity([]);
         if ($this->request->is('post')) {
             $socialAccount = $this->SocialAccounts->patchEntity($socialAccount, $this->request->getData());
             if ($this->SocialAccounts->save($socialAccount)) {

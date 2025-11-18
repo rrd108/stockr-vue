@@ -49,7 +49,7 @@ class StoragesController extends AppController
      */
     public function add()
     {
-        $storage = $this->Storages->newEntity();
+        $storage = $this->Storages->newEntity([]);
         if ($this->request->is('post')) {
             $storage = $this->Storages->patchEntity($storage, $this->request->getData());
             if ($this->Storages->save($storage)) {

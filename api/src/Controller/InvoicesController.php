@@ -61,7 +61,7 @@ class InvoicesController extends AppController
      */
     public function add()
     {
-        $invoice = $this->Invoices->newEntity();
+        $invoice = $this->Invoices->newEntity([]);
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $invoice = $this->Invoices->patchEntity($invoice, $data);
@@ -71,7 +71,7 @@ class InvoicesController extends AppController
                 if (!$data['sale']) {
                     foreach ($data['items'] as $item) {
                         foreach ($item['selling_prices'] as $groupId => $sPrice) {
-                            $sellingPrice = $this->Invoices->Items->Products->GroupsProducts->newEntity();
+                            $sellingPrice = $this->Invoices->Items->Products->GroupsProducts->newEntity([]);
                             $sellingPrice = $this->Invoices->Items->Products->GroupsProducts->patchEntity(
                                 $sellingPrice,
                                 [
@@ -269,7 +269,7 @@ class InvoicesController extends AppController
                 }
             );
 
-            $invoice = $this->Invoices->newEntity();
+            $invoice = $this->Invoices->newEntity([]);
             $invoice = $this->Invoices->patchEntity($invoice, $data, ['associated' => ['Items.Products']]);
             if ($this->Invoices->save($invoice)) {
                 $this->Flash->success(__('The invoice has been saved.'));

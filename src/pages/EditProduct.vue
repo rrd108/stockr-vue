@@ -42,8 +42,8 @@
     axios
       .put(
         `${import.meta.env.VITE_API_URL}products/${product.value.id}.json?company=${store.company.id}`,
-        store.tokenHeader,
-        { ean: barcode.value }
+        { ean: barcode.value },
+        store.tokenHeader
       )
       .then(res => {
         product.value = res.data.product

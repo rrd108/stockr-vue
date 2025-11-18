@@ -79,13 +79,12 @@
           </td>
         </tr>
       </thead>
-      <tbody
-        is="filtered-tbody"
+      <FilteredTbody
         :products="products"
         :columns="columns"
         :groups="groups"
         @setCount="setCount($event)"
-      ></tbody>
+      />
     </table>
   </div>
 </template>
@@ -95,6 +94,7 @@
   import FilteredTbody from '@/components/FilteredProductTbody.vue'
   import toCurrency from '@/composables/useToCurrency'
   import toNum from '@/composables/useToNum'
+  import { useStockrStore } from '@/stores'
 
   export default {
     name: 'Stock',
@@ -116,23 +116,26 @@
         ],
         searchResultsCount: 0,
         showFilter: false,
+        store: null,
       }
     },
 
     computed: {
       groups() {
-        return this.$store.groups
+        return this.store?.groups || []
       },
       products() {
-        return this.$store.products
+        return this.store?.products || []
       },
       sells() {
+        if (!this.products || !Array.isArray(this.products)) return 0
         return this.products.reduce(
           (sum, product) => sum + (product.hidden || !product.sells ? 0 : parseInt(product.sells)),
           0
         )
       },
       stock() {
+        if (!this.products || !Array.isArray(this.products)) return 0
         return this.products.reduce(
           (sum, product) => sum + (product.hidden || !product.stock ? 0 : parseInt(product.stock)),
           0
@@ -141,15 +144,18 @@
     },
 
     created() {
-      if (Object.keys(this.$store.products).length === 0) {
-        this.$store.dispatch('getProducts')
+      this.store = useStockrStore()
+      if (!this.store.products || this.store.products.length === 0) {
+        this.store.getProducts()
       }
-      if (Object.keys(this.$store.groups).length === 0) {
-        this.$store.dispatch('getGroups')
+      if (!this.store.groups || this.store.groups.length === 0) {
+        this.store.getGroups()
       }
     },
 
     methods: {
+      toNum,
+      toCurrency,
       setCount(count) {
         this.searchResultsCount = count
       },

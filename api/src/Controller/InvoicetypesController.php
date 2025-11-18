@@ -49,7 +49,7 @@ class InvoicetypesController extends AppController
      */
     public function add()
     {
-        $invoicetype = $this->Invoicetypes->newEntity();
+        $invoicetype = $this->Invoicetypes->newEntity([]);
         if ($this->request->is('post')) {
             $invoicetype = $this->Invoicetypes->patchEntity($invoicetype, $this->request->getData());
             if ($this->Invoicetypes->save($invoicetype)) {

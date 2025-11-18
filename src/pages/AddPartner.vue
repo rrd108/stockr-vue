@@ -99,7 +99,7 @@
         }
 
         axios
-          .post(import.meta.env.VITE_API_URL + 'partners.json?company=' + this.$store.company.id, store.tokenHeader, data)
+          .post(import.meta.env.VITE_API_URL + 'partners.json?company=' + this.$store.company.id, data, this.$store.tokenHeader)
           .then(response => {
             if (response.data.partner.id) {
               this.isSaved = true

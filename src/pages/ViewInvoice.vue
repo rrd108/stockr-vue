@@ -75,11 +75,11 @@
       axios
         .put(
           `${import.meta.env.VITE_API_URL}invoices/edit/${invoice.value.id}.json?company=${store.company.id}`,
-          store.tokenHeader,
           {
             id: invoice.value.id,
             invoicetype_id: invoice.value.invoicetype_id,
-          }
+          },
+          store.tokenHeader
         )
         .then(() => {
           invoice.value.invoicetype = store.invoicetypes.find(invoicetype => invoicetype.id == invoice.value.invoicetype_id)

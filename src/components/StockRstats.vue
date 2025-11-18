@@ -21,7 +21,7 @@
   axios
     .get(`${import.meta.env.VITE_API_URL}stats.json?company=${store.company.id}`, store.tokenHeader)
     .then(response => {
-      stats.value = response.data
+      stats.value = response.data.stats || response.data
     })
     .catch(err => console.error(err))
 </script>

@@ -34,7 +34,7 @@ class StatsController extends AppController
                         'YEAR(Invoices.date)' => date('Y')
                     ])
             ))->sumOf('total'),
-            'stock' => $productsTable->find('stock')->sumOf('stock'),
+            'stock' => (new Collection($productsTable->find('stock')))->sumOf('stock'),
         ];
         $invoices = $invoicesTable->find()->where([
             'Storages.company_id' => Configure::read('company_id'),

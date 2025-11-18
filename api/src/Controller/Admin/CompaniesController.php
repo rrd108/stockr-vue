@@ -46,7 +46,7 @@ class CompaniesController extends AppController
      */
     public function add()
     {
-        $company = $this->Companies->newEntity();
+        $company = $this->Companies->newEntity([]);
         if ($this->request->is('post')) {
             $company = $this->Companies->patchEntity($company, $this->request->getData());
             if ($this->Companies->save($company)) {

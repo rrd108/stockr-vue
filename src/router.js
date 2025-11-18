@@ -81,6 +81,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  // Enable prefetching for better performance
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
 })
 
 // router.beforeEach(to => {

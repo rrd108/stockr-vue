@@ -44,7 +44,7 @@
       return
     }
     axios
-      .post(import.meta.env.VITE_API_URL + 'users/request-reset-password.json', 'reference=' + email.value)
+      .post(import.meta.env.VITE_API_URL + 'users/request-reset-password.json', { reference: email.value })
       .then(response => {
         resetPassSuccess = response
         emailError = false

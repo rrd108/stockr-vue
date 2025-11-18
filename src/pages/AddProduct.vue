@@ -36,6 +36,7 @@
 
 <script>
   import axios from 'axios'
+  import { useStockrStore } from '@/stores'
 
   export default {
     name: 'AddProduct',
@@ -49,6 +50,7 @@
         vats: [],
         vat: undefined,
         isSaved: false,
+        store: null,
       }
     },
 
@@ -58,13 +60,18 @@
     // },
 
     created() {
+      this.store = useStockrStore()
       this.vats = import.meta.env.VITE_VAT_PERCENTAGES.split(',')
     },
 
     methods: {
       addProduct() {
+        if (!this.store.company || !this.store.company.id) {
+          console.error('Company not loaded')
+          return
+        }
         let data = {
-          company_id: this.$store.company.id,
+          company_id: this.store.company.id,
           name: this.name.replace(/ +(?= )/g, ''),
           en_name: this.en_name.replace(/ +(?= )/g, ''),
           code: this.code,
@@ -82,19 +89,22 @@
           .post(
             import.meta.env.VITE_API_URL +
               'products.json?company=' +
-              this.$store.company.id +
+              this.store.company.id +
               '&currency=' +
-              this.$store.company.currency,
-            store.tokenHeader,
-            data
+              this.store.company.currency,
+            data,
+            this.store.tokenHeader
           )
           .then(response => {
             if (response.data.product.id) {
               this.isSaved = true
-              this.$store.commit('addProduct', {
-                ...response.data.product,
-                ...data4vue,
-              })
+              // Add product to store
+              if (this.store.products && Array.isArray(this.store.products)) {
+                this.store.products.push({
+                  ...response.data.product,
+                  ...data4vue,
+                })
+              }
             }
           })
           .catch(error => console.log(error))

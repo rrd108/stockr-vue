@@ -57,7 +57,7 @@ class ProductsController extends AppController
      */
     public function add()
     {
-        $product = $this->Products->newEntity();
+        $product = $this->Products->newEntity([]);
         if ($this->request->is('post')) {
             $product = $this->Products->patchEntity($product, $this->request->getData());
             $this->Products->save($product);
@@ -114,8 +114,8 @@ class ProductsController extends AppController
             //->find('lastSellPrice');  TODO
             ->orderBy('Products.name');
 
-        $this->set(compact('product'));
-        $this->viewBuilder()->setOption('serialize', ['product']);
+        $this->set(compact('products'));
+        $this->viewBuilder()->setOption('serialize', ['products']);
     }
 
     public function stockRotation()
@@ -144,7 +144,7 @@ class ProductsController extends AppController
                 ['lastYear' => $lastYear],
                 ['lastYear.Products__id = stock.Products__id']
             );
-        $this->set(compact('product'));
-        $this->viewBuilder()->setOption('serialize', ['product']);
+        $this->set(compact('rotation'));
+        $this->viewBuilder()->setOption('serialize', ['rotation']);
     }
 }

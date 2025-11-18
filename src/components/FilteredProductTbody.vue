@@ -110,6 +110,7 @@
   import toCurrency from '@/composables/useToCurrency'
   import toNum from '@/composables/useToNum'
   import toLocaleDateString from '@/composables/useToLocaleDateString'
+  import { useStockrStore } from '@/stores'
 
   export default {
     name: 'FilteredTbody',
@@ -137,15 +138,60 @@
       },
     },
 
-    //mixins: [RowFilterMixin],
-
     data() {
       return {
         model: 'products',
+        store: null,
       }
     },
 
+    computed: {
+      search() {
+        return this.store?.search || {}
+      },
+      filteredItems() {
+        if (!this.products || !Array.isArray(this.products)) {
+          return []
+        }
+
+        this.products.forEach(item => {
+          item.hidden = false
+          for (let [field, value] of Object.entries(this.search)) {
+            //remove the first tag in property list as we already on that level
+            let model = field.substr(0, field.indexOf('.'))
+            field = field.substr(field.indexOf('.') + 1)
+
+            if (model == this.model && value) {
+              let fieldValue = field.split('.').reduce((a, b) => a && a[b], item)
+
+              if (!fieldValue) {
+                item.hidden = true
+                return
+              }
+              fieldValue = fieldValue.toString()
+              if (fieldValue.toLowerCase().indexOf(value.toLowerCase()) == -1) {
+                item.hidden = true
+                return
+              }
+            }
+          }
+        })
+
+        const filteredItems = this.products.filter(item => item.hidden !== true)
+
+        this.$emit('setCount', filteredItems.length)
+        return filteredItems
+      },
+    },
+
+    created() {
+      this.store = useStockrStore()
+    },
+
     methods: {
+      toNum,
+      toCurrency,
+      toLocaleDateString,
       isRunout(product) {
         if (product.sells >= 0) {
           // sells can be positive number if we get back products
@@ -154,7 +200,13 @@
         return (this.runout(product) - new Date()) / (1000 * 60 * 60 * 24) <= this.days ? true : false
       },
       profit(product) {
-        let productFromStore = this.$store.products.find(p => p.id == product.id)
+        if (!this.store?.products) {
+          return 0
+        }
+        let productFromStore = this.store.products.find(p => p.id == product.id)
+        if (!productFromStore) {
+          return 0
+        }
         return product.sellsIncome - productFromStore.lastPurchasePrice * -1 * product.sells
       },
       runout(product) {

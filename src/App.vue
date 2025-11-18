@@ -1,10 +1,17 @@
 <script setup>
   import { onUnmounted, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
   import AppHeader from '@/components/AppHeader.vue'
   import StockRcompany from '@/components/StockRcompany.vue'
+  import PageLoader from '@/components/PageLoader.vue'
+  import useRoutePrefetch from '@/composables/useRoutePrefetch'
   import { useStockrStore } from '@/stores'
 
   const store = useStockrStore()
+  const router = useRouter()
+  
+  // Enable route prefetching on link hover
+  useRoutePrefetch()
 
   onMounted(() => window.addEventListener('keypress', shortCuts))
   onUnmounted(() => window.removeEventListener('keypress', shortCuts))
@@ -24,6 +31,7 @@
 
 <template>
   <div id="app">
+    <PageLoader />
     <AppHeader v-if="store.isLoggedIn" />
     <StockRcompany v-if="store.isLoggedIn && !store.company.id" />
     <router-view />

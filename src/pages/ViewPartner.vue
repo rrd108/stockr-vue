@@ -20,32 +20,59 @@
 
 <script>
   import axios from 'axios'
-  import QuickEdit from 'vue-quick-edit'
+  import QuickEdit from '@/components/QuickEdit.vue'
+  import { useStockrStore } from '@/stores'
 
   export default {
     name: 'ViewPartner',
     components: { QuickEdit },
     data() {
       return {
-        partner: this.$store.partners.find(partner => partner.id == this.$route.params.id),
+        store: null,
+        partner: null,
+      }
+    },
+    created() {
+      this.store = useStockrStore()
+      this.partner = this.store.partners.find(partner => partner.id == this.$route.params.id)
+      if (!this.partner) {
+        // If partner not in store, fetch it
+        if (this.store.company && this.store.company.id) {
+          axios
+            .get(`${import.meta.env.VITE_API_URL}partners/${this.$route.params.id}.json?company=${this.store.company.id}`, this.store.tokenHeader)
+            .then(response => {
+              this.partner = response.data.partner
+            })
+            .catch(error => console.log(error))
+        }
       }
     },
     methods: {
       edit(property) {
+        if (!this.partner || !this.store.company || !this.store.company.id) {
+          return
+        }
         let partner = {}
         partner[property] = this.partner[property]
         axios
           .put(
-            `${import.meta.env.VITE_API_URL}partners/${this.partner.id}.json?company=${this.$store.company.id}`,
-            store.tokenHeader,
-            partner
+            `${import.meta.env.VITE_API_URL}partners/${this.partner.id}.json?company=${this.store.company.id}`,
+            partner,
+            this.store.tokenHeader
           )
-          .then(response =>
-            this.$store.commit('updatePartner', {
-              property: property,
-              partner: response.data.partner,
-            })
-          )
+          .then(response => {
+            // Update partner in store
+            if (this.store.partners && Array.isArray(this.store.partners)) {
+              const index = this.store.partners.findIndex(p => p.id == response.data.partner.id)
+              if (index !== -1) {
+                this.store.partners[index] = response.data.partner
+              } else {
+                this.store.partners.push(response.data.partner)
+              }
+            }
+            // Update local partner
+            this.partner[property] = response.data.partner[property]
+          })
           .catch(error => console.log(error))
       },
     },

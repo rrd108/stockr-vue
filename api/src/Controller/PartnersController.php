@@ -50,7 +50,7 @@ class PartnersController extends AppController
      */
     public function add()
     {
-        $partner = $this->Partners->newEntity();
+        $partner = $this->Partners->newEntity([]);
         if ($this->request->is('post')) {
             $partner = $this->Partners->patchEntity($partner, $this->request->getData());
             $this->Partners->save($partner);
