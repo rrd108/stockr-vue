@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useStockrStore } from '@/stores'
 import Home from '@/pages/Home.vue'
 
@@ -79,7 +79,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
   // Enable prefetching for better performance
   scrollBehavior(to, from, savedPosition) {
