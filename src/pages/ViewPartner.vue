@@ -34,7 +34,7 @@
     },
     created() {
       this.store = useStockrStore()
-      this.partner = this.store.partners.find(partner => partner.id == this.$route.params.id)
+      this.partner = this.store.partners && Array.isArray(this.store.partners) ? this.store.partners.find(partner => partner.id == this.$route.params.id) : null
       if (!this.partner) {
         // If partner not in store, fetch it
         if (this.store.company && this.store.company.id) {

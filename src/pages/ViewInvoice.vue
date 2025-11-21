@@ -1,5 +1,6 @@
 <script setup>
   import { ref } from 'vue'
+  import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import { useRoute } from 'vue-router'
   import { useStockrStore } from '@/stores'
@@ -10,26 +11,27 @@
   import invoiceNumber from '@/composables/useInvoiceNumber'
 
   const store = useStockrStore()
+  const { invoices, products } = storeToRefs(store)
   const route = useRoute()
 
   const invoice = ref({})
 
   const billingo = ref({ fulfillment_date: null, due_date: null, payment_method: null, invoice_comment: null })
 
-  const storedInvoice = store.invoices.find(invoice => invoice.id == route.params.id)
+  const storedInvoice = invoices.value && Array.isArray(invoices.value) ? invoices.value.find(invoice => invoice.id == route.params.id) : null
   if (storedInvoice) {
-    const storage = store.storages.find(storage => storage.id == storedInvoice.storage_id)
+    const storage = store.storages && Array.isArray(store.storages) ? store.storages.find(storage => storage.id == storedInvoice.storage_id) : null
     invoice.value = {
       ...storedInvoice,
       storage: {
         ...storage,
         company: store.company,
       },
-      partner: store.partners.find(partner => partner.id == storedInvoice.partner_id),
+      partner: store.partners && Array.isArray(store.partners) ? store.partners.find(partner => partner.id == storedInvoice.partner_id) : null,
       items: [
-        ...storedInvoice.items.map(item => ({
+        ...(storedInvoice.items || []).map(item => ({
           ...item,
-          product: store.products.find(product => product.id == item.product_id),
+          product: products.value && Array.isArray(products.value) ? products.value.find(product => product.id == item.product_id) : null,
         })),
       ],
     }
@@ -64,7 +66,12 @@
       )
       .then(response => {
         invoice.value.status = 'd'
-        store.invoices.find(inv => inv.id == invoice.value.id).status = 'd'
+        if (invoices.value && Array.isArray(invoices.value)) {
+          const inv = invoices.value.find(inv => inv.id == invoice.value.id)
+          if (inv) {
+            inv.status = 'd'
+          }
+        }
       })
       .catch(error => console.error(error))
 
@@ -82,10 +89,14 @@
           store.tokenHeader
         )
         .then(() => {
-          invoice.value.invoicetype = store.invoicetypes.find(invoicetype => invoicetype.id == invoice.value.invoicetype_id)
-          const storedInvoce = store.invoices.find(inv => inv.id == invoice.value.id)
-          storedInvoce.invoicetype_id = invoice.value.invoicetype_id
-          storedInvoce.invoicetype = invoice.value.invoicetype
+          invoice.value.invoicetype = store.invoicetypes && Array.isArray(store.invoicetypes) ? store.invoicetypes.find(invoicetype => invoicetype.id == invoice.value.invoicetype_id) : null
+          if (invoices.value && Array.isArray(invoices.value)) {
+            const storedInvoce = invoices.value.find(inv => inv.id == invoice.value.id)
+            if (storedInvoce) {
+              storedInvoce.invoicetype_id = invoice.value.invoicetype_id
+              storedInvoce.invoicetype = invoice.value.invoicetype
+            }
+          }
         })
         .catch(error => console.error(error))
     }

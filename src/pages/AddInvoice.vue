@@ -1,5 +1,6 @@
 <script setup>
   import { computed, ref } from 'vue'
+  import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import { useStockrStore } from '@/stores'
   import { useRouter } from 'vue-router'
@@ -8,15 +9,18 @@
   import useProductNameProps from '@/composables/useProductNameProps'
 
   const store = useStockrStore()
+  const { invoices, products } = storeToRefs(store)
   const router = useRouter()
 
   const setNumber = () => {
     let year = new Date().getFullYear()
-    let lastSellInvoice = store.invoices.find(invoice => invoice.number.match(new RegExp(year + '/')))
     let number = year + '/' + 1
-    if (lastSellInvoice) {
-      number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
-      number = year + '/' + number
+    if (invoices.value && Array.isArray(invoices.value) && invoices.value.length > 0) {
+      let lastSellInvoice = invoices.value.find(invoice => invoice.number && invoice.number.match(new RegExp(year + '/')))
+      if (lastSellInvoice) {
+        number = parseInt(lastSellInvoice.number.substr(lastSellInvoice.number.indexOf('/') + 1)) + 1
+        number = year + '/' + number
+      }
     }
     return number
   }
@@ -35,25 +39,23 @@
     if (!invoice.value.partner) {
       return { group: { percentage: 1 } }
     }
-    return store.partners.find(partner => partner.name == invoice.value.partner)
+    return store.partners && Array.isArray(store.partners) ? store.partners.find(partner => partner.name == invoice.value.partner) : null
   })
-  const isSale = computed(() => invoicePartner.value.group.percentage)
+  const isSale = computed(() => (invoicePartner.value && invoicePartner.value.group ? invoicePartner.value.group.percentage : 0))
 
   const isHeaderReady = computed(
     () =>
-      invoice.value.storage_id &&
-      invoice.value.invoicetype_id &&
-      invoice.value.partner &&
-      invoice.value.date &&
-      invoice.value.number &&
-      invoice.value.currency
+      invoice.value.storage_id && invoice.value.invoicetype_id && invoice.value.partner && invoice.value.date && invoice.value.number && invoice.value.currency
   )
-  const buyerGroups = () => store.groups.filter(group => group.percentage > 0)
+  const buyerGroups = () => (store.groups && Array.isArray(store.groups) ? store.groups.filter(group => group.percentage > 0) : [])
 
   const showProductsOnlyInStock = ref(true)
-  const productsToShow = computed(() =>
-    showProductsOnlyInStock.value ? store.products.filter(product => product.stock > 0) : store.products
-  )
+  const productsToShow = computed(() => {
+    if (!products.value || !Array.isArray(products.value)) {
+      return []
+    }
+    return showProductsOnlyInStock.value ? products.value.filter(product => product.stock > 0) : products.value
+  })
 
   const emptyItem = {
     product: '',
@@ -64,13 +66,18 @@
 
   const selectedProduct = ref({})
   const setSelectedProduct = () => {
-    let _product = store.products.find(product => product.name == item.value.product)
+    if (!products.value || !Array.isArray(products.value)) {
+      return
+    }
+    let _product = products.value.find(product => product.name == item.value.product)
     let autoAddItem = false
     if (!_product) {
-      _product = store.products.find(
-        product => product.ean == item.value.product || product.name.includes(item.value.product)
-      )
+      _product = products.value.find(product => product.ean == item.value.product || product.name.includes(item.value.product))
       autoAddItem = true
+    }
+
+    if (!_product) {
+      return
     }
 
     item.value.product = _product.name
@@ -81,9 +88,7 @@
       size: productProps.size,
       ean: productProps.ean,
     }
-    item.value.price = (selectedProduct.value.lastPurchasePrice * (1 + invoicePartner.value.group.percentage / 100)).toFixed(
-      2
-    )
+    item.value.price = (selectedProduct.value.lastPurchasePrice * (1 + invoicePartner.value.group.percentage / 100)).toFixed(2)
 
     if (autoAddItem) {
       item.value.quantity = 1
@@ -93,6 +98,7 @@
 
   const productRef = ref(null)
   const quantityRef = ref(null)
+  const isSaving = ref(false)
 
   const addItem = (putFocus = true) => {
     if (!item.value.product || !item.value.quantity || !item.value.price) {
@@ -154,6 +160,8 @@
       return
     }
 
+    isSaving.value = true
+
     const data = {
       ...invoice.value,
       partner_id: invoicePartner.value.id,
@@ -168,15 +176,22 @@
     axios
       .post(import.meta.env.VITE_API_URL + 'invoices.json?company=' + store.company.id, data, store.tokenHeader)
       .then(response => {
-        store.invoices.unshift({
-          ...response.data.invoice,
-          partner: store.partners.find(partner => partner.id == data.partner_id),
-          invoicetype: store.invoicetypes.find(invoicetype => invoicetype.id == data.invoicetype_id),
-          storage: store.storages.find(storage => storage.id == data.storage_id),
-        })
+        if (invoices.value && Array.isArray(invoices.value)) {
+          invoices.value.unshift({
+            ...response.data.invoice,
+            partner: store.partners && Array.isArray(store.partners) ? store.partners.find(partner => partner.id == data.partner_id) : null,
+            invoicetype:
+              store.invoicetypes && Array.isArray(store.invoicetypes) ? store.invoicetypes.find(invoicetype => invoicetype.id == data.invoicetype_id) : null,
+            storage: store.storages && Array.isArray(store.storages) ? store.storages.find(storage => storage.id == data.storage_id) : null,
+          })
+        }
+        isSaving.value = false
         router.push({ name: 'invoices' })
       })
-      .catch(error => console.error(error))
+      .catch(error => {
+        console.error(error)
+        isSaving.value = false
+      })
   }
 </script>
 
@@ -268,14 +283,7 @@
         <tbody>
           <tr>
             <td>
-              <input
-                type="text"
-                v-model="item.product"
-                @change="setSelectedProduct"
-                ref="productRef"
-                list="products"
-                autocomplete="off"
-              />
+              <input type="text" v-model="item.product" @change="setSelectedProduct" ref="productRef" list="products" autocomplete="off" />
               <datalist id="products">
                 <option v-for="product in productsToShow" :key="product.id">
                   {{ product.name }}
@@ -289,14 +297,7 @@
             <td class="text-right">{{ selectedProduct.code }}</td>
             <td class="text-right">{{ toNum(selectedProduct.stock, 1) }}</td>
             <td class="text-right">
-              <input
-                ref="quantityRef"
-                v-model="item.quantity"
-                type="number"
-                class="quantity"
-                required="required"
-                step="0.01"
-              />
+              <input ref="quantityRef" v-model="item.quantity" type="number" class="quantity" required="required" step="0.01" />
             </td>
             <td v-show="isSale" class="text-right">
               <i v-show="selectedProduct.avaragePurchasePrice" class="fi-price-tag avg" title="Átlagos beszerzési ár">
@@ -308,14 +309,7 @@
               </i>
             </td>
             <td v-show="isSale" class="text-right">
-              {{
-                invoicePartner.group
-                  ? toCurrency(
-                      selectedProduct.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100),
-                      invoice.currency
-                    )
-                  : 0
-              }}
+              {{ invoicePartner.group ? toCurrency(selectedProduct.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency) : 0 }}
             </td>
             <td class="text-right">
               <input v-model="item.price" type="number" class="price text-right" required="required" step="0.01" />
@@ -385,8 +379,9 @@
         <tfoot>
           <tr>
             <td>
-              <button class="button" id="saveInvoice" type="submit">
-                <i class="fi-check"> Ment </i>
+              <button class="button" id="saveInvoice" type="submit" :disabled="isSaving">
+                <i v-if="!isSaving" class="fi-check"> Ment </i>
+                <span v-else>Mentés...</span>
               </button>
             </td>
             <td></td>
@@ -476,6 +471,10 @@
   }
   .last {
     background: #cdffc1;
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
   @media screen and (max-width: 40em) {
     thead {

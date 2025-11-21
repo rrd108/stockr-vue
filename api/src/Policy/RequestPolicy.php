@@ -20,27 +20,43 @@ class RequestPolicy implements RequestPolicyInterface
      */
     public function canAccess(?IdentityInterface $identity, ServerRequest $request): ResultInterface|bool
     {
+        // Always check noAuth permissions first - some actions like login should be accessible
+        // even if there's an existing identity (e.g., logging in while already logged in)
+        Configure::load('permissions', 'default', false);
+        $noAuthPermissions = Configure::read('Permissions.noAuth');
+        
+        // Check if this action is in the noAuth list
+        $controllerParam = $request->getParam('controller') ?? '';
+        $controller = ucfirst($controllerParam);
+        $action = $request->getParam('action') ?? '';
+        
+        if (
+            is_array($noAuthPermissions)
+            && isset($noAuthPermissions[$controller])
+            && in_array($action, $noAuthPermissions[$controller])
+        ) {
+            // This action is allowed without authentication
+            return true;
+        }
+
+        // If no identity, deny access (since it's not in noAuth)
         if (!$identity) {
-            Configure::load('permissions', 'default', false);
-            $permissions = Configure::read('Permissions.noAuth');
-            return $this->checkPermission($permissions, $request);
+            throw new ForbiddenException('Authorization error: Authentication required');
         }
 
-        if ($identity) {
-            if ($identity->getOriginalData()->role == 'superuser') {
-                return true;
-            }
-
-            Configure::load('permissions', 'default', false);
-            $permissions = Configure::read('Permissions.' . $identity->getOriginalData()->role);
-            return $this->checkPermission($permissions, $request);
+        // Check role-based permissions
+        if ($identity->getOriginalData()->role == 'superuser') {
+            return true;
         }
+
+        $permissions = Configure::read('Permissions.' . $identity->getOriginalData()->role);
+        return $this->checkPermission($permissions, $request);
     }
 
     private function checkPermission(?array $permissions, ServerRequest $request)
     {
         if (!$permissions || !is_array($permissions)) {
-            throw new ForbiddenException('Authorization error');
+            throw new ForbiddenException('Authorization error: No permissions array');
         }
 
         $controllerParam = $request->getParam('controller') ?? '';
@@ -53,6 +69,6 @@ class RequestPolicy implements RequestPolicyInterface
         ) {
             return true;
         }
-        throw new ForbiddenException('Authorization error');
+        throw new ForbiddenException("Authorization error: controller={$controller}, action={$action}");
     }
 }

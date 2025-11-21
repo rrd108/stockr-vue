@@ -101,11 +101,11 @@
                 ></a
               >
             </li>
-            <li @mouseenter="inUserMenu = true" @mouseleave="inUserMenu = false">
+            <li @mouseenter="inUserMenu = true" @mouseleave="inUserMenu = false" class="user-menu-item">
               <a href="/" @click.prevent="logout" title="logout"
                 ><span>{{ store.user.email }} </span><i class="fi-power"></i
               ></a>
-              <ul v-show="inUserMenu" class="nested menu">
+              <ul v-show="inUserMenu" class="user-menu-dropdown">
                 <li>
                   <a href="/" @click.prevent="logout" title="logout">Kilép <i class="fi-power"></i></a>
                 </li>
@@ -152,6 +152,27 @@
     z-index: 10;
   }
   .nested li {
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  /* User menu dropdown - position under the icon, aligned to right */
+  .user-menu-item {
+    position: relative;
+  }
+  
+  .user-menu-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-left: 0.3em solid #2c83b6;
+    z-index: 10;
+    min-width: 120px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .user-menu-dropdown li {
     white-space: nowrap;
     text-align: left;
   }

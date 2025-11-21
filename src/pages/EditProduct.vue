@@ -1,9 +1,11 @@
 <script setup>
   import { onMounted, ref } from 'vue'
+  import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import { useStockrStore } from '@/stores'
 
   const store = useStockrStore()
+  const { products } = storeToRefs(store)
 
   const barcode = ref('')
   const barcodeRef = ref(null)
@@ -19,7 +21,7 @@
     isEanChange.value = false
     updated.value = false
 
-    product.value = store.products.find(p => p.ean == barcode.value)
+    product.value = products.value && Array.isArray(products.value) ? products.value.find(p => p.ean == barcode.value) : null
 
     if (product.value) {
       barcode.value = ''
@@ -32,8 +34,8 @@
 
   const updated = ref(false)
   const selectProduct = () => {
-    product.value = store.products.find(p => p.name == productName.value.split(' >')[0].trim())
-    if (product.value.ean && product.value.ean != barcode.value) {
+    product.value = products.value && Array.isArray(products.value) ? products.value.find(p => p.name == productName.value.split(' >')[0].trim()) : null
+    if (product.value && product.value.ean && product.value.ean != barcode.value) {
       isEanChange.value = true
     }
   }
@@ -47,7 +49,9 @@
       )
       .then(res => {
         product.value = res.data.product
-        store.products = store.products.map(p => (p.id == product.value.id ? product.value : p))
+        if (products.value && Array.isArray(products.value)) {
+          products.value = products.value.map(p => (p.id == product.value.id ? product.value : p))
+        }
         updated.value = true
         barcode.value = ''
         productName.value = ''

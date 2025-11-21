@@ -1,5 +1,6 @@
 <script setup>
   import { computed, ref, watch } from 'vue'
+  import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import FilterInput from '@/components/FilterInput.vue'
   import FilteredTbody from '@/components/FilteredInvoiceTbody.vue'
@@ -7,6 +8,7 @@
   import { useStockrStore } from '@/stores'
 
   const store = useStockrStore()
+  const { invoices: storeInvoices } = storeToRefs(store)
 
   const months = [...Array(new Date().getMonth() + 1).keys()].reverse()
   const past = ref(new Date().getMonth() + 1)
@@ -20,12 +22,17 @@
     return `-${leadingZero}${selectedMonth.value + 1}-`
   })
 
-  const invoices = store.invoices.map(invoice => ({
-    ...invoice,
-    amount: (invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)),
-  }))
+  const invoices = computed(() => {
+    if (!storeInvoices.value || !Array.isArray(storeInvoices.value)) {
+      return []
+    }
+    return storeInvoices.value.map(invoice => ({
+      ...invoice,
+      amount: (invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)),
+    }))
+  })
 
-  const filteredInvoices = ref(invoices)
+  const filteredInvoices = ref(invoices.value)
 
   watch(
     () => searchTerms.value,
@@ -34,7 +41,7 @@
         return
       }
 
-      filteredInvoices.value = invoices.filter(invoice => {
+      filteredInvoices.value = invoices.value.filter(invoice => {
         for (const key in searchTerms.value) {
           if (!searchTerms.value[key]) {
             continue
@@ -71,7 +78,7 @@
   )
 
   const loadInvoices = () => {
-    if (invoices.length > 10) {
+    if (invoices.value.length > 10) {
       selectMonth(selectedMonth.value - 1)
     }
   }
@@ -87,7 +94,8 @@
 
   const selectMonth = month => {
     selectedMonth.value = month
-    if (store.invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1) {
+    const invoiceMonths = store.invoiceMonths()
+    if (invoiceMonths && Array.isArray(invoiceMonths) && invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1) {
       // the selected month is not yet in the store, get it from the API
       getInvoices(month + 1)
     }
@@ -99,12 +107,18 @@
         `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year.value}&month=${month}`,
         store.tokenHeader
       )
-      .then(response => store.addInvoices(response.data.invoices))
+      .then(response => {
+        if (storeInvoices.value && Array.isArray(storeInvoices.value) && response.data.invoices && Array.isArray(response.data.invoices)) {
+          storeInvoices.value.push(...response.data.invoices)
+        }
+      })
       .catch(err => console.error(err))
   }
 
   const getPast = () => {
-    store.invoices = []
+    if (storeInvoices.value && Array.isArray(storeInvoices.value)) {
+      storeInvoices.value.length = 0
+    }
     getInvoices(past.value)
   }
 </script>
@@ -164,7 +178,7 @@
             <span class="small-6 text-right">
               {{
                 toCurrency(
-                  invoices.reduce(
+                  invoices.value.reduce(
                     (sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : parseInt(invoice.amount)),
                     0
                   )

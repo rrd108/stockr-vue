@@ -37,6 +37,10 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Authorization\Middleware\AuthorizationMiddleware;
 use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
+use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Middleware\AuthenticationMiddleware;
+use ApiTokenAuthenticator\ApiTokenAuthenticatorPlugin;
 
 /**
  * Application setup class.
@@ -44,7 +48,7 @@ use Authorization\Middleware\RequestAuthorizationMiddleware;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your application.
  */
-class Application extends BaseApplication implements AuthorizationServiceProviderInterface
+class Application extends BaseApplication implements AuthorizationServiceProviderInterface, AuthenticationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -115,6 +119,9 @@ class Application extends BaseApplication implements AuthorizationServiceProvide
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
+            // Add Authentication middleware BEFORE Authorization
+            ->add(new AuthenticationMiddleware($this))
+
             ->add(new AuthorizationMiddleware($this))
             ->add(new RequestAuthorizationMiddleware());
 
@@ -157,5 +164,12 @@ class Application extends BaseApplication implements AuthorizationServiceProvide
         $mapResolver->map(ServerRequest::class, RequestPolicy::class);
 
         return new AuthorizationService($mapResolver);
+    }
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationService
+    {
+        // Use the ApiTokenAuthenticatorPlugin to get the authentication service
+        $plugin = new ApiTokenAuthenticatorPlugin();
+        return $plugin->getAuthenticationService($request);
     }
 }
