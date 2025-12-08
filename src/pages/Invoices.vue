@@ -11,11 +11,11 @@
   const { invoices: storeInvoices } = storeToRefs(store)
 
   const months = [...Array(new Date().getMonth() + 1).keys()].reverse()
-  const past = ref(new Date().getMonth() + 1)
-  const searchResultsCount = ref(0)
-  const searchTerms = ref({})
   const selectedMonth = ref(new Date().getMonth())
   const year = ref(new Date().getFullYear())
+  const past = ref(selectedMonth.value + 1) // Keep in sync with selectedMonth (1-based)
+  const searchResultsCount = ref(0)
+  const searchTerms = ref({})
 
   const getSelectedMonth = computed(() => {
     const leadingZero = selectedMonth.value < 9 ? '0' : ''
@@ -91,7 +91,16 @@
             return false
           }
 
-          if (!invoiceProp || !invoiceProp.toLowerCase().includes(searchTerms.value[key])) {
+          // Normalize date search term: remove spaces and replace dots with hyphens
+          let searchTerm = searchTerms.value[key]
+          if (key == 'date') {
+            searchTerm = searchTerm.replace(/\s+/g, '').replace(/\./g, '-')
+            if (invoiceProp) {
+              invoiceProp = invoiceProp.replace(/\s+/g, '').replace(/\./g, '-')
+            }
+          }
+
+          if (!invoiceProp || !invoiceProp.toLowerCase().includes(searchTerm.toLowerCase())) {
             return false
           }
         }
@@ -119,6 +128,7 @@
 
   const selectMonth = month => {
     selectedMonth.value = month
+    past.value = month + 1 // Keep past in sync (1-based)
     const invoiceMonths = store.invoiceMonths()
     if (
       invoiceMonths &&
@@ -148,6 +158,30 @@
     getInvoices(past.value)
   }
 
+  const handleMonthSelectChange = () => {
+    // past is 1-based (1-12), selectedMonth is 0-based (0-11)
+    selectedMonth.value = past.value - 1
+    const invoiceMonths = store.invoiceMonths()
+    if (
+      invoiceMonths &&
+      Array.isArray(invoiceMonths) &&
+      invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1
+    ) {
+      getInvoices(past.value)
+    }
+  }
+
+  const handleYearChange = () => {
+    const invoiceMonths = store.invoiceMonths()
+    if (
+      invoiceMonths &&
+      Array.isArray(invoiceMonths) &&
+      invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1
+    ) {
+      getInvoices(selectedMonth.value + 1)
+    }
+  }
+
   // Load current month's invoices on mount if not already loaded
   onMounted(() => {
     const invoiceMonths = store.invoiceMonths()
@@ -164,11 +198,11 @@
     <div class="pagerHeader">
       <h3>Bizonylat</h3>
       <ul>
-        <li v-for="month in months" :key="month" @click="selectMonth(month)" :class="{ active: selectedMonth.value == month }">
+        <li v-for="month in months" :key="month" @click="selectMonth(month)" :class="{ active: selectedMonth == month }">
           {{ monthName(month) }}
         </li>
         <li>
-          <select v-model="year" @change="getPast">
+          <select v-model="year" @change="handleYearChange">
             <option value="2019">2019</option>
             <option value="2020">2020</option>
             <option value="2021">2021</option>
@@ -180,7 +214,7 @@
           </select>
         </li>
         <li>
-          <select v-model="past" @change="getPast">
+          <select v-model="past" @change="handleMonthSelectChange">
             <option value="12">december</option>
             <option value="11">november</option>
             <option value="10">október</option>
@@ -264,20 +298,21 @@
   }
 
   select {
-    margin: auto;
-    padding: auto;
-    line-height: normal;
+    margin: 0;
+    padding: 0 0.25em;
+    height: auto;
+    font-size: 0.75rem;
   }
 
   .pagerHeader li {
-    margin: 0 0.5em;
+    margin: 0.25em;
     cursor: pointer;
-    padding: 0.5em 1em;
+    padding: 0.25em;
   }
 
   .pagerHeader li.active {
     color: #fff;
     background-color: #2c83b6;
-    border-radius: 1em;
+    border-radius: 0.5em;
   }
 </style>
