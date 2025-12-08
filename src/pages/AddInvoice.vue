@@ -154,28 +154,17 @@
     }
   }
 
-  /*
-  TODO beszerzés #111
-  const sellingPrices = () => {
-    let sellingPrices = []
-    this.buyerGroups.forEach(group => (sellingPrices[group.id] = this.price * (1 + group.percentage / 100)))
-    return sellingPrices
-  }
-
-  onMounted(() => {
-    this.$refs.storage.focus()
-  })
-
-  TODO javítás #112
   const changeItem = uuid => {
-    let product = this.invoice.items.find(invoiceItem => invoiceItem.uuid == uuid)
-    this.product = product.name
-    this.price = product.price
-    this.quantity = product.quantity
-    this.setSelectedProduct()
-    this.invoice.items = this.invoice.items.filter(invoiceItem => invoiceItem.uuid != uuid)
+    const product = invoice.value.items.find(invoiceItem => invoiceItem.uuid == uuid)
+    if (!product) {
+      return
+    }
+    item.value.product = product.name
+    item.value.price = product.price
+    item.value.quantity = product.quantity
+    setSelectedProduct()
+    invoice.value.items = invoice.value.items.filter(invoiceItem => invoiceItem.uuid != uuid)
   }
-  */
 
   const saveInvoice = () => {
     addItem(false)
