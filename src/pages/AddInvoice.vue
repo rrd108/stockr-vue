@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref, watch, onMounted } from 'vue'
   import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import { useStockrStore } from '@/stores'
@@ -48,6 +48,10 @@
       invoice.value.storage_id && invoice.value.invoicetype_id && invoice.value.partner && invoice.value.date && invoice.value.number && invoice.value.currency
   )
   const buyerGroups = computed(() => (store.groups && Array.isArray(store.groups) ? store.groups.filter(group => group.percentage > 0) : []))
+
+  const hasOnlyOneStorage = computed(() => {
+    return store.storages && Array.isArray(store.storages) && store.storages.length === 1
+  })
 
   const showProductsOnlyInStock = ref(true)
   const productsToShow = computed(() => {
@@ -122,6 +126,34 @@
     }
   )
 
+  // Set showProductsOnlyInStock to false when it's a purchase (!isSale)
+  watch(
+    () => isSale.value,
+    saleValue => {
+      if (!saleValue) {
+        showProductsOnlyInStock.value = false
+      }
+    }
+  )
+
+  // Auto-select storage if there's only one
+  watch(
+    () => hasOnlyOneStorage.value,
+    onlyOne => {
+      if (onlyOne && store.storages && Array.isArray(store.storages) && store.storages.length === 1) {
+        invoice.value.storage_id = store.storages[0].id
+      }
+    },
+    { immediate: true }
+  )
+
+  // Also check on mount in case storages are loaded later
+  onMounted(() => {
+    if (hasOnlyOneStorage.value && store.storages && Array.isArray(store.storages) && store.storages.length === 1) {
+      invoice.value.storage_id = store.storages[0].id
+    }
+  })
+
   const addItem = (putFocus = true) => {
     if (!item.value.product || !item.value.quantity || !item.value.price) {
       return
@@ -179,11 +211,18 @@
       ...invoice.value,
       partner_id: invoicePartner.value && invoicePartner.value.id ? invoicePartner.value.id : null,
       sale: isSale.value ? 1 : 0,
-      items: invoice.value.items.map(item => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
+      items: invoice.value.items.map(item => {
+        const itemData = {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.price,
+        }
+        // Include selling_prices for purchase invoices (!isSale)
+        if (!isSale.value) {
+          itemData.selling_prices = item.sellingPrices || {}
+        }
+        return itemData
+      }),
     }
 
     axios
@@ -215,7 +254,7 @@
     <div class="row">
       <div class="column small-12 large-6">
         <label for="storage-id"><i class="fi-contrast"> Raktár </i></label>
-        <select v-model="invoice.storage_id" id="storage-id">
+        <select v-model="invoice.storage_id" id="storage-id" :disabled="hasOnlyOneStorage">
           <option v-for="storage in store.storages" :key="storage.id" :value="storage.id">
             {{ storage.name }}
           </option>

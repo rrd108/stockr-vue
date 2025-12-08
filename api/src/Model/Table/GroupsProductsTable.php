@@ -89,6 +89,8 @@ class GroupsProductsTable extends Table
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
         // TODO this is an ugly solution for saving localized numbers
-        $data['price'] = LocalizedNumber2Number::change($data['price']);
+        if (isset($data['price'])) {
+            $data['price'] = LocalizedNumber2Number::change($data['price']);
+        }
     }
 }
