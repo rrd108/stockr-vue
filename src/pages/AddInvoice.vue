@@ -10,6 +10,10 @@
 
   const store = useStockrStore()
   const { invoices, products } = storeToRefs(store)
+  console.log({
+    storeProductsLength: products.value && Array.isArray(products.value) ? products.value.length : 0,
+    invoicesLength: invoices.value && Array.isArray(invoices.value) ? invoices.value.length : 0,
+  })
   const router = useRouter()
 
   const setNumber = () => {
@@ -47,7 +51,7 @@
     () =>
       invoice.value.storage_id && invoice.value.invoicetype_id && invoice.value.partner && invoice.value.date && invoice.value.number && invoice.value.currency
   )
-  const buyerGroups = () => (store.groups && Array.isArray(store.groups) ? store.groups.filter(group => group.percentage > 0) : [])
+  const buyerGroups = computed(() => (store.groups && Array.isArray(store.groups) ? store.groups.filter(group => group.percentage > 0) : []))
 
   const showProductsOnlyInStock = ref(true)
   const productsToShow = computed(() => {
@@ -63,6 +67,7 @@
     price: 0,
   }
   const item = ref({ ...emptyItem })
+  const sellingPrices = ref({})
 
   const selectedProduct = ref({})
   const setSelectedProduct = () => {
@@ -88,7 +93,16 @@
       size: productProps.size,
       ean: productProps.ean,
     }
-    item.value.price = (selectedProduct.value.lastPurchasePrice * (1 + invoicePartner.value.group.percentage / 100)).toFixed(2)
+    item.value.price = (
+      selectedProduct.value.lastPurchasePrice *
+      (1 + (invoicePartner.value && invoicePartner.value.group ? invoicePartner.value.group.percentage : 0) / 100)
+    ).toFixed(2)
+
+    // Initialize sellingPrices for each buyer group
+    sellingPrices.value = {}
+    buyerGroups.value.forEach(group => {
+      sellingPrices.value[group.id] = (item.value.price * (1 + group.percentage / 100)).toFixed(2)
+    })
 
     if (autoAddItem) {
       item.value.quantity = 1
@@ -119,11 +133,13 @@
         product_id: selectedProduct.value.id,
         quantity: item.value.quantity,
         price: item.value.price,
+        sellingPrices: { ...sellingPrices.value },
       })
     }
 
     selectedProduct.value = {}
     item.value = { ...emptyItem }
+    sellingPrices.value = {}
 
     if (putFocus) {
       productRef.value.focus()
@@ -164,7 +180,7 @@
 
     const data = {
       ...invoice.value,
-      partner_id: invoicePartner.value.id,
+      partner_id: invoicePartner.value && invoicePartner.value.id ? invoicePartner.value.id : null,
       sale: isSale.value ? 1 : 0,
       items: invoice.value.items.map(item => ({
         product_id: item.product_id,
@@ -220,7 +236,7 @@
 
     <div class="row">
       <div class="column small-12 large-6">
-        <label for="partner-id"> <i class="fi-torsos"> Partner </i> / {{ invoicePartner.group.name }} </label>
+        <label for="partner-id"> <i class="fi-torsos"> Partner </i> / {{ invoicePartner && invoicePartner.group ? invoicePartner.group.name : '' }} </label>
         <input type="text" v-model.lazy="invoice.partner" list="partners" id="partner-id" autocomplete="off" />
         <datalist id="partners">
           <option v-for="partner in store.partners" :key="partner.id">
@@ -309,7 +325,11 @@
               </i>
             </td>
             <td v-show="isSale" class="text-right">
-              {{ invoicePartner.group ? toCurrency(selectedProduct.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency) : 0 }}
+              {{
+                invoicePartner && invoicePartner.group
+                  ? toCurrency(selectedProduct.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency)
+                  : 0
+              }}
             </td>
             <td class="text-right">
               <input v-model="item.price" type="number" class="price text-right" required="required" step="0.01" />
@@ -351,7 +371,11 @@
               </i>
             </td>
             <td v-show="isSale" class="text-right">
-              {{ toCurrency(invoiceItem.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency) }}
+              {{
+                invoicePartner && invoicePartner.group
+                  ? toCurrency(invoiceItem.lastPurchasePrice * (1 + invoicePartner.group.percentage / 100), invoice.currency)
+                  : 0
+              }}
             </td>
             <td class="text-right">
               {{ toCurrency(invoiceItem.price, invoice.currency) }}
@@ -368,7 +392,7 @@
             </td>
 
             <td v-for="group in buyerGroups" :key="group.id" v-show="!isSale" class="text-right">
-              {{ toCurrency(invoiceItem.sellingPrices[group.id], invoice.currency) }}
+              {{ invoiceItem.sellingPrices && invoiceItem.sellingPrices[group.id] ? toCurrency(invoiceItem.sellingPrices[group.id], invoice.currency) : '-' }}
             </td>
 
             <td class="pointer">

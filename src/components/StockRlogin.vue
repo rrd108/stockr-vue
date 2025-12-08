@@ -40,14 +40,14 @@
 
   const requestResetPass = () => {
     if (!email.value) {
-      emailError = true
+      emailError.value = true
       return
     }
     axios
       .post(import.meta.env.VITE_API_URL + 'users/request-reset-password.json', { reference: email.value })
       .then(response => {
-        resetPassSuccess = response
-        emailError = false
+        resetPassSuccess.value = response
+        emailError.value = false
       })
       .catch(error => console.log(error))
   }
@@ -61,9 +61,7 @@
     <div class="row align-center">
       <h1>StockR</h1>
     </div>
-    <div class="callout success" v-show="resetPassSuccess">
-      A jelszó emlékeztető kiküldött egy emailt a megadott email címre a jelszavad visszaállításához.
-    </div>
+    <div class="callout success" v-show="resetPassSuccess">A jelszó emlékeztető kiküldött egy emailt a megadott email címre a jelszavad visszaállításához.</div>
 
     <form @submit.prevent="login" v-show="!resetPassSuccess">
       <fieldset>
@@ -72,14 +70,7 @@
         </div>
         <div class="input email required">
           <label for="email">Email</label>
-          <input
-            type="email"
-            v-model="email"
-            name="email"
-            required="required"
-            id="email"
-            :class="{ 'callout warning': emailError }"
-          />
+          <input type="email" v-model="email" name="email" required="required" id="email" :class="{ 'callout warning': emailError }" />
           <div class="callout warning" v-show="emailError">Add meg az email címedet</div>
         </div>
         <div class="input password required">

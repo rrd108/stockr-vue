@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref, watch, onMounted } from 'vue'
   import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import FilterInput from '@/components/FilterInput.vue'
@@ -26,18 +26,43 @@
     if (!storeInvoices.value || !Array.isArray(storeInvoices.value)) {
       return []
     }
-    return storeInvoices.value.map(invoice => ({
-      ...invoice,
-      amount: (invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)),
-    }))
+    // Filter by selected month and year
+    const monthFilter = `${year.value}${getSelectedMonth.value}`.slice(0, -1) // e.g., "2024-01"
+    return storeInvoices.value
+      .filter(invoice => {
+        if (!invoice.date) return false
+        const invoiceDate = invoice.date.substr(0, 7) // Get YYYY-MM format
+        return invoiceDate === monthFilter
+      })
+      .map(invoice => {
+        // Only calculate amount if not already present (cache it)
+        if (invoice.amount === undefined && invoice.items && Array.isArray(invoice.items)) {
+          invoice.amount = invoice.items.reduce((total, item) => total + item.price * item.quantity, 0)
+        }
+        return invoice
+      })
   })
 
-  const filteredInvoices = ref(invoices.value)
+  // Calculate total as a computed property instead of in template
+  const totalAmount = computed(() => {
+    if (!invoices.value || !Array.isArray(invoices.value)) {
+      return 0
+    }
+    return invoices.value.reduce((sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : invoice.amount || 0), 0)
+  })
+
+  const filteredInvoices = ref([])
 
   watch(
-    () => searchTerms.value,
+    [() => searchTerms.value, invoices, selectedMonth, year],
     () => {
+      if (!invoices.value || !Array.isArray(invoices.value)) {
+        filteredInvoices.value = []
+        return
+      }
+
       if (!Object.keys(searchTerms.value).length) {
+        filteredInvoices.value = invoices.value
         return
       }
 
@@ -66,7 +91,7 @@
             return false
           }
 
-          if (!invoiceProp.toLowerCase().includes(searchTerms.value[key])) {
+          if (!invoiceProp || !invoiceProp.toLowerCase().includes(searchTerms.value[key])) {
             return false
           }
         }
@@ -74,7 +99,7 @@
         return true
       })
     },
-    { deep: true }
+    { immediate: true }
   )
 
   const loadInvoices = () => {
@@ -95,7 +120,11 @@
   const selectMonth = month => {
     selectedMonth.value = month
     const invoiceMonths = store.invoiceMonths()
-    if (invoiceMonths && Array.isArray(invoiceMonths) && invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1) {
+    if (
+      invoiceMonths &&
+      Array.isArray(invoiceMonths) &&
+      invoiceMonths.findIndex(invoiceMonth => invoiceMonth == `${year.value}${getSelectedMonth.value}`.slice(0, -1)) == -1
+    ) {
       // the selected month is not yet in the store, get it from the API
       getInvoices(month + 1)
     }
@@ -103,10 +132,7 @@
 
   const getInvoices = month => {
     axios
-      .get(
-        `${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year.value}&month=${month}`,
-        store.tokenHeader
-      )
+      .get(`${import.meta.env.VITE_API_URL}invoices.json?company=${store.company.id}&year=${year.value}&month=${month}`, store.tokenHeader)
       .then(response => {
         if (storeInvoices.value && Array.isArray(storeInvoices.value) && response.data.invoices && Array.isArray(response.data.invoices)) {
           storeInvoices.value.push(...response.data.invoices)
@@ -121,6 +147,16 @@
     }
     getInvoices(past.value)
   }
+
+  // Load current month's invoices on mount if not already loaded
+  onMounted(() => {
+    const invoiceMonths = store.invoiceMonths()
+    const currentMonthFilter = `${year.value}${getSelectedMonth.value}`.slice(0, -1)
+    if (!invoiceMonths || !Array.isArray(invoiceMonths) || invoiceMonths.findIndex(invoiceMonth => invoiceMonth === currentMonthFilter) === -1) {
+      // Current month not in store, load it
+      getInvoices(selectedMonth.value + 1)
+    }
+  })
 </script>
 
 <template>
@@ -139,6 +175,8 @@
             <option value="2022">2022</option>
             <option value="2023">2023</option>
             <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
           </select>
         </li>
         <li>
@@ -176,14 +214,7 @@
           <th scope="col" class="row">
             <span class="small-6"> Összeg </span>
             <span class="small-6 text-right">
-              {{
-                toCurrency(
-                  invoices.value.reduce(
-                    (sum, invoice) => sum + (invoice.hidden || invoice.status == 'd' ? 0 : parseInt(invoice.amount)),
-                    0
-                  )
-                )
-              }}
+              {{ toCurrency(totalAmount) }}
             </span>
           </th>
         </tr>
