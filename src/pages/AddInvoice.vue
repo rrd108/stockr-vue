@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { storeToRefs } from 'pinia'
   import axios from 'axios'
   import { useStockrStore } from '@/stores'
@@ -10,10 +10,6 @@
 
   const store = useStockrStore()
   const { invoices, products } = storeToRefs(store)
-  console.log({
-    storeProductsLength: products.value && Array.isArray(products.value) ? products.value.length : 0,
-    invoicesLength: invoices.value && Array.isArray(invoices.value) ? invoices.value.length : 0,
-  })
   const router = useRouter()
 
   const setNumber = () => {
@@ -113,6 +109,18 @@
   const productRef = ref(null)
   const quantityRef = ref(null)
   const isSaving = ref(false)
+
+  // Watch for price changes and update selling prices
+  watch(
+    () => item.value.price,
+    newPrice => {
+      if (newPrice && buyerGroups.value.length > 0) {
+        buyerGroups.value.forEach(group => {
+          sellingPrices.value[group.id] = (newPrice * (1 + group.percentage / 100)).toFixed(2)
+        })
+      }
+    }
+  )
 
   const addItem = (putFocus = true) => {
     if (!item.value.product || !item.value.quantity || !item.value.price) {
