@@ -54,7 +54,7 @@
   const filteredInvoices = ref([])
 
   watch(
-    [() => searchTerms.value, invoices, selectedMonth, year],
+    [searchTerms, invoices, selectedMonth, year],
     () => {
       if (!invoices.value || !Array.isArray(invoices.value)) {
         filteredInvoices.value = []
@@ -99,7 +99,7 @@
         return true
       })
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   )
 
   const loadInvoices = () => {
